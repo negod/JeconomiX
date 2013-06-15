@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+    <h:body>
+        <ui:include src="/secure/commons/messages.xhtml"/>
+        <h:form id="#{viewId.userForm}">            
+            <p:dataTable id="#{viewId.userTable}" 
+                         var="user" 
+                         value="#{usersBacking.tableModel}" 
+                         widgetVar="#{viewVar.userTable}" 
+                         emptyMessage="#{usersMsg.cannotFindUserWithProperties}" 
+                         filteredValue="#{usersBacking.filteredTableData}" 
+                         selectionMode="single"
+                         selection="#{usersBacking.selectedTableData}"
+                         paginator="true"
+                         rows="20">
+
+                <p:ajax event="rowSelect" 
+                        update=":#{viewId.userForm}:#{viewId.editUserDialog}"
+                        oncomplete="#{viewVar.editUserDialog}.show()"/>              
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="#{usersMsg.tableSearchTitle}" />
+                        <p:inputText id="globalFilter" 
+                                     onkeyup="#{viewVar.userTable}.filter()" 
+                                     style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column id="passwordColumn" 
+                          filterBy="#{user.password}"
+                          headerText="#{usersMsg.userPass}">
+                    <h:outputText value="#{user.password}" />
+                </p:column>
+
+                <p:column id="userNameColumn" 
+                          filterBy="#{user.username}"
+                          headerText="#{usersMsg.userName}">
+                    <h:outputText value="#{user.username}" />
+                </p:column>
+
+            </p:dataTable>
+
+            <p:panelGrid id="createNewUserPanel" columns="1" >                
+                <p:commandButton value="#{usersMsg.addUser}" 
+                                 oncomplete="#{viewVar.createUserDialog}.show()"
+                                 update="#{viewId.createUserDialog}"
+                                 ajax="true"/>
+            </p:panelGrid>
+
+            <!-- EDIT USER -->
+            <ui:include src="/secure/user/dialogs/editUser.xhtml">
+                <ui:param name="dialogID" value="#{viewId.editUserDialog}"/>
+                <ui:param name="dialogVar" value="#{viewVar.editUserDialog}"/>
+                <ui:param name="userTableId" value="#{viewId.userTable}"/>
+                <ui:param name="backing" value="#{usersBacking}"/>
+            </ui:include>  
+
+            <!-- ADD USER -->
+            <ui:include src="/secure/user/dialogs/createUser.xhtml">
+                <ui:param name="dialogID" value="#{viewId.createUserDialog}"/>
+                <ui:param name="dialogVar" value="#{viewVar.createUserDialog}"/>
+                <ui:param name="userTableID" value="#{viewId.userTable}"/>
+                <ui:param name="backing" value="#{usersBacking}"/>
+            </ui:include>
+
+        </h:form>
+
+        <ui:include src="/secure/usergroup/userGroup.xhtml" />
+
+    </h:body>
+</html>

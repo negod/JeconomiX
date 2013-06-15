@@ -4,3 +4,6 @@
 *.jar
 *.war
 *.ear
+/JeconomiX-ear/target/
+/JeconomiX-ejb/target/
+/JeconomiX-web/target/

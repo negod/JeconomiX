@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+    <h:body>
+        <ui:include src="/secure/commons/messages.xhtml"/>
+        <h:form id="#{viewId.transactionForm}">            
+            <p:dataTable id="#{viewId.transactionTable}" 
+                         var="transactionType" 
+                         value="#{transactionTypeBacking.tableModel}" 
+                         widgetVar="#{viewVar.transactionTable}" 
+                         emptyMessage="#{transTypeMsg.cannotFindDataWithProperties}" 
+                         filteredValue="#{transactionTypeBacking.filteredTableData}" 
+                         selectionMode="single"
+                         selection="#{transactionTypeBacking.selectedTableData}"
+                         paginator="true"
+                         rows="20">
+
+                <p:ajax event="rowSelect" 
+                        update=":#{viewId.transactionForm}:#{viewId.editTransactionDialog}"
+                        oncomplete="#{viewVar.editTransactionDialog}.show()"/>              
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="#{transTypeMsg.tableSearchTitle}" />
+                        <p:inputText id="globalFilter" 
+                                     onkeyup="#{viewVar.transactionTable}.filter()" 
+                                     style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column id="transactionNameColumn" 
+                          filterBy="#{transactionType.transactionName}"
+                          headerText="#{transTypeMsg.transactionName}">
+                    <h:outputText value="#{transactionType.transactionName}" />
+                </p:column>
+
+            </p:dataTable>
+
+            <p:panelGrid id="createNewTransactionPanel" columns="1" >                
+                <p:commandButton value="#{transTypeMsg.add}" 
+                                 oncomplete="#{viewVar.createTransactionDialog}.show()"
+                                 update="#{viewId.createTransactionDialog}"
+                                 ajax="true"/>
+            </p:panelGrid>
+
+            <!-- EDIT TransactionType -->
+            <ui:include src="/secure/jeconomix/budget/transactiontype/dialogs/editTransactionType.xhtml">
+                <ui:param name="dialogID" value="#{viewId.editTransactionDialog}"/>
+                <ui:param name="dialogVar" value="#{viewVar.editTransactionDialog}"/>
+                <ui:param name="transactionTableId" value="#{viewId.transactionTable}"/>
+                <ui:param name="backing" value="#{transactionTypeBacking}"/>
+            </ui:include>  
+
+            <!-- ADD TransactionType -->
+            <ui:include src="/secure/jeconomix/budget/transactiontype/dialogs/createTransactionType.xhtml">
+                <ui:param name="dialogID" value="#{viewId.createTransactionDialog}"/>
+                <ui:param name="dialogVar" value="#{viewVar.createTransactionDialog}"/>
+                <ui:param name="transactionTableId" value="#{viewId.transactionTable}"/>
+                <ui:param name="backing" value="#{transactionTypeBacking}"/>
+            </ui:include>
+
+        </h:form>
+
+    </h:body>
+</html>

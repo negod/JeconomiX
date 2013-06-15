@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+
+        <p:panel closeTitle="Lägg till" header="Lägg till">
+            
+            <p:panelGrid columns="6">
+                <p:autoComplete id="acCompany"                             
+                                value="#{budgetBacking.newBudgetRow.company}" 
+                                completeMethod="#{budgetBacking.completeCompany}"
+                                dropdown="true"
+                                converter="companyConverter"
+                                var="c" 
+                                itemLabel="#{c.companyName}" 
+                                itemValue="#{c}"                           
+                                forceSelection="true">  
+                    <p:ajax event="itemSelect" 
+                            async="true"
+                            listener="#{budgetBacking.handleCompanySelect}"                        
+                            update="#{viewId.budgetForm}:acTransactionType" />  
+                </p:autoComplete>  
+
+                <p:selectOneMenu id="acTransactionType" 
+                                 value="#{budgetBacking.newBudgetRow.transactionType}" 
+                                 converter="transactionTypeConverter">
+                    <f:selectItems value="#{budgetBacking.transactionTypes}" 
+                                   var="t" 
+                                   itemLabel="#{t.transactionName}" 
+                                   itemValue="#{t}"/>
+                </p:selectOneMenu> 
+
+                <p:inputText id="itOther" 
+                             value="#{budgetBacking.newBudgetRow.other}" >
+                </p:inputText> 
+
+                <p:inputText id="itTotal" 
+                             value="#{budgetBacking.newBudgetRow.totalSum}" >
+                </p:inputText> 
+
+                <p:commandButton value="#{buttonMsg.add}" 
+                                 actionListener="#{budgetBacking.addBudgetRow}"
+                                 update="#{viewId.budgetForm}:test"
+                                 ajax="false" />
+
+            </p:panelGrid>
+        </p:panel>
+
+    </ui:composition>
+</html>

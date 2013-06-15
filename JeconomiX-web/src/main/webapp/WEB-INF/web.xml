@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>CO UA Partners</display-name>
+    <description>CO UA Partners Site</description>
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <!-- JSF Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
+    
+    <session-config>
+        <!-- on productive systems you might have another value for the timeout -->
+        <session-timeout>30</session-timeout>
+        <!-- 
+           we don't want to use the default name JSESSIONID because this 
+           tells everyone (especially hackers) that our application is based on java 
+        -->
+        <cookie-config>
+            <name>SESSIONID</name>
+        </cookie-config>
+    </session-config>
+    
+    <welcome-file-list>
+        <!-- <welcome-file>faces/secure/admintools/user/users.xhtml</welcome-file> -->
+        <!-- welcome-file>faces/secure/jeconomix/main/main.xhtml</welcome-file> -->
+        <!-- <welcome-file>faces/secure/jeconomix/budget/company/company.xhtml</welcome-file> -->
+        <!-- <welcome-file>faces/secure/jeconomix/budget/transactiontype/transactiontype.xhtml</welcome-file> -->
+        <welcome-file>faces/secure/jeconomix/budget/budget/budget.xhtml</welcome-file>
+    </welcome-file-list>
+    
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>jeconomixrealm</realm-name>
+        <form-login-config>
+            <form-login-page>/login.xhtml</form-login-page>
+            <form-error-page>/error.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
+    
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error.xhtml</location>        
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/error.xhtml</location>
+    </error-page>
+    
+    <!-- Security -->
+    <!-- Allt som står här kräver autentiering -->
+    <security-constraint>
+        
+        <display-name>User Pages</display-name>
+        <web-resource-collection>
+            <web-resource-name>Secured Content</web-resource-name>
+            <description/>
+            <url-pattern>/secure/jeconomix*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>HEAD</http-method>
+            <http-method>PUT</http-method>
+            <http-method>OPTIONS</http-method>
+            <http-method>TRACE</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <!-- only users with at least one of these roles are allowed to access the secured content -->
+        <auth-constraint>
+            <description/>
+            <role-name>user</role-name>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <security-constraint>
+        
+        <display-name>User Pages</display-name>
+        <web-resource-collection>
+            <web-resource-name>Secured Content</web-resource-name>
+            <description/>
+            <url-pattern>/secure/admintools/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>HEAD</http-method>
+            <http-method>PUT</http-method>
+            <http-method>OPTIONS</http-method>
+            <http-method>TRACE</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <!-- only users with at least one of these roles are allowed to access the secured content -->
+        <auth-constraint>
+            <description/>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+  
+    <!-- we always want https! -->
+    <!-- <user-data-constraint>
+        <description>highest supported transport security level</description>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint> -->
+        
+ 
+    <!-- declare the roles relevant for our webapp -->
+   
+    
+</web-app>

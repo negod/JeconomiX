@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <p:dialog id="#{dialogID}" header="#{usersMsg.changeUser}" widgetVar="#{dialogVar}" resizable="false" draggable="true">
+
+            <p:panelGrid id="editUserDisplay" columns="2" cellpadding="4">
+                
+                <p:outputLabel value="#{usersMsg.userPass}" />
+                <p:inputText value="#{backing.selectedTableData.password}" />
+                <p:outputLabel value="#{usersMsg.userPass}" />               
+                
+            </p:panelGrid>
+
+            <p:panelGrid id="editUserDisplay2" columns="3" cellpadding="0">
+                <p:commandButton value="#{buttonMsg.remove}" 
+                                 actionListener="#{backing.deleteUser}"
+                                 update="#{userTableId}"
+                                 ajax="false"/>
+                <p:commandButton value="#{buttonMsg.change}" 
+                                 actionListener="#{backing.updateUser}"
+                                 update="#{userTableId}"
+                                 ajax="true"/>
+                <p:button value="#{buttonMsg.abort}" 
+                          onclick="#{dialogVar}.hide()"
+                          ajax="false"/>
+            </p:panelGrid>
+        </p:dialog>
+    </ui:composition>
+</html>

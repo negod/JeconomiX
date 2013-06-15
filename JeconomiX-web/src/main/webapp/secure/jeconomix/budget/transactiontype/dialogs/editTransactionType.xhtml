@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <p:dialog id="#{dialogID}" header="#{transTypeMsg.change}" widgetVar="#{dialogVar}" resizable="false" draggable="true">
+
+            <p:panelGrid id="editTransactionDisplay" columns="2" cellpadding="4">
+                
+                <p:outputLabel value="#{transTypeMsg.transactionType}" />
+                <p:inputText value="#{backing.selectedTableData.transactionName}" />
+                
+            </p:panelGrid>
+
+            <p:panelGrid id="editTransactionDisplay2" columns="3" cellpadding="0">
+                <p:commandButton value="#{buttonMsg.remove}" 
+                                 actionListener="#{backing.deleteUser}"
+                                 update="#{userTableId}"
+                                 ajax="false"/>
+                <p:commandButton value="#{buttonMsg.change}" 
+                                 actionListener="#{backing.updateUser}"
+                                 update="#{userTableId}"
+                                 ajax="true"/>
+                <p:button value="#{buttonMsg.abort}" 
+                          onclick="#{dialogVar}.hide()"
+                          ajax="false"/>
+            </p:panelGrid>
+        </p:dialog>
+    </ui:composition>
+</html>
