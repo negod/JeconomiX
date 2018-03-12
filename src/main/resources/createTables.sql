@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS company_type(
 CREATE TABLE IF NOT EXISTS company (
     id VARCHAR(36) NOT NULL, 
     updatedDate TIMESTAMP NOT NULL, 
-    name VARCHAR(36) NOT NULL, 
+    name VARCHAR(200) NOT NULL, 
     bill_category_id VARCHAR(36) NULL, 
     expense_category_id VARCHAR(36) NULL, 
     company_type_id VARCHAR(36) NULL, 

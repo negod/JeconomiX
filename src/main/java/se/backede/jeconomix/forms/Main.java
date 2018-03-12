@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix;
+package se.backede.jeconomix.forms;
 
 import com.negod.fileutils.CsvReaderHandler;
 import com.negod.fileutils.exception.BeckedeFileException;
@@ -52,7 +52,7 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
  */
 @Slf4j
 public class Main extends javax.swing.JFrame implements EventObserver {
-    
+
     private CacheInitializer cache = new CacheInitializer();
 
     /**
@@ -64,7 +64,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         setTableData();
         setExpenseCategoryComboBoxData();
     }
-    
+
     public void setExpenseCategoryComboBoxData() {
         Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
         if (all.isPresent()) {
@@ -75,7 +75,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             }
         }
     }
-    
+
     public void setTableData() {
         Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
         if (all.isPresent()) {
@@ -97,12 +97,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        uploadCsvFileButton = new javax.swing.JButton();
-        expenceCategoryButton = new javax.swing.JButton();
-        billCategoryButton = new javax.swing.JButton();
-        addExpenseCategory = new javax.swing.JButton();
-        expenseImporterButton = new javax.swing.JButton();
-        expenseReportButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         transactionTable = new javax.swing.JTable();
@@ -118,88 +112,32 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         transactionSumLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
+        importerMenu = new javax.swing.JMenu();
+        importExpensesMenuItem = new javax.swing.JMenuItem();
+        importMenu = new javax.swing.JMenu();
+        importExpCatMenuitem = new javax.swing.JMenuItem();
+        importCompanyMenuItem = new javax.swing.JMenuItem();
+        handleListMenu = new javax.swing.JMenu();
+        expenseCategoryMenuItem = new javax.swing.JMenuItem();
+        reportMenu = new javax.swing.JMenu();
+        expenseReportMenuItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        uploadCsvFileButton.setText("Upload Company CSV");
-        uploadCsvFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uploadCsvFileButtonActionPerformed(evt);
-            }
-        });
-
-        expenceCategoryButton.setText("Upload Expense Category CSV");
-        expenceCategoryButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expenceCategoryButtonActionPerformed(evt);
-            }
-        });
-
-        billCategoryButton.setText("Upload Bill Category CSV");
-        billCategoryButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                billCategoryButtonActionPerformed(evt);
-            }
-        });
-
-        addExpenseCategory.setText("Add Expense Category");
-        addExpenseCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addExpenseCategoryActionPerformed(evt);
-            }
-        });
-
-        expenseImporterButton.setText("Import Expenses");
-        expenseImporterButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expenseImporterButtonActionPerformed(evt);
-            }
-        });
-
-        expenseReportButton.setText("Open expense report");
-        expenseReportButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expenseReportButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(uploadCsvFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(expenceCategoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(billCategoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addExpenseCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(expenseImporterButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(expenseReportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addGap(0, 214, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(addExpenseCategory)
-                .addGap(103, 103, 103)
-                .addComponent(expenseImporterButton)
-                .addGap(63, 63, 63)
-                .addComponent(expenseReportButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
-                .addComponent(billCategoryButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(expenceCategoryButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(uploadCsvFileButton)
-                .addContainerGap())
+            .addGap(0, 529, Short.MAX_VALUE)
         );
 
         jPanel2.setBackground(new java.awt.Color(204, 255, 204));
@@ -303,19 +241,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
-
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
-
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -326,6 +251,75 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
+
+        importerMenu.setText("Import");
+        importerMenu.setToolTipText("");
+
+        importExpensesMenuItem.setText("Expenses");
+        importExpensesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importExpensesMenuItemActionPerformed(evt);
+            }
+        });
+        importerMenu.add(importExpensesMenuItem);
+
+        importMenu.setText("Listdata");
+
+        importExpCatMenuitem.setText("Expense categories");
+        importExpCatMenuitem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importExpCatMenuitemActionPerformed(evt);
+            }
+        });
+        importMenu.add(importExpCatMenuitem);
+
+        importCompanyMenuItem.setText("Companies");
+        importCompanyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importCompanyMenuItemActionPerformed(evt);
+            }
+        });
+        importMenu.add(importCompanyMenuItem);
+
+        importerMenu.add(importMenu);
+
+        menuBar.add(importerMenu);
+
+        handleListMenu.setText("Handle lists");
+
+        expenseCategoryMenuItem.setText("Expense categories");
+        expenseCategoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expenseCategoryMenuItemActionPerformed(evt);
+            }
+        });
+        handleListMenu.add(expenseCategoryMenuItem);
+
+        menuBar.add(handleListMenu);
+
+        reportMenu.setText("Reports");
+
+        expenseReportMenuItem.setText("Expense report");
+        expenseReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expenseReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(expenseReportMenuItem);
+
+        menuBar.add(reportMenu);
+
+        jMenu1.setText("Admin");
+
+        reindecLuceneMenuItem.setText("Reindex lucene");
+        reindecLuceneMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reindecLuceneMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(reindecLuceneMenuItem);
+
+        menuBar.add(jMenu1);
 
         setJMenuBar(menuBar);
 
@@ -385,187 +379,50 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void uploadCsvFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadCsvFileButtonActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select an image");
-        jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
-        jfc.addChoosableFileFilter(filter);
-        
-        int returnValue = jfc.showOpenDialog(null);
-        
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            
-            try {
-                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
-                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Companies");
-                
-                List<CompanyDto> companies = new ArrayList<>();
-                for (String string : uniqueValuesFromColumn) {
-                    CompanyDto c = new CompanyDto();
-                    c.setName(string);
-                    companies.add(c);
-                }
-                
-                for (CompanyDto company : companies) {
-                    CompanyHandler.getInstance().createCompany(company);
-                }
-                
-                Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
-                if (all.isPresent()) {
-                    CompanyModel companyModel = new CompanyModel(all.get());
-                    companyTable.setModel(companyModel);
-                }
-                
-            } catch (BeckedeFileException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-    }//GEN-LAST:event_uploadCsvFileButtonActionPerformed
-
     private void companyTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_companyTableMouseClicked
         int selectedRow = companyTable.getSelectedRow();
         CompanyModel model = (CompanyModel) companyTable.getModel();
         CompanyDto company = model.getCompanyAt(selectedRow);
-        
+
         if (company.getExpenseCategory() != null) {
             expenseCategoryComboBox.setSelectedItem(company.getExpenseCategory());
         }
-        
+
         if (company.getTransactions() != null) {
             DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
             rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-            
+
             TransactionModel transModel = new TransactionModel(company.getTransactions());
             transactionTable.setModel(transModel);
             transactionTable.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-            
+
             transactionSumLabel.setText(transModel.getSum().toString().concat(" Kr"));
-            
+
         }
-        
+
         companyNameLabel.setText(company.getName());
     }//GEN-LAST:event_companyTableMouseClicked
-
-    private void expenceCategoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenceCategoryButtonActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select an image");
-        jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
-        jfc.addChoosableFileFilter(filter);
-        
-        int returnValue = jfc.showOpenDialog(null);
-        
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            
-            try {
-                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
-                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
-                
-                List<ExpenseCategoryDto> categories = new ArrayList<>();
-                for (String string : uniqueValuesFromColumn) {
-                    ExpenseCategoryDto c = new ExpenseCategoryDto();
-                    c.setName(string);
-                    categories.add(c);
-                }
-                
-                for (ExpenseCategoryDto category : categories) {
-                    ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
-                }
-                
-                Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
-                if (all.isPresent()) {
-                    ExpenseCategoryComboModel model = new ExpenseCategoryComboModel(all.get());
-                    expenseCategoryComboBox.setModel(model);
-                    if (all.get().size() > 0) {
-                        expenseCategoryComboBox.setRenderer(new ExpenseCategoryItemRenderer());
-                    }
-                }
-                
-            } catch (BeckedeFileException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-    }//GEN-LAST:event_expenceCategoryButtonActionPerformed
-
-    private void billCategoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billCategoryButtonActionPerformed
-//        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-//        jfc.setDialogTitle("Select an image");
-//        jfc.setAcceptAllFileFilterUsed(false);
-//        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
-//        jfc.addChoosableFileFilter(filter);
-//
-//        int returnValue = jfc.showOpenDialog(null);
-//
-//        if (returnValue == JFileChooser.APPROVE_OPTION) {
-//
-//            try {
-//                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
-//                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
-//
-//                List<BillCategory> categories = new ArrayList<>();
-//                for (String string : uniqueValuesFromColumn) {
-//                    BillCategory c = new BillCategory();
-//                    c.setName(string);
-//                    categories.add(c);
-//                }
-//
-//                try {
-//                    for (BillCategory category : categories) {
-//                        billCatDao.startTransaction();
-//                        billCatDao.persist(category);
-//                        billCatDao.commitTransaction();
-//                    }
-//                } catch (ConstraintException | DaoException e) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
-//                }
-//
-//                try {
-//                    Optional<List<BillCategory>> all = billCatDao.getAll();
-//                    if (all.isPresent()) {
-//                        BillCategoryComboModel model = new BillCategoryComboModel(all.get());
-//                        billCategoryComboBox.setModel(model);
-//                        if (all.get().size() > 0) {
-//                            billCategoryComboBox.setRenderer(new BillCategoryItemRenderer());
-//                        }
-//                    }
-//                } catch (DaoException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//
-//            } catch (BeckedeFileException ex) {
-//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//
-//        }
-    }//GEN-LAST:event_billCategoryButtonActionPerformed
 
     private void expenseCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryComboBoxActionPerformed
         int selectedRow = companyTable.getSelectedRow();
         CompanyModel model = (CompanyModel) companyTable.getModel();
         CompanyDto company = model.getCompanyAt(selectedRow);
-        
+
         ExpenseCategoryComboModel expModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
         ExpenseCategoryDto category = (ExpenseCategoryDto) expModel.getSelectedItem();
         company.setExpenseCategory(category);
         CompanyHandler.getInstance().setExpenseCategory(company, category);
     }//GEN-LAST:event_expenseCategoryComboBoxActionPerformed
 
-    private void addExpenseCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addExpenseCategoryActionPerformed
-        new AddExpCategory(this, Boolean.TRUE).setVisible(true);
-    }//GEN-LAST:event_addExpenseCategoryActionPerformed
-
-    private void expenseImporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseImporterButtonActionPerformed
+    private void importExpensesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpensesMenuItemActionPerformed
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Select an image");
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-        
+
         int returnValue = jfc.showOpenDialog(null);
-        
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             try {
                 CsvReaderHandler handler = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE);
@@ -576,17 +433,18 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         .removeWord("Transaktion", "Reservation")
                         .removeLeadingSpaces("Transaktion")
                         .removeWordStartingWith("Transaktion", "18", 7)
+                        .removeWordStartingWith("Transaktion", "17", 7)
                         .removeTrailingAndLeadingSpaces("Transaktion")
                         .replaceComma("Belopp")
                         .replaceComma("Saldo")
                         .removeMinus("Belopp")
                         .build(handler.getHeaderMap());
-                
+
                 Map<String, Set<TransactionDto>> companyTransactions = new LinkedHashMap<>();
                 for (CSVRecord cSVRecord : build) {
-                    
+
                     Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
-                    
+
                     if (search.isPresent() && search.get().size() == 1) {
                         CompanyDto company = (CompanyDto) search.get().toArray()[0];
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
@@ -594,9 +452,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         transaction.setCompany(company);
                         TransactionHandler.getInstance().createTransaction(transaction);
                     } else {
-                        
+
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-                        
+
                         if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
                             companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
                         } else {
@@ -604,11 +462,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                             transactionList.add(transaction);
                             companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
                         }
-                        
+
                     }
-                    
+
                 }
-                
+
                 if (!companyTransactions.isEmpty()) {
                     LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
                     for (String companyName : companyTransactions.keySet()) {
@@ -617,21 +475,110 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         companyToAdd.setTransactions(companyTransactions.get(companyName));
                         companiesToAdd.add(companyToAdd);
                     }
-                    
+
                     new ImportExpense(this, true, companiesToAdd).setVisible(true);
                 }
-                
+
                 setTableData();
-                
+
             } catch (BeckedeFileException | IOException ex) {
                 log.error("Error when importing expenses", ex);
             }
         }
-    }//GEN-LAST:event_expenseImporterButtonActionPerformed
+    }//GEN-LAST:event_importExpensesMenuItemActionPerformed
 
-    private void expenseReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportButtonActionPerformed
+    private void importExpCatMenuitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpCatMenuitemActionPerformed
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setDialogTitle("Select a valid CSV file");
+        jfc.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+        jfc.addChoosableFileFilter(filter);
+
+        int returnValue = jfc.showOpenDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+            try {
+                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
+                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
+
+                List<ExpenseCategoryDto> categories = new ArrayList<>();
+                for (String string : uniqueValuesFromColumn) {
+                    ExpenseCategoryDto c = new ExpenseCategoryDto();
+                    c.setName(string);
+                    categories.add(c);
+                }
+
+                for (ExpenseCategoryDto category : categories) {
+                    ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
+                }
+
+                Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
+                if (all.isPresent()) {
+                    ExpenseCategoryComboModel model = new ExpenseCategoryComboModel(all.get());
+                    expenseCategoryComboBox.setModel(model);
+                    if (all.get().size() > 0) {
+                        expenseCategoryComboBox.setRenderer(new ExpenseCategoryItemRenderer());
+                    }
+                }
+
+            } catch (BeckedeFileException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_importExpCatMenuitemActionPerformed
+
+    private void importCompanyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCompanyMenuItemActionPerformed
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setDialogTitle("Select an image");
+        jfc.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+        jfc.addChoosableFileFilter(filter);
+
+        int returnValue = jfc.showOpenDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+            try {
+                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
+                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Companies");
+
+                List<CompanyDto> companies = new ArrayList<>();
+                for (String string : uniqueValuesFromColumn) {
+                    CompanyDto c = new CompanyDto();
+                    c.setName(string);
+                    companies.add(c);
+                }
+
+                for (CompanyDto company : companies) {
+                    CompanyHandler.getInstance().createCompany(company);
+                }
+
+                Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
+                if (all.isPresent()) {
+                    CompanyModel companyModel = new CompanyModel(all.get());
+                    companyTable.setModel(companyModel);
+                }
+
+            } catch (BeckedeFileException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_importCompanyMenuItemActionPerformed
+
+    private void expenseCategoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryMenuItemActionPerformed
+        new AddExpCategory(this, Boolean.TRUE).setVisible(true);
+    }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
+
+    private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed
         new expenseReport(this, true).setVisible(true);
-    }//GEN-LAST:event_expenseReportButtonActionPerformed
+    }//GEN-LAST:event_expenseReportMenuItemActionPerformed
+
+    private void reindecLuceneMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reindecLuceneMenuItemActionPerformed
+        CompanyHandler.getInstance().reIndex();
+    }//GEN-LAST:event_reindecLuceneMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -647,21 +594,21 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                    
+
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -676,32 +623,34 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addExpenseCategory;
-    private javax.swing.JButton billCategoryButton;
     private javax.swing.JComboBox<String> billCategoryComboBox;
     private javax.swing.JLabel billCategoryLabel;
     private javax.swing.JLabel companyNameLabel;
     private javax.swing.JTable companyTable;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JButton expenceCategoryButton;
     private javax.swing.JComboBox<String> expenseCategoryComboBox;
     private javax.swing.JLabel expenseCategoryLabel;
-    private javax.swing.JButton expenseImporterButton;
-    private javax.swing.JButton expenseReportButton;
+    private javax.swing.JMenuItem expenseCategoryMenuItem;
+    private javax.swing.JMenuItem expenseReportMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu handleListMenu;
+    private javax.swing.JMenuItem importCompanyMenuItem;
+    private javax.swing.JMenuItem importExpCatMenuitem;
+    private javax.swing.JMenuItem importExpensesMenuItem;
+    private javax.swing.JMenu importMenu;
+    private javax.swing.JMenu importerMenu;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem reindecLuceneMenuItem;
+    private javax.swing.JMenu reportMenu;
     private javax.swing.JLabel sumLabel;
     private javax.swing.JLabel transactionSumLabel;
     private javax.swing.JTable transactionTable;
-    private javax.swing.JButton uploadCsvFileButton;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -718,10 +667,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             setTableData();
         }
     }
-    
+
     @Override
     public void registerAsObserver() {
         EventController.getInstance().addObserver(this);
     }
-    
+
 }

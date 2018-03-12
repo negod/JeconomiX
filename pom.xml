@@ -99,9 +99,34 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.1-b08</version>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
+            <version>2.44.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opera</groupId>
+            <artifactId>operadriver</artifactId>
+            <scope>test</scope>
+            <version>1.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-remote-driver</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+            <version>4.11</version>
+        </dependency>
     </dependencies>
     
     <build>
+        <finalName>Jeconomix ${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
@@ -119,6 +144,7 @@
                                 <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
                             </processors>
                         </configuration>
+                        
                     </execution>
                 </executions>
                 <dependencies>
@@ -149,9 +175,11 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <finalName>${project.build.finalName}</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>
             <plugin>
@@ -160,7 +188,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>se.backede.app.Main</mainClass>
+                            <mainClass>se.backede.jeconomix.forms.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

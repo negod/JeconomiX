@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix;
+package se.backede.jeconomix.forms;
 
 import java.awt.BorderLayout;
 import java.math.BigDecimal;
@@ -11,9 +11,14 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.jfree.chart.ChartFactory;
@@ -21,9 +26,12 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
+import se.backede.jeconomix.renderer.combobox.CompanyComboBoxRenderer;
 
 /**
  *
@@ -35,6 +43,13 @@ public class SingleExpenseReport extends javax.swing.JDialog {
      * Creates new form SingleExpenseReport
      */
     ExpenseReportDto reports;
+    Set<CompanyDto> companyList = new HashSet<CompanyDto>();
+    Set<Integer> years = new HashSet<Integer>();
+    SortedSet<Month> months = new TreeSet<Month>();
+
+    private final String ALL_MONTHS = "All months";
+    private final String ALL_YEARS = "All years";
+    private final String ALL_COMPANIES = "All companies";
 
     public SingleExpenseReport(java.awt.Frame parent, boolean modal, ExpenseReportDto reports) {
         super(parent, modal);
@@ -42,6 +57,59 @@ public class SingleExpenseReport extends javax.swing.JDialog {
         initComponents();
         setTableData();
         addLineChart(reports);
+
+        extractCompaniesFromTransactoins();
+        extractYears();
+        extractMonths();
+
+        setYearComboBox();
+        setMonthComboBox();
+        setCompanyComboBox();
+    }
+
+    public void extractCompaniesFromTransactoins() {
+        for (TransactionDto transction : reports.getTransctions()) {
+            companyList.add(transction.getCompany());
+        }
+    }
+
+    public void extractYears() {
+        for (TransactionDto transction : reports.getTransctions()) {
+            years.add(transction.getTransDate().toLocalDate().getYear());
+        }
+    }
+
+    public void extractMonths() {
+        for (TransactionDto transction : reports.getTransctions()) {
+            months.add(transction.getTransDate().toLocalDate().getMonth());
+        }
+    }
+
+    public void setYearComboBox() {
+        yearComboBox.addItem(ALL_YEARS);
+        for (Integer year : years) {
+            yearComboBox.addItem(year.toString());
+        }
+    }
+
+    public void setMonthComboBox() {
+        monthComboBox.addItem(ALL_MONTHS);
+        for (Month month : months) {
+            monthComboBox.addItem(month.name().toString());
+        }
+    }
+
+    public void setCompanyComboBox() {
+        LinkedList companies = new LinkedList<>();
+        CompanyDto blancCompany = new CompanyDto();
+        blancCompany.setName(ALL_COMPANIES);
+        companies.add(blancCompany);
+
+        companies.addAll(companyList);
+        CompanyComboBoxModel model = new CompanyComboBoxModel(new LinkedList<CompanyDto>(companies));
+        model.setSelectedItem(companies.getFirst());
+        companyComboBox.setModel(model);
+        companyComboBox.setRenderer(new CompanyComboBoxRenderer());
     }
 
     public void addLineChart(ExpenseReportDto reports) {
@@ -56,6 +124,81 @@ public class SingleExpenseReport extends javax.swing.JDialog {
         chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
         lineChartPanel.setLayout(new BorderLayout());
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
+    }
+
+    public void filter() {
+
+        companyComboBox.setEnabled(false);
+        yearComboBox.setEnabled(false);
+        monthComboBox.setEnabled(false);
+
+        LinkedList<TransactionDto> allTrasactions = new LinkedList<TransactionDto>(reports.getTransctions());
+
+        CompanyDto company = (CompanyDto) companyComboBox.getSelectedItem();
+
+        String yearString = (String) yearComboBox.getSelectedItem();
+        Integer year = Integer.parseInt("0");
+        if (!yearString.equals(ALL_YEARS)) {
+            year = Integer.parseInt(yearString);
+        }
+
+        String monthString = (String) monthComboBox.getSelectedItem();
+        Month month = null;
+        if (monthString != null) {
+            if (!monthString.equals(ALL_MONTHS)) {
+                month = Month.valueOf(monthString);
+            }
+        }
+
+        LinkedList<TransactionDto> filteredCompanies = new LinkedList<TransactionDto>(reports.getTransctions());
+
+        if (company != null) {
+            if (!company.getName().equals(ALL_COMPANIES)) {
+                filteredCompanies = allTrasactions.stream()
+                        .filter(line -> line.getCompany().equals(company))
+                        .collect(Collectors.toCollection(LinkedList::new));
+            }
+        }
+
+        LinkedList<TransactionDto> filteredByYear = (LinkedList) filteredCompanies.clone();
+        if (yearString != null) {
+            if (!yearString.equals(ALL_YEARS)) {
+                for (TransactionDto filteredTransaction : filteredCompanies) {
+                    if (filteredTransaction.getTransDate().toLocalDate().getYear() != year) {
+                        filteredByYear.remove(filteredTransaction);
+                    }
+                }
+            }
+        }
+
+        LinkedList<TransactionDto> filteredByMonth = (LinkedList) filteredByYear.clone();;
+        if (monthString != null) {
+            if (!monthString.equals(ALL_MONTHS)) {
+                for (TransactionDto filteredTransaction : filteredByYear) {
+                    if (filteredTransaction.getTransDate().toLocalDate().getMonth() != month) {
+                        filteredByMonth.remove(filteredTransaction);
+                    }
+                }
+            }
+        }
+
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+
+        TransactionCompanyModel transModel = new TransactionCompanyModel(new HashSet<TransactionDto>(filteredByMonth));
+
+        transactionTable.setModel(transModel);
+
+        transactionTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+
+        transactionSumLabel.setText(transModel.getSum().toString().concat(" Kr"));
+        categoryNameLabel.setText(reports.getCategory());
+
+        companyComboBox.setEnabled(true);
+        yearComboBox.setEnabled(true);
+        monthComboBox.setEnabled(true);
+
     }
 
     private DefaultCategoryDataset createDataset(ExpenseReportDto reports) {
@@ -73,12 +216,9 @@ public class SingleExpenseReport extends javax.swing.JDialog {
         for (TransactionDto transaction : reports.getTransctions()) {
             for (Month month : monthList) {
                 if (transaction.getTransDate().toLocalDate().getMonth().equals(month)) {
-                    System.out.println("CURRENT SUM: " + sums.get(month));
                     BigDecimal currentSum = sums.get(month);
                     if (transaction.getSum() != null) {
-                        System.out.println("TRANSACTION SUM: " + transaction.getSum());
                         BigDecimal newSum = currentSum.add(transaction.getSum());
-                        System.out.println("NEW SUM: " + newSum);
                         sums.put(month, newSum);
                     }
                 }
@@ -172,15 +312,27 @@ public class SingleExpenseReport extends javax.swing.JDialog {
         transactionSumLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         transactionSumLabel.setText("jLabel1");
 
-        monthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        monthComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Select Month");
 
-        companyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        companyComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                companyComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Select Company");
 
-        yearComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        yearComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yearComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Select year");
 
@@ -257,6 +409,18 @@ public class SingleExpenseReport extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void yearComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearComboBoxActionPerformed
+        filter();
+    }//GEN-LAST:event_yearComboBoxActionPerformed
+
+    private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthComboBoxActionPerformed
+        filter();
+    }//GEN-LAST:event_monthComboBoxActionPerformed
+
+    private void companyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyComboBoxActionPerformed
+        filter();
+    }//GEN-LAST:event_companyComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel categoryNameLabel;
