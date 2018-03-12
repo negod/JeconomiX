@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>se.backede.persistence.jeconomix</groupId>
+    <artifactId>jeconomix</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    
+    <parent>
+        <groupId>se.backede.parent</groupId>
+        <artifactId>webservice-parent</artifactId>
+        <version>1.2-SNAPSHOT</version>
+    </parent>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    
+        <!-- JPA DEPENDENCIES-->
+        <hibernate.core.version>5.1.10.Final</hibernate.core.version>
+        <hibernate.validator.version>5.3.5.Final</hibernate.validator.version>
+        <hibernate.search.version>5.5.8.Final</hibernate.search.version>
+        <hibernate.search.infispan.version>5.5.2.Final</hibernate.search.infispan.version>
+        
+        <hibernate.entitymanager.version>5.1.10.Final</hibernate.entitymanager.version>
+        <hibernate.ehcache.version>5.0.7.Final</hibernate.ehcache.version>
+        <ehcache.core.version>2.6.11</ehcache.core.version>
+        
+    </properties>
+    
+    
+    <dependencies>
+        <!-- JPA provider -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+
+        <!-- for JPA, use hibernate-entitymanager instead of hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>${hibernate.search.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+        
+        <!-- MAPPING -->
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>se.backede.generics</groupId>
+            <artifactId>persistence</artifactId>
+            <version>1.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.negod.fileutils</groupId>
+            <artifactId>NordeaParser</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>        
+        
+        <!-- DB specific -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b08</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>process</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <processors>
+                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+                            </processors>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>        
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-jpamodelgen</artifactId>
+                        <version>4.3.4.Final</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version> <!-- this is critical -->
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>se.backede.app.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

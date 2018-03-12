@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence                                  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="TestPu" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>se.backede.jeconomix.database.entity.Transaction</class>
+    <class>se.backede.jeconomix.database.entity.ExpenseCategory</class>
+    <class>se.backede.jeconomix.database.entity.CompanyType</class>
+    <class>se.backede.jeconomix.database.entity.Company</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <!-- CONFIGURE LUCENE -->
+      <property name="hibernate.search.default.directory_provider" value="filesystem"/>
+      <property name="hibernate.search.default.indexBase" value="./db/lucene/indexes"/>
+      <!-- Configuring JDBC properties -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:./db/db;INIT=RUNSCRIPT FROM &apos;classpath:createTables.sql&apos;;"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <!-- Hibernate properties -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.hbm2ddl.auto" value="validate"/>
+      <property name="hibernate.format_sql" value="false"/>
+      <property name="hibernate.show_sql" value="false"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+    </properties>
+  </persistence-unit>
+</persistence>
