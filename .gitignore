@@ -23,3 +23,8 @@ hs_err_pid*
 /src/main/resources/app.properties
 /src/main/resources/logging.properties
 /target/
+/secure
+/logs
+/db
+/nbactions.xml
+/nb-configuration.xml
