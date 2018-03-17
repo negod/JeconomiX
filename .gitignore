@@ -28,3 +28,4 @@ hs_err_pid*
 /db
 /nbactions.xml
 /nb-configuration.xml
+/src/main/resources/liquibase/changelog/script/

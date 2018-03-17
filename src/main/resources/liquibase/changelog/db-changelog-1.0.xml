@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    
+    <!-- tables -->
+    <include file="tables/transaction_type.xml" relativeToChangelogFile="true"/>
+    <include file="tables/bill_category.xml" relativeToChangelogFile="true"/>
+    <include file="tables/expense_category.xml" relativeToChangelogFile="true"/>
+    <include file="tables/company.xml" relativeToChangelogFile="true"/>
+    <include file="tables/transaction.xml" relativeToChangelogFile="true"/>
+    
+    <include file="script/script_init.xml" relativeToChangelogFile="true"/>
+    
+</databaseChangeLog>

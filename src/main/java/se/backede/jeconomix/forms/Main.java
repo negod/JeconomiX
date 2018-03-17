@@ -5,10 +5,10 @@
  */
 package se.backede.jeconomix.forms;
 
-import com.negod.fileutils.CsvReaderHandler;
-import com.negod.fileutils.exception.BeckedeFileException;
-import com.negod.fileutils.nordeaparser.CsvFileFilter;
-import com.negod.fileutils.nordeaparser.Normalizer;
+import com.backede.fileutils.csv.reader.CsvReaderHandler;
+import com.backede.fileutils.exception.BeckedeFileException;
+import com.backede.fileutils.csv.parser.CsvFileFilter;
+import com.backede.fileutils.csv.parser.Normalizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,11 +20,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import se.backede.jeconomix.dto.CompanyDto;
@@ -52,7 +54,7 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
  */
 @Slf4j
 public class Main extends javax.swing.JFrame implements EventObserver {
-
+    
     private CacheInitializer cache = new CacheInitializer();
 
     /**
@@ -61,30 +63,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     public Main() {
         initComponents();
         registerAsObserver();
-        setTableData();
-        setExpenseCategoryComboBoxData();
+        test();
     }
-
-    public void setExpenseCategoryComboBoxData() {
-        Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
-        if (all.isPresent()) {
-            ExpenseCategoryComboModel comboModel = new ExpenseCategoryComboModel(all.get());
-            expenseCategoryComboBox.setModel(comboModel);
-            if (all.get().size() > 0) {
-                expenseCategoryComboBox.setRenderer(new ExpenseCategoryItemRenderer());
-            }
-        }
-    }
-
-    public void setTableData() {
-        Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
-        if (all.isPresent()) {
-            CompanyModel companyModel = new CompanyModel(all.get());
-            companyTable.setModel(companyModel);
-            if (!all.get().isEmpty()) {
-                companyTable.setRowSelectionInterval(0, 0);
-            }
-        }
+    
+    public void test() {
+        add(new BudgetMonth());
     }
 
     /**
@@ -96,20 +79,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        transactionTable = new javax.swing.JTable();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        companyTable = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        expenseCategoryComboBox = new javax.swing.JComboBox<>();
-        expenseCategoryLabel = new javax.swing.JLabel();
-        billCategoryLabel = new javax.swing.JLabel();
-        billCategoryComboBox = new javax.swing.JComboBox<>();
-        companyNameLabel = new javax.swing.JLabel();
-        sumLabel = new javax.swing.JLabel();
-        transactionSumLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -118,125 +87,23 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         importMenu = new javax.swing.JMenu();
         importExpCatMenuitem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        exportCompanies = new javax.swing.JMenuItem();
+        exportCompCatMenuItem = new javax.swing.JMenuItem();
+        exportExpenses = new javax.swing.JMenuItem();
+        exportBills = new javax.swing.JMenuItem();
+        exportExpenseTypes = new javax.swing.JMenuItem();
+        exportBillTypes = new javax.swing.JMenuItem();
+        exportAll = new javax.swing.JMenuItem();
         handleListMenu = new javax.swing.JMenu();
         expenseCategoryMenuItem = new javax.swing.JMenuItem();
+        handleCompaniesMenuItem = new javax.swing.JMenuItem();
         reportMenu = new javax.swing.JMenu();
         expenseReportMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 214, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
-        );
-
-        jPanel2.setBackground(new java.awt.Color(204, 255, 204));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        transactionTable.setAutoCreateRowSorter(true);
-        transactionTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        transactionTable.setShowHorizontalLines(false);
-        transactionTable.setShowVerticalLines(false);
-        jScrollPane2.setViewportView(transactionTable);
-
-        companyTable.setAutoCreateRowSorter(true);
-        companyTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        companyTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                companyTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(companyTable);
-
-        expenseCategoryComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expenseCategoryComboBoxActionPerformed(evt);
-            }
-        });
-
-        expenseCategoryLabel.setLabelFor(expenseCategoryComboBox);
-        expenseCategoryLabel.setText("Expense Category");
-
-        billCategoryLabel.setLabelFor(billCategoryComboBox);
-        billCategoryLabel.setText("Bill Category");
-
-        companyNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        companyNameLabel.setText("jLabel1");
-        companyNameLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(expenseCategoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(expenseCategoryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(billCategoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(billCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(companyNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(companyNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(billCategoryLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(expenseCategoryLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(expenseCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32))
-        );
-
-        sumLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        sumLabel.setText("Sum:");
-
-        transactionSumLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        transactionSumLabel.setText("jLabel1");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -285,6 +152,31 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
         menuBar.add(importerMenu);
 
+        jMenu2.setText("Export");
+
+        exportCompanies.setText("Companies");
+        jMenu2.add(exportCompanies);
+
+        exportCompCatMenuItem.setText("Companies and categories");
+        jMenu2.add(exportCompCatMenuItem);
+
+        exportExpenses.setText("Expenses");
+        jMenu2.add(exportExpenses);
+
+        exportBills.setText("Bills");
+        jMenu2.add(exportBills);
+
+        exportExpenseTypes.setText("Expense types");
+        jMenu2.add(exportExpenseTypes);
+
+        exportBillTypes.setText("Bill types");
+        jMenu2.add(exportBillTypes);
+
+        exportAll.setText("All");
+        jMenu2.add(exportAll);
+
+        menuBar.add(jMenu2);
+
         handleListMenu.setText("Handle lists");
 
         expenseCategoryMenuItem.setText("Expense categories");
@@ -294,6 +186,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             }
         });
         handleListMenu.add(expenseCategoryMenuItem);
+
+        handleCompaniesMenuItem.setText("Companies");
+        handleCompaniesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                handleCompaniesMenuItemActionPerformed(evt);
+            }
+        });
+        handleListMenu.add(handleCompaniesMenuItem);
 
         menuBar.add(handleListMenu);
 
@@ -327,49 +227,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(sumLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(transactionSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGap(0, 829, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(sumLabel)
-                            .addComponent(transactionSumLabel))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addGap(0, 623, Short.MAX_VALUE)
         );
 
         pack();
@@ -379,50 +241,15 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void companyTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_companyTableMouseClicked
-        int selectedRow = companyTable.getSelectedRow();
-        CompanyModel model = (CompanyModel) companyTable.getModel();
-        CompanyDto company = model.getCompanyAt(selectedRow);
-
-        if (company.getExpenseCategory() != null) {
-            expenseCategoryComboBox.setSelectedItem(company.getExpenseCategory());
-        }
-
-        if (company.getTransactions() != null) {
-            DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-            rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-
-            TransactionModel transModel = new TransactionModel(company.getTransactions());
-            transactionTable.setModel(transModel);
-            transactionTable.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-
-            transactionSumLabel.setText(transModel.getSum().toString().concat(" Kr"));
-
-        }
-
-        companyNameLabel.setText(company.getName());
-    }//GEN-LAST:event_companyTableMouseClicked
-
-    private void expenseCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryComboBoxActionPerformed
-        int selectedRow = companyTable.getSelectedRow();
-        CompanyModel model = (CompanyModel) companyTable.getModel();
-        CompanyDto company = model.getCompanyAt(selectedRow);
-
-        ExpenseCategoryComboModel expModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
-        ExpenseCategoryDto category = (ExpenseCategoryDto) expModel.getSelectedItem();
-        company.setExpenseCategory(category);
-        CompanyHandler.getInstance().setExpenseCategory(company, category);
-    }//GEN-LAST:event_expenseCategoryComboBoxActionPerformed
-
     private void importExpensesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpensesMenuItemActionPerformed
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Select an image");
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-
+        
         int returnValue = jfc.showOpenDialog(null);
-
+        
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             try {
                 CsvReaderHandler handler = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE);
@@ -439,12 +266,12 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         .replaceComma("Saldo")
                         .removeMinus("Belopp")
                         .build(handler.getHeaderMap());
-
+                
                 Map<String, Set<TransactionDto>> companyTransactions = new LinkedHashMap<>();
                 for (CSVRecord cSVRecord : build) {
-
+                    
                     Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
-
+                    
                     if (search.isPresent() && search.get().size() == 1) {
                         CompanyDto company = (CompanyDto) search.get().toArray()[0];
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
@@ -452,9 +279,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         transaction.setCompany(company);
                         TransactionHandler.getInstance().createTransaction(transaction);
                     } else {
-
+                        
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-
+                        
                         if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
                             companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
                         } else {
@@ -462,11 +289,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                             transactionList.add(transaction);
                             companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
                         }
-
+                        
                     }
-
+                    
                 }
-
+                
                 if (!companyTransactions.isEmpty()) {
                     LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
                     for (String companyName : companyTransactions.keySet()) {
@@ -475,12 +302,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         companyToAdd.setTransactions(companyTransactions.get(companyName));
                         companiesToAdd.add(companyToAdd);
                     }
-
+                    
                     new ImportExpense(this, true, companiesToAdd).setVisible(true);
                 }
-
-                setTableData();
-
+                
             } catch (BeckedeFileException | IOException ex) {
                 log.error("Error when importing expenses", ex);
             }
@@ -493,35 +318,26 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-
+        
         int returnValue = jfc.showOpenDialog(null);
-
+        
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-
+            
             try {
                 Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
                 Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
-
+                
                 List<ExpenseCategoryDto> categories = new ArrayList<>();
                 for (String string : uniqueValuesFromColumn) {
                     ExpenseCategoryDto c = new ExpenseCategoryDto();
                     c.setName(string);
                     categories.add(c);
                 }
-
+                
                 for (ExpenseCategoryDto category : categories) {
                     ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
                 }
-
-                Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
-                if (all.isPresent()) {
-                    ExpenseCategoryComboModel model = new ExpenseCategoryComboModel(all.get());
-                    expenseCategoryComboBox.setModel(model);
-                    if (all.get().size() > 0) {
-                        expenseCategoryComboBox.setRenderer(new ExpenseCategoryItemRenderer());
-                    }
-                }
-
+                
             } catch (BeckedeFileException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -535,36 +351,30 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-
+        
         int returnValue = jfc.showOpenDialog(null);
-
+        
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-
+            
             try {
                 Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
                 Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Companies");
-
+                
                 List<CompanyDto> companies = new ArrayList<>();
                 for (String string : uniqueValuesFromColumn) {
                     CompanyDto c = new CompanyDto();
                     c.setName(string);
                     companies.add(c);
                 }
-
+                
                 for (CompanyDto company : companies) {
                     CompanyHandler.getInstance().createCompany(company);
                 }
-
-                Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
-                if (all.isPresent()) {
-                    CompanyModel companyModel = new CompanyModel(all.get());
-                    companyTable.setModel(companyModel);
-                }
-
+                
             } catch (BeckedeFileException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
         }
     }//GEN-LAST:event_importCompanyMenuItemActionPerformed
 
@@ -580,6 +390,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         CompanyHandler.getInstance().reIndex();
     }//GEN-LAST:event_reindecLuceneMenuItemActionPerformed
 
+    private void handleCompaniesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handleCompaniesMenuItemActionPerformed
+        new CompanyEditor(this, true).setVisible(true);
+    }//GEN-LAST:event_handleCompaniesMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -594,21 +408,21 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
+                    
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -623,16 +437,18 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> billCategoryComboBox;
-    private javax.swing.JLabel billCategoryLabel;
-    private javax.swing.JLabel companyNameLabel;
-    private javax.swing.JTable companyTable;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JComboBox<String> expenseCategoryComboBox;
-    private javax.swing.JLabel expenseCategoryLabel;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
+    private javax.swing.JMenuItem exportAll;
+    private javax.swing.JMenuItem exportBillTypes;
+    private javax.swing.JMenuItem exportBills;
+    private javax.swing.JMenuItem exportCompCatMenuItem;
+    private javax.swing.JMenuItem exportCompanies;
+    private javax.swing.JMenuItem exportExpenseTypes;
+    private javax.swing.JMenuItem exportExpenses;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem handleCompaniesMenuItem;
     private javax.swing.JMenu handleListMenu;
     private javax.swing.JMenuItem importCompanyMenuItem;
     private javax.swing.JMenuItem importExpCatMenuitem;
@@ -640,37 +456,30 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenu importMenu;
     private javax.swing.JMenu importerMenu;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;
-    private javax.swing.JLabel sumLabel;
-    private javax.swing.JLabel transactionSumLabel;
-    private javax.swing.JTable transactionTable;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void update(NegodEvent event) {
-        if (event.equalsEvent(ExpenseCategoryEvent.CREATE)) {
-            String value;
-            if (event.getValues().get(ExpenseCategoryValues.NAME).getString().isPresent()) {
-                ExpenseCategoryDto category = new ExpenseCategoryDto();
-                category.setName(event.getValues().get(ExpenseCategoryValues.NAME).getString().get());
-                ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
-                setExpenseCategoryComboBoxData();
-            }
-        } else if (event.equalsEvent(TransactionEvent.CREATE)) {
-            setTableData();
-        }
+//        if (event.equalsEvent(ExpenseCategoryEvent.CREATE)) {
+//            String value;
+//            if (event.getValues().get(ExpenseCategoryValues.NAME).getString().isPresent()) {
+//                ExpenseCategoryDto category = new ExpenseCategoryDto();
+//                category.setName(event.getValues().get(ExpenseCategoryValues.NAME).getString().get());
+//                ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
+//                setExpenseCategoryComboBoxData();
+//            }
+//        } else if (event.equalsEvent(TransactionEvent.CREATE)) {
+//            setTableData();
+//        }
     }
-
+    
     @Override
     public void registerAsObserver() {
         EventController.getInstance().addObserver(this);
     }
-
+    
 }

@@ -33,11 +33,11 @@ public class Transaction extends GenericEntity {
     private BigDecimal saldo;
 
     @ManyToOne
-    @JoinColumn(name = "company_id", referencedColumnName = "id", insertable = true)
+    @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
     private Company company;
 
     @ManyToOne
-    @JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "transaction_type", referencedColumnName = "id")
     private TransactionType transactionType;
 
 }
