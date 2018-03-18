@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto;
+package se.backede.jeconomix.dto.export;
 
+import se.backede.jeconomix.dto.*;
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,11 +19,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ExpenseCategoryDto extends GenericDto {
+@XmlRootElement
+public class ExpenseCategoryExportDto extends GenericDto {
 
     private String name;
-
-    @XmlTransient
-    private Set<CompanyDto> company;
 
 }

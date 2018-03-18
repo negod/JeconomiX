@@ -3,12 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto;
+package se.backede.jeconomix.dto.export;
 
-import com.negod.generics.persistence.dto.GenericDto;
-import java.util.Set;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,11 +16,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ExpenseCategoryDto extends GenericDto {
+@XmlRootElement(name = "company")
+public class CompanyExportDto {
 
+    private String id;
+    private Date updatedDate;
     private String name;
-
-    @XmlTransient
-    private Set<CompanyDto> company;
+    private String expenseCategory;
 
 }

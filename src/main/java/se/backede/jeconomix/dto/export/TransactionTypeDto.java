@@ -3,10 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto;
+package se.backede.jeconomix.dto.export;
 
+import se.backede.jeconomix.dto.*;
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +20,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CompanyTypeDto extends GenericDto {
+public class TransactionTypeDto extends GenericDto {
 
     private String name;
 
-    private Set<CompanyDto> company;
 }

@@ -9,8 +9,10 @@ import com.backede.fileutils.csv.reader.CsvReaderHandler;
 import com.backede.fileutils.exception.BeckedeFileException;
 import com.backede.fileutils.csv.parser.CsvFileFilter;
 import com.backede.fileutils.csv.parser.Normalizer;
+import com.backede.fileutils.xml.writer.XmlWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -20,13 +22,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import se.backede.jeconomix.dto.CompanyDto;
@@ -35,18 +33,16 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.events.ExpenseCategoryEvent;
-import se.backede.jeconomix.event.events.TransactionEvent;
-import se.backede.jeconomix.event.events.fields.ExpenseCategoryValues;
-import se.backede.jeconomix.models.combobox.ExpenseCategoryComboModel;
-import se.backede.jeconomix.renderer.combobox.ExpenseCategoryItemRenderer;
-import se.backede.jeconomix.models.table.CompanyModel;
-import se.backede.jeconomix.models.table.TransactionModel;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.ExpenseCategoryHandler;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
+import se.backede.jeconomix.dto.export.Companies;
+import se.backede.jeconomix.dto.export.CompanyExportDto;
+import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
+import se.backede.jeconomix.exporter.CompanyExporter;
+import se.backede.jeconomix.importer.CompanyImporter;
 
 /**
  *
@@ -54,7 +50,7 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
  */
 @Slf4j
 public class Main extends javax.swing.JFrame implements EventObserver {
-    
+
     private CacheInitializer cache = new CacheInitializer();
 
     /**
@@ -65,7 +61,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         registerAsObserver();
         test();
     }
-    
+
     public void test() {
         add(new BudgetMonth());
     }
@@ -155,6 +151,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jMenu2.setText("Export");
 
         exportCompanies.setText("Companies");
+        exportCompanies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportCompaniesActionPerformed(evt);
+            }
+        });
         jMenu2.add(exportCompanies);
 
         exportCompCatMenuItem.setText("Companies and categories");
@@ -247,9 +248,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-        
+
         int returnValue = jfc.showOpenDialog(null);
-        
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             try {
                 CsvReaderHandler handler = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE);
@@ -266,12 +267,12 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         .replaceComma("Saldo")
                         .removeMinus("Belopp")
                         .build(handler.getHeaderMap());
-                
+
                 Map<String, Set<TransactionDto>> companyTransactions = new LinkedHashMap<>();
                 for (CSVRecord cSVRecord : build) {
-                    
+
                     Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
-                    
+
                     if (search.isPresent() && search.get().size() == 1) {
                         CompanyDto company = (CompanyDto) search.get().toArray()[0];
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
@@ -279,9 +280,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         transaction.setCompany(company);
                         TransactionHandler.getInstance().createTransaction(transaction);
                     } else {
-                        
+
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-                        
+
                         if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
                             companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
                         } else {
@@ -289,11 +290,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                             transactionList.add(transaction);
                             companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
                         }
-                        
+
                     }
-                    
+
                 }
-                
+
                 if (!companyTransactions.isEmpty()) {
                     LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
                     for (String companyName : companyTransactions.keySet()) {
@@ -302,10 +303,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                         companyToAdd.setTransactions(companyTransactions.get(companyName));
                         companiesToAdd.add(companyToAdd);
                     }
-                    
+
                     new ImportExpense(this, true, companiesToAdd).setVisible(true);
                 }
-                
+
             } catch (BeckedeFileException | IOException ex) {
                 log.error("Error when importing expenses", ex);
             }
@@ -318,26 +319,26 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jfc.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
         jfc.addChoosableFileFilter(filter);
-        
+
         int returnValue = jfc.showOpenDialog(null);
-        
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            
+
             try {
                 Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
                 Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
-                
+
                 List<ExpenseCategoryDto> categories = new ArrayList<>();
                 for (String string : uniqueValuesFromColumn) {
                     ExpenseCategoryDto c = new ExpenseCategoryDto();
                     c.setName(string);
                     categories.add(c);
                 }
-                
+
                 for (ExpenseCategoryDto category : categories) {
                     ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
                 }
-                
+
             } catch (BeckedeFileException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -347,34 +348,15 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
     private void importCompanyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCompanyMenuItemActionPerformed
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select an image");
+        jfc.setDialogTitle("Select file to import");
         jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
         jfc.addChoosableFileFilter(filter);
-        
+
         int returnValue = jfc.showOpenDialog(null);
-        
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            
-            try {
-                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
-                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Companies");
-                
-                List<CompanyDto> companies = new ArrayList<>();
-                for (String string : uniqueValuesFromColumn) {
-                    CompanyDto c = new CompanyDto();
-                    c.setName(string);
-                    companies.add(c);
-                }
-                
-                for (CompanyDto company : companies) {
-                    CompanyHandler.getInstance().createCompany(company);
-                }
-                
-            } catch (BeckedeFileException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+            CompanyImporter.getInstance().importCompanies(jfc.getSelectedFile().getPath());
         }
     }//GEN-LAST:event_importCompanyMenuItemActionPerformed
 
@@ -394,6 +376,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         new CompanyEditor(this, true).setVisible(true);
     }//GEN-LAST:event_handleCompaniesMenuItemActionPerformed
 
+    private void exportCompaniesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCompaniesActionPerformed
+        CompanyExporter.getInstance().exportCompanies("companies");
+    }//GEN-LAST:event_exportCompaniesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -408,21 +394,21 @@ public class Main extends javax.swing.JFrame implements EventObserver {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                    
+
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -476,10 +462,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 //            setTableData();
 //        }
     }
-    
+
     @Override
     public void registerAsObserver() {
         EventController.getInstance().addObserver(this);
     }
-    
+
 }

@@ -10,6 +10,8 @@ import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.database.dao.ExpenseCategoryDao;
@@ -32,6 +34,21 @@ public class ExpenseCategoryHandler {
 
     public static final ExpenseCategoryHandler getInstance() {
         return companyHandler;
+    }
+
+    public Optional<ExpenseCategoryDto> getById(String id) {
+        try {
+            dao.startTransaction();
+            Optional<ExpenseCategory> byId = dao.getById(id);
+            dao.commitTransaction();
+
+            if (byId.isPresent()) {
+                return mapper.mapFromEntityToDto(byId.get());
+            }
+        } catch (DaoException ex) {
+            Logger.getLogger(ExpenseCategoryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Optional.empty();
     }
 
     public Optional<ExpenseCategoryDto> createExpenseCategory(ExpenseCategoryDto company) {
