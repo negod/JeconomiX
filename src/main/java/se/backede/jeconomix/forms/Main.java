@@ -377,7 +377,16 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_handleCompaniesMenuItemActionPerformed
 
     private void exportCompaniesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCompaniesActionPerformed
-        CompanyExporter.getInstance().exportCompanies("companies");
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setDialogTitle("Select destinationfolder");
+        jfc.setDialogType(JFileChooser.SAVE_DIALOG);
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int returnValue = jfc.showOpenDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            CompanyExporter.getInstance().exportCompanies(jfc.getSelectedFile().getPath() + "//companies.xml");
+        }
     }//GEN-LAST:event_exportCompaniesActionPerformed
 
     /**

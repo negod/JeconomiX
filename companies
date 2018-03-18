@@ -1,2 +1,759 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<companies/>
+<companies>
+    <company>
+        <expenseCategory>4b57fb35-6617-4f55-b163-fe62aa35fd05</expenseCategory>
+        <id>e1afeeee-030c-43ce-8ae7-f6a1a3e55370</id>
+        <name>Västtrafik AB</name>
+        <updatedDate>2018-03-18T11:40:44.285+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>aec8ecd0-e006-43a2-a609-febd9a9f95ac</id>
+        <name>SAK</name>
+        <updatedDate>2018-03-18T11:40:44.601+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>0374283d-6533-47b1-9df0-d9e736e00558</id>
+        <name>G�TEBORG CENTRAL</name>
+        <updatedDate>2018-03-18T11:40:44.686+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>3d014548-9a75-4b65-b455-b14fb475b3c4</id>
+        <name>MAXI ICA STORMARKNAD</name>
+        <updatedDate>2018-03-18T11:40:44.764+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>fb9fc7d7-a4b1-44de-bdd1-af9c9250ed08</id>
+        <name>KåGES HöRNA</name>
+        <updatedDate>2018-03-18T11:40:44.854+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>9808223f-0a06-4114-a8a2-2f6385917ea0</id>
+        <name>PRESSBYR�N 4128810</name>
+        <updatedDate>2018-03-18T11:40:44.946+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>4d3db30c-8af6-43e4-a15a-eebd8192ee17</id>
+        <name>TOGOGOG</name>
+        <updatedDate>2018-03-18T11:40:45.046+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>9aeb26f7-0634-4920-9c1e-6c8cd87b2f7a</id>
+        <name>DANNES PIZZERIA  GRI</name>
+        <updatedDate>2018-03-18T11:40:45.149+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>d46b87a2-44bf-4e47-8a52-0e94c061a4af</id>
+        <name>16166   NETTO ODINSG</name>
+        <updatedDate>2018-03-18T11:40:45.249+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>7422345d-18e8-400c-a379-66ee1d7084f7</id>
+        <name>CLARION HOTEL POST</name>
+        <updatedDate>2018-03-18T11:40:45.422+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>67e3506c-84b0-40c5-a870-8413f63a1492</id>
+        <name>JERNTORGETS BRYGGHUS</name>
+        <updatedDate>2018-03-18T11:40:45.528+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>92367766-cb2f-4757-9904-0ce8d47f16bc</id>
+        <name>APOTEKET CENTRALEN E</name>
+        <updatedDate>2018-03-18T11:40:45.623+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>edb9bc1d-4af3-4746-9bb3-b1bbe5991cea</expenseCategory>
+        <id>c99ca6e2-2e4d-426e-a92a-05c707c40879</id>
+        <name>GAMESTOP BUTIK 0601</name>
+        <updatedDate>2018-03-18T11:40:45.717+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>55131be5-69fc-4b9c-9e0f-70053fa61757</id>
+        <name>SUSHI BAREN</name>
+        <updatedDate>2018-03-18T11:40:45.820+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>36d30a7e-35f4-4c64-bd33-090f8a2cbfb8</expenseCategory>
+        <id>4bb54d59-604c-4ec8-b60e-aa1a064e97d7</id>
+        <name>GOOGLE *Glu Games In</name>
+        <updatedDate>2018-03-18T11:40:45.909+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>10e33692-4073-4a94-b13a-3afae95e40e9</id>
+        <name>Swish betalning Hannah Karlsson</name>
+        <updatedDate>2018-03-18T11:40:46.003+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>c1bd9d4d-909f-4858-bc7c-81ca338c53c5</id>
+        <name>Swish betalning FORSSTR�M,JESSICA</name>
+        <updatedDate>2018-03-18T11:40:46.120+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>d4261949-0276-4759-86d1-0eb731555f3c</id>
+        <name>PATCY S BLOMMOR</name>
+        <updatedDate>2018-03-18T11:40:46.285+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>eea04636-4af6-47e9-9d53-305796354717</expenseCategory>
+        <id>6b2e07d0-35c8-497f-91e2-2f8e6d39d1a5</id>
+        <name>Överföring 3059 01 85756</name>
+        <updatedDate>2018-03-18T11:40:46.389+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>8d10344b-9254-4ab2-a682-3ad712628d57</id>
+        <name>IZ *MTR EXPRESS</name>
+        <updatedDate>2018-03-18T11:40:46.501+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>65b59e5f-a1b6-4c96-b952-224e1f8e7d10</id>
+        <name>PRESSBYR�N 4028140</name>
+        <updatedDate>2018-03-18T11:40:46.599+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>52762f4b-5aab-40fc-9e1d-a769edd4c91f</id>
+        <name>APOTEK HJARTAT ICA M</name>
+        <updatedDate>2018-03-18T11:40:46.693+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>4bb50680-bbe7-4716-bfd2-b4406bab4389</id>
+        <name>Swift Bromma SEBA</name>
+        <updatedDate>2018-03-18T11:40:46.804+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>a2b7d21d-81f7-4e70-91ca-4bdebf33a038</id>
+        <name>KAFFEPASEN</name>
+        <updatedDate>2018-03-18T11:40:46.905+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>0c17e8bb-1fe5-4c5d-914d-68482599e1b8</id>
+        <name>PANINI INTERNAZ</name>
+        <updatedDate>2018-03-18T11:40:47.015+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>74717ac7-f875-475c-880c-4d4ebcda3906</expenseCategory>
+        <id>06936aca-7778-4a86-a429-4ca32f765526</id>
+        <name>TAXI GöTEBORG</name>
+        <updatedDate>2018-03-18T11:40:47.149+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>eea04636-4af6-47e9-9d53-305796354717</expenseCategory>
+        <id>7aaa2592-3e18-4324-acc5-145c8d3715bf</id>
+        <name>Överföring 3059 23 44304</name>
+        <updatedDate>2018-03-18T11:40:47.285+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>74717ac7-f875-475c-880c-4d4ebcda3906</expenseCategory>
+        <id>4f0ee621-5967-4287-ba09-4185205684bf</id>
+        <name>TAXI STOCKHOLM</name>
+        <updatedDate>2018-03-18T11:40:47.379+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>47c1c486-52f7-429e-a1c4-c5bcabbd5513</id>
+        <name>ÅHLENS</name>
+        <updatedDate>2018-03-18T11:40:47.479+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>eea04636-4af6-47e9-9d53-305796354717</expenseCategory>
+        <id>71168165-721b-4516-81b4-0d8f28436da3</id>
+        <name>Överföring 4716 46 40226</name>
+        <updatedDate>2018-03-18T11:40:47.593+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>106da7a6-3e3f-4cc0-809b-750ad3c58510</id>
+        <name>BURGER KING �  H  51</name>
+        <updatedDate>2018-03-18T11:40:47.698+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>c28a4ece-be1b-4023-9d00-6f0cebe86b39</id>
+        <name>LINDEX 391</name>
+        <updatedDate>2018-03-18T11:40:47.817+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>0bfa3ba2-8b8d-4250-8cd5-5f6c7c4d237e</id>
+        <name>ICA NARA KODE</name>
+        <updatedDate>2018-03-18T11:40:47.935+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>d96ca95e-2dab-4fbb-a105-8f11ffdb97cd</expenseCategory>
+        <id>981d740b-95f2-4ca8-88c7-cc9a30f474c7</id>
+        <name>SYSTEMBOLAGET G�TEBO</name>
+        <updatedDate>2018-03-18T11:40:48.032+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba7525c-c3c1-4f59-82fb-46bfb2212a6c</expenseCategory>
+        <id>54e50957-ca2e-4afd-bd8b-fbe061969cdd</id>
+        <name>IKEA BECKEBOL</name>
+        <updatedDate>2018-03-18T11:40:48.144+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>edb9bc1d-4af3-4746-9bb3-b1bbe5991cea</expenseCategory>
+        <id>94cd2761-f6e5-42d7-979f-68b025e272bf</id>
+        <name>INET RING�N</name>
+        <updatedDate>2018-03-18T11:40:48.305+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>cb9b8ac2-02a6-405d-a85c-dc10da644fc9</id>
+        <name>POCKET SHOP GBG C</name>
+        <updatedDate>2018-03-18T11:40:48.396+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>741777ce-382c-490f-a0b2-8df071daaa4b</id>
+        <name>GOURMETKORV NST</name>
+        <updatedDate>2018-03-18T11:40:48.504+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>59af19b4-4e54-4d42-ba22-36f3ec219a8f</id>
+        <name>Swish betalning HOTEL POSTHUSET AB</name>
+        <updatedDate>2018-03-18T11:40:48.601+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4135e803-7370-4f77-a2fe-f52322e547e0</expenseCategory>
+        <id>2004ed40-30c8-4557-8610-f969ba87cf14</id>
+        <name>ITUNES COM BILL</name>
+        <updatedDate>2018-03-18T11:40:48.716+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>53fb9258-fa97-4f25-8a79-13965ca13b34</id>
+        <name>STAR BOWLING</name>
+        <updatedDate>2018-03-18T11:40:48.820+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7bc99720-037e-4615-baf5-5b1ff96009b4</expenseCategory>
+        <id>4f3da73c-d373-45a0-bc0e-dca667fbc780</id>
+        <name>Vardagspaket Månadspris kort</name>
+        <updatedDate>2018-03-18T11:40:48.922+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>37603cd2-dfba-4226-b996-869b151ecf37</id>
+        <name>SALLY VOLTAIRE O SYS</name>
+        <updatedDate>2018-03-18T11:40:49.024+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>4515c31c-4bd2-4f8f-adc6-8c632482481d</id>
+        <name>7  ELEVEN 4015200</name>
+        <updatedDate>2018-03-18T11:40:49.139+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>e4da2a7e-83b8-41d9-9f78-abeafe3e4db7</id>
+        <name>Swish betalning BRUNB�CK,ANNIKA ELIS</name>
+        <updatedDate>2018-03-18T11:40:49.294+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>c4158c8c-9325-4ca6-a141-231d18031aff</id>
+        <name>KD APOTEK</name>
+        <updatedDate>2018-03-18T11:40:49.382+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>32bf8384-cac6-427d-8a45-66644a4f966a</id>
+        <name>ODINS PARKGRILL</name>
+        <updatedDate>2018-03-18T11:40:49.476+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>9bfa4a8d-b9d8-434a-9d92-4cb34669197a</id>
+        <name>JOHN S STABLES</name>
+        <updatedDate>2018-03-18T11:40:49.574+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>ae181c15-ca44-4278-bdee-e782daf4431a</id>
+        <name>Swish betalning HANNA MILVER</name>
+        <updatedDate>2018-03-18T11:40:49.681+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>660247f0-10b2-4c3f-8258-c1a465f0d544</id>
+        <name>NORSTANS SAMFALLIGHE</name>
+        <updatedDate>2018-03-18T11:40:49.784+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>8a8f3a44-72af-42b7-9fea-062d714c6f1a</id>
+        <name>RESTAURANG FRATI</name>
+        <updatedDate>2018-03-18T11:40:49.889+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>b3e7d1a1-ea6e-48ae-ae5f-80342b939435</id>
+        <name>Swish betalning SARA ANDERSSON</name>
+        <updatedDate>2018-03-18T11:40:49.991+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>fdb1de54-dbd5-44ba-918b-8ce870fa1b46</id>
+        <name>APOTEK HJARTAT NORDS</name>
+        <updatedDate>2018-03-18T11:40:50.102+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>f51fd949-98e4-4de0-992c-d556ca83a96f</id>
+        <name>KÄLLARKROGEN</name>
+        <updatedDate>2018-03-18T11:40:50.249+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>6a4be660-86de-4bc7-9775-10ffa0347f3d</id>
+        <name>MCD KUNGALV</name>
+        <updatedDate>2018-03-18T11:40:50.373+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba7525c-c3c1-4f59-82fb-46bfb2212a6c</expenseCategory>
+        <id>4ffd48f4-2950-41c3-8b43-b79a706376aa</id>
+        <name>BAUHAUS GOTEBORG</name>
+        <updatedDate>2018-03-18T11:40:50.469+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>a0e114d3-6d23-4d2d-b8d3-78adb160482e</id>
+        <name>ESPRESSO HOUSE 107</name>
+        <updatedDate>2018-03-18T11:40:50.576+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>7d028f6a-ede3-4b5f-b2e3-3b37c8d27ad0</id>
+        <name>TANDVERKET</name>
+        <updatedDate>2018-03-18T11:40:50.682+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>3471e4eb-9ce6-479d-a9e5-c60e5345fa21</id>
+        <name>STEINBRENNER CENTRAL</name>
+        <updatedDate>2018-03-18T11:40:50.785+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>a2b479c1-8743-4bda-bbb3-bdcb27b2782d</id>
+        <name>HEMK�P G�TEBORG NORD</name>
+        <updatedDate>2018-03-18T11:40:50.885+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>a01d6286-3c79-4b0b-a196-22ce15f584b4</id>
+        <name>KOPPS</name>
+        <updatedDate>2018-03-18T11:40:50.991+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>26497618-259b-40ef-81b9-e55ce8ccd81a</id>
+        <name>NK FASHION O DENIM G</name>
+        <updatedDate>2018-03-18T11:40:51.137+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>ee233386-a232-46d6-87fb-b31fccf31f66</id>
+        <name>STEINBRENNER �STRA B</name>
+        <updatedDate>2018-03-18T11:40:51.283+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>b5160097-9cea-4571-8623-537cfd9d195a</id>
+        <name>STOCKHOLM CITY CONFE</name>
+        <updatedDate>2018-03-18T11:40:51.378+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>d5831206-b4ea-4a6b-80ab-5c8eb9a6b369</id>
+        <name>WAYNES COFFEE STHLM</name>
+        <updatedDate>2018-03-18T11:40:51.486+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>b255518d-c3e3-4f3e-b1f7-4b68849ea255</id>
+        <name>ESPRESSO HOUSE 284</name>
+        <updatedDate>2018-03-18T11:40:51.585+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>fb958ddc-fdab-4209-b64b-46b9a6c2164b</id>
+        <name>SUKHOTHAI RESTAURANG</name>
+        <updatedDate>2018-03-18T11:40:51.671+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>abb88412-64c0-4e7e-be9d-a1d9970c476c</id>
+        <name>LINDEX 30</name>
+        <updatedDate>2018-03-18T11:40:51.767+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>40936f4c-2b39-4c7b-8969-5225873c9727</id>
+        <name>SUSHI YAMA KLARABERG</name>
+        <updatedDate>2018-03-18T11:40:51.873+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>7ce59968-8d42-4c73-abb0-4cba1686a37c</id>
+        <name>BARABICU</name>
+        <updatedDate>2018-03-18T11:40:51.983+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>24242d59-f273-4170-96f0-950f40133205</id>
+        <name>MQ ARKADEN 322</name>
+        <updatedDate>2018-03-18T11:40:52.097+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>5f7aa4aa-b9e1-4d11-b11b-87abb6490cee</id>
+        <name>MAXI ICA STORMARKN</name>
+        <updatedDate>2018-03-18T11:40:52.247+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>6d8676c2-b1cf-4e72-8f4a-f7fa0da6a435</id>
+        <name>ESPRESSO HOUSE 146</name>
+        <updatedDate>2018-03-18T11:40:52.341+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>d6da539b-aca9-42f6-b5b8-b0fd256fc15c</id>
+        <name>SUSHI YAMA G�TEBORG</name>
+        <updatedDate>2018-03-18T11:40:52.444+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba7525c-c3c1-4f59-82fb-46bfb2212a6c</expenseCategory>
+        <id>7d12d825-3eb6-4173-a30f-ab3c06354b38</id>
+        <name>COLORAMA KUNGELV</name>
+        <updatedDate>2018-03-18T11:40:52.549+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>b4963b43-443d-446d-acda-176607c0da12</id>
+        <name>Swish inbetalning Mats Roshauw</name>
+        <updatedDate>2018-03-18T11:40:52.644+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>eeb790c9-4243-45f5-8a9f-51d5ba79483f</id>
+        <name>Swish inbetalning KERSTIN KARLSSON</name>
+        <updatedDate>2018-03-18T11:40:52.736+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>d16fc029-0c5e-4a72-b951-da61a5ac599d</id>
+        <name>BURGER KING SIS</name>
+        <updatedDate>2018-03-18T11:40:52.834+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cb4116f9-6b0b-4004-8d0b-aa1c8cd4ab65</expenseCategory>
+        <id>8a0ae0fc-92f8-4736-b761-a65a5e906b2f</id>
+        <name>Spotify P04C164762</name>
+        <updatedDate>2018-03-18T11:40:52.926+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>a9e310b5-f4d6-4c22-94c0-c02d04d77a14</id>
+        <name>Swish inbetalning Hannah Karlsson</name>
+        <updatedDate>2018-03-18T11:40:53.030+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba7525c-c3c1-4f59-82fb-46bfb2212a6c</expenseCategory>
+        <id>03e77fb0-32f1-4f61-876b-068ea25ac3d5</id>
+        <name>JULA AB</name>
+        <updatedDate>2018-03-18T11:40:53.179+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>6d3badd7-6deb-400a-af31-d517f9c76cd5</id>
+        <name>KUNGALVS FISK  SKALD</name>
+        <updatedDate>2018-03-18T11:40:53.287+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>9599dc08-67fa-41f9-a3f2-874c944fd04b</id>
+        <name>CONDECO FREDSGATAN</name>
+        <updatedDate>2018-03-18T11:40:53.380+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>31dbf519-4b4e-40db-a68b-0d4182868832</id>
+        <name>BLICKPUNKTEN</name>
+        <updatedDate>2018-03-18T11:40:53.469+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>eea04636-4af6-47e9-9d53-305796354717</expenseCategory>
+        <id>63be0972-fe89-46c1-8fbb-60061e047564</id>
+        <name>Överföring 3059 23 44282</name>
+        <updatedDate>2018-03-18T11:40:53.568+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>a5b4096c-6824-4f73-8b09-b0569c603258</id>
+        <name>BURGER KING N  H  51</name>
+        <updatedDate>2018-03-18T11:40:53.665+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>c3a19c37-75f3-4d00-bc2f-109d6392cbeb</id>
+        <name>BILJARDPALATSET</name>
+        <updatedDate>2018-03-18T11:40:53.781+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>5bb3fa5e-41aa-4955-93bc-0952de92e4a1</id>
+        <name>TANDOORI KITCHEN</name>
+        <updatedDate>2018-03-18T11:40:53.885+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>08054579-42a1-4fc5-9c82-17b69c85f3b8</id>
+        <name>LE PAIN PAIN FRANCAI</name>
+        <updatedDate>2018-03-18T11:40:54.010+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>36d30a7e-35f4-4c64-bd33-090f8a2cbfb8</expenseCategory>
+        <id>b758d106-53ab-4276-9ce5-42483b32bd9d</id>
+        <name>GOOGLE *Tappy Happy</name>
+        <updatedDate>2018-03-18T11:40:54.178+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>25708bba-f498-491e-991d-e8e4fe34a197</id>
+        <name>MARKET</name>
+        <updatedDate>2018-03-18T11:40:54.273+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>49f316f9-3e29-4403-b394-4dbddd955b3d</id>
+        <name>LINDEX 310</name>
+        <updatedDate>2018-03-18T11:40:54.371+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>f81239e2-1ae4-4605-8921-a06030b96b69</id>
+        <name>LINDEX 159</name>
+        <updatedDate>2018-03-18T11:40:54.460+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>830f101a-1a1f-4bfd-beb4-f0fa9be62ae7</id>
+        <name>Deichmann Uddevalla</name>
+        <updatedDate>2018-03-18T11:40:54.561+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>34d7a3af-82b5-4558-a1e8-574efbca40e8</id>
+        <name>ICA SUPERMARKET SPAR</name>
+        <updatedDate>2018-03-18T11:40:54.666+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>56f7810b-c27d-495b-8742-6e911a01c5bf</id>
+        <name>SPICE</name>
+        <updatedDate>2018-03-18T11:40:54.772+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cb4116f9-6b0b-4004-8d0b-aa1c8cd4ab65</expenseCategory>
+        <id>d9dc1e60-0a50-4af8-937e-154c8dba8392</id>
+        <name>Spotify P050FCEA82</name>
+        <updatedDate>2018-03-18T11:40:54.895+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>865fe31c-70c7-4955-b27f-5be3499fd8a9</id>
+        <name>SCANDIC NO  25</name>
+        <updatedDate>2018-03-18T11:40:55.016+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>6d301d92-75d3-449e-93a4-f60dac288359</id>
+        <name>NW ODINSGATAN</name>
+        <updatedDate>2018-03-18T11:40:55.172+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>14a6c86e-895e-4b4d-aefb-aa7bd3767891</id>
+        <name>SJ AB OMBORD</name>
+        <updatedDate>2018-03-18T11:40:55.262+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>591af434-541b-45b7-8aef-dc62ac4ec914</id>
+        <name>KAPPAHL 130</name>
+        <updatedDate>2018-03-18T11:40:55.349+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>81e723b1-61a0-4652-a35e-149a316806d0</id>
+        <name>SCANDIC HOTELS CONTI</name>
+        <updatedDate>2018-03-18T11:40:55.443+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>73bb3ac1-7605-419b-874f-15634b0bf0e7</id>
+        <name>SUSHI YAMA GÖTEBORG</name>
+        <updatedDate>2018-03-18T11:50:20.994+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>882e15ea-ca27-4478-9dc7-1c6fe41fef42</id>
+        <name>Swish betalning FORSSTRÖM,JESSICA</name>
+        <updatedDate>2018-03-18T11:50:21.287+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cb4116f9-6b0b-4004-8d0b-aa1c8cd4ab65</expenseCategory>
+        <id>766ae366-fe27-4a88-9aa7-cd0f991d6c81</id>
+        <name>Betalning BG 5196-5770 RESURS BANK AB</name>
+        <updatedDate>2018-03-18T11:50:21.361+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>0424a699-3adf-4b1a-a812-b6d5e936aa5d</id>
+        <name>CLARION COLLECTION H</name>
+        <updatedDate>2018-03-18T11:50:21.431+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>158b3521-1fcf-4ccd-8a06-9b1743c7ef17</id>
+        <name>APOTEKET MÅSEN</name>
+        <updatedDate>2018-03-18T11:50:21.530+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cb4116f9-6b0b-4004-8d0b-aa1c8cd4ab65</expenseCategory>
+        <id>92cbcce8-6933-4ea3-9f03-fa1005035092</id>
+        <name>Betalning BG 319-9973 3 (HI3G ACCESS A</name>
+        <updatedDate>2018-03-18T11:50:21.681+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cba81810-6d94-43f6-8fc7-3342ef248eab</expenseCategory>
+        <id>d5994ec5-3c12-42f1-8962-2f248143a41d</id>
+        <name>APOTEKSHOP CENTRALEN</name>
+        <updatedDate>2018-03-18T11:50:21.772+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>9bd43dd7-4566-4047-a425-f0a56a37f59d</id>
+        <name>COOP FORUM BACKEBOL</name>
+        <updatedDate>2018-03-18T11:50:21.867+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>cb4116f9-6b0b-4004-8d0b-aa1c8cd4ab65</expenseCategory>
+        <id>29cbff6a-3735-4490-a84f-991c2aa30d89</id>
+        <name>Betalning PG 4175503-4 NORDIC PRINT AS</name>
+        <updatedDate>2018-03-18T11:50:21.960+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>33adcdd9-f1a8-43f6-b02e-e8d5f4172d9d</expenseCategory>
+        <id>62293593-d61a-4064-92f2-180afef1484c</id>
+        <name>BILTEMA SWEDEN GOTEB</name>
+        <updatedDate>2018-03-18T11:50:22.063+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e0728d25-a00a-41da-ad31-0fe8779522c6</expenseCategory>
+        <id>d3c0cb77-cff6-4d75-8083-53d444cb9081</id>
+        <name>BIG BABY BACKAPLAN</name>
+        <updatedDate>2018-03-18T11:50:22.179+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>831e38fa-2ba9-4380-a22e-4b1fc27b075f</id>
+        <name>BIANCO FOOTWEAR</name>
+        <updatedDate>2018-03-18T11:50:22.276+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>d96ca95e-2dab-4fbb-a105-8f11ffdb97cd</expenseCategory>
+        <id>f90792a4-a984-4c5c-b5f7-d50ffa00e3ea</id>
+        <name>SYSTEMBOLAGET HIS BA</name>
+        <updatedDate>2018-03-18T11:50:22.404+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>7cafd33b-a849-4187-96a1-67d71510aa20</expenseCategory>
+        <id>87e3e15c-ab35-47d4-a9a2-04469d9401f9</id>
+        <name>H M SE0217 GOTEBORG</name>
+        <updatedDate>2018-03-18T11:50:22.536+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>74717ac7-f875-475c-880c-4d4ebcda3906</expenseCategory>
+        <id>de733666-41b1-4e62-9f49-de0cfeb0b84d</id>
+        <name>Kontantuttag 180113 FOREX UTRIKESHALLE</name>
+        <updatedDate>2018-03-18T11:50:22.788+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>6bbb5cd3-0092-4cc1-aa7a-1b0268b28d0d</id>
+        <name>GÖTEBORG CENTRAL</name>
+        <updatedDate>2018-03-18T11:52:05.724+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>6c5c1dbc-5fc5-4af7-80e7-b1b573e028c5</id>
+        <name>PRESSBYRÅN 4128810</name>
+        <updatedDate>2018-03-18T11:52:05.879+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>2cc5b6fb-2de2-4333-b22a-143381b3f708</expenseCategory>
+        <id>f19c1f4a-d928-46a4-b08d-02dba61e0f82</id>
+        <name>PRESSBYRÅN 4028140</name>
+        <updatedDate>2018-03-18T11:52:05.964+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>d96ca95e-2dab-4fbb-a105-8f11ffdb97cd</expenseCategory>
+        <id>b498b1dd-d10b-4628-8a3e-362711b11e34</id>
+        <name>SYSTEMBOLAGET GÖTEBO</name>
+        <updatedDate>2018-03-18T11:52:06.048+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</expenseCategory>
+        <id>38a46e4d-1ddb-469e-916a-75913a7bdef4</id>
+        <name>BURGER KING Ö  H  51</name>
+        <updatedDate>2018-03-18T11:52:06.123+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>edb9bc1d-4af3-4746-9bb3-b1bbe5991cea</expenseCategory>
+        <id>7f590262-9154-4235-a57a-c3eab8e70e44</id>
+        <name>INET RINGÖN</name>
+        <updatedDate>2018-03-18T11:52:06.212+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</expenseCategory>
+        <id>96093dad-7563-4b2e-ac7c-28f19bbd5ca1</id>
+        <name>Swish betalning BRUNBÄCK,ANNIKA ELIS</name>
+        <updatedDate>2018-03-18T11:52:06.290+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</expenseCategory>
+        <id>88e689ff-3a9d-4981-8598-3f2832910910</id>
+        <name>HEMKÖP GÖTEBORG NORD</name>
+        <updatedDate>2018-03-18T11:52:06.396+01:00</updatedDate>
+    </company>
+    <company>
+        <expenseCategory>e29e2e6e-115f-437c-a3da-181a5cfdce0c</expenseCategory>
+        <id>13301219-22a1-45d5-9ca1-d00b6072cdd4</id>
+        <name>STEINBRENNER ÖSTRA B</name>
+        <updatedDate>2018-03-18T11:52:06.524+01:00</updatedDate>
+    </company>
+</companies>
