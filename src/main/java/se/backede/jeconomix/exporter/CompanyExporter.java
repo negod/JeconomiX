@@ -13,6 +13,7 @@ import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
+import se.backede.jeconomix.event.events.Events;
 
 /**
  *
@@ -20,7 +21,7 @@ import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
  */
 public class CompanyExporter {
 
-    private static CompanyExporter INSTANCE = new CompanyExporter();
+    private static final CompanyExporter INSTANCE = new CompanyExporter();
 
     protected CompanyExporter() {
     }
@@ -30,13 +31,22 @@ public class CompanyExporter {
     }
 
     public void exportCompanies(String filename) {
-        Optional<List<CompanyDto>> allCompanies = CompanyHandler.getInstance().getAllCompanies();
-        if (allCompanies.isPresent()) {
-            Companies companies = new Companies();
-            List<CompanyExportDto> mapToExportDto = CompanyMapper.getInstance().mapToExportDto(allCompanies.get());
-            companies.setCompany(mapToExportDto);
-            XmlWriter.writeXml(filename, Companies.class, companies);
-        }
-    }
+        new Thread(() -> {
+            Optional<List<CompanyDto>> allCompanies = CompanyHandler.getInstance().getAllCompanies();
+            if (allCompanies.isPresent()) {
+                Events.getInstance().fireProgressMaxValueEvent(3);
+                Companies companies = new Companies();
+                Events.getInstance().fireProgressIncreaseValueEvent(1, "Mapping companies");
+                List<CompanyExportDto> mapToExportDto = CompanyMapper.mapToExportDto(allCompanies.get());
+                companies.setCompany(mapToExportDto);
+                Events.getInstance().fireProgressIncreaseValueEvent(2, "Exporting file");
+                XmlWriter.writeXml(filename, Companies.class, companies);
+            } else {
+                Events.getInstance().fireErrorEvent();
+                return;
+            }
+            Events.getInstance().fireProgressDoneEvent();
 
+        }).start();
+    }
 }

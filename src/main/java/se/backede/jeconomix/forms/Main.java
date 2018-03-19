@@ -7,12 +7,8 @@ package se.backede.jeconomix.forms;
 
 import com.backede.fileutils.csv.reader.CsvReaderHandler;
 import com.backede.fileutils.exception.BeckedeFileException;
-import com.backede.fileutils.csv.parser.CsvFileFilter;
 import com.backede.fileutils.csv.parser.Normalizer;
-import com.backede.fileutils.xml.writer.XmlWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -20,29 +16,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.database.ExpenseCategoryHandler;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
-import se.backede.jeconomix.dto.export.Companies;
-import se.backede.jeconomix.dto.export.CompanyExportDto;
-import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
 import se.backede.jeconomix.exporter.CompanyExporter;
+import se.backede.jeconomix.exporter.ExpenseCategoryExporter;
 import se.backede.jeconomix.importer.CompanyImporter;
+import se.backede.jeconomix.importer.ExpenseCategoryImporter;
+import se.backede.jeconomix.importer.ExpenseImporter;
 
 /**
  *
@@ -85,10 +77,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         importCompanyMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         exportCompanies = new javax.swing.JMenuItem();
-        exportCompCatMenuItem = new javax.swing.JMenuItem();
         exportExpenses = new javax.swing.JMenuItem();
-        exportBills = new javax.swing.JMenuItem();
         exportExpenseTypes = new javax.swing.JMenuItem();
+        exportBills = new javax.swing.JMenuItem();
         exportBillTypes = new javax.swing.JMenuItem();
         exportAll = new javax.swing.JMenuItem();
         handleListMenu = new javax.swing.JMenu();
@@ -158,19 +149,21 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         });
         jMenu2.add(exportCompanies);
 
-        exportCompCatMenuItem.setText("Companies and categories");
-        jMenu2.add(exportCompCatMenuItem);
-
         exportExpenses.setText("Expenses");
         jMenu2.add(exportExpenses);
+
+        exportExpenseTypes.setText("Expense categories");
+        exportExpenseTypes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportExpenseTypesActionPerformed(evt);
+            }
+        });
+        jMenu2.add(exportExpenseTypes);
 
         exportBills.setText("Bills");
         jMenu2.add(exportBills);
 
-        exportExpenseTypes.setText("Expense types");
-        jMenu2.add(exportExpenseTypes);
-
-        exportBillTypes.setText("Bill types");
+        exportBillTypes.setText("Bill categories");
         jMenu2.add(exportBillTypes);
 
         exportAll.setText("All");
@@ -243,120 +236,37 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void importExpensesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpensesMenuItemActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select an image");
-        jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
-        jfc.addChoosableFileFilter(filter);
-
-        int returnValue = jfc.showOpenDialog(null);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            try {
-                CsvReaderHandler handler = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE);
-                Iterable<CSVRecord> build = new Normalizer(handler.getRecords())
-                        .removePeriod("Belopp")
-                        .removePeriod("Saldo")
-                        .removeWord("Transaktion", "Kortköp")
-                        .removeWord("Transaktion", "Reservation")
-                        .removeLeadingSpaces("Transaktion")
-                        .removeWordStartingWith("Transaktion", "18", 7)
-                        .removeWordStartingWith("Transaktion", "17", 7)
-                        .removeTrailingAndLeadingSpaces("Transaktion")
-                        .replaceComma("Belopp")
-                        .replaceComma("Saldo")
-                        .removeMinus("Belopp")
-                        .build(handler.getHeaderMap());
-
-                Map<String, Set<TransactionDto>> companyTransactions = new LinkedHashMap<>();
-                for (CSVRecord cSVRecord : build) {
-
-                    Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
-
-                    if (search.isPresent() && search.get().size() == 1) {
-                        CompanyDto company = (CompanyDto) search.get().toArray()[0];
-                        TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-                        company.getTransactions().add(transaction);
-                        transaction.setCompany(company);
-                        TransactionHandler.getInstance().createTransaction(transaction);
-                    } else {
-
-                        TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-
-                        if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
-                            companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
-                        } else {
-                            Set<TransactionDto> transactionList = new LinkedHashSet<>();
-                            transactionList.add(transaction);
-                            companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
-                        }
-
-                    }
-
-                }
-
-                if (!companyTransactions.isEmpty()) {
-                    LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
-                    for (String companyName : companyTransactions.keySet()) {
-                        CompanyDto companyToAdd = new CompanyDto();
-                        companyToAdd.setName(companyName);
-                        companyToAdd.setTransactions(companyTransactions.get(companyName));
-                        companiesToAdd.add(companyToAdd);
-                    }
-
-                    new ImportExpense(this, true, companiesToAdd).setVisible(true);
-                }
-
-            } catch (BeckedeFileException | IOException ex) {
-                log.error("Error when importing expenses", ex);
-            }
+        Optional<String> csvFilePath = FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES);
+        if (csvFilePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+            ExpenseImporter.getInstance().importExpensesFromCSV(csvFilePath.get(), this);
         }
     }//GEN-LAST:event_importExpensesMenuItemActionPerformed
 
     private void importExpCatMenuitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpCatMenuitemActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select a valid CSV file");
-        jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
-        jfc.addChoosableFileFilter(filter);
-
-        int returnValue = jfc.showOpenDialog(null);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-
-            try {
-                Iterable<CSVRecord> records = new CsvReaderHandler(jfc.getSelectedFile().getPath(), Boolean.TRUE).getRecords();
-                Set<String> uniqueValuesFromColumn = new CsvFileFilter(records).getUniqueValuesFromColumn("Categories");
-
-                List<ExpenseCategoryDto> categories = new ArrayList<>();
-                for (String string : uniqueValuesFromColumn) {
-                    ExpenseCategoryDto c = new ExpenseCategoryDto();
-                    c.setName(string);
-                    categories.add(c);
-                }
-
-                for (ExpenseCategoryDto category : categories) {
-                    ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
-                }
-
-            } catch (BeckedeFileException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+            ExpenseCategoryImporter.getInstance().importExpenseCategories(filePath.get());
         }
-
     }//GEN-LAST:event_importExpCatMenuitemActionPerformed
 
     private void importCompanyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCompanyMenuItemActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select file to import");
-        jfc.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
-        jfc.addChoosableFileFilter(filter);
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
+        if (filePath.isPresent()) {
 
-        int returnValue = jfc.showOpenDialog(null);
+            if (filePath.isPresent()) {
+                ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+                progressBar.setLocationRelativeTo(this);
+                progressBar.setVisible(true);
 
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            CompanyImporter.getInstance().importCompanies(jfc.getSelectedFile().getPath());
+                String path = filePath.get();
+                CompanyImporter.getInstance().importCompanies(path);
+            }
         }
     }//GEN-LAST:event_importCompanyMenuItemActionPerformed
 
@@ -377,17 +287,26 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_handleCompaniesMenuItemActionPerformed
 
     private void exportCompaniesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCompaniesActionPerformed
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select destinationfolder");
-        jfc.setDialogType(JFileChooser.SAVE_DIALOG);
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
 
-        int returnValue = jfc.showOpenDialog(null);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            CompanyExporter.getInstance().exportCompanies(jfc.getSelectedFile().getPath() + "//companies.xml");
+            CompanyExporter.getInstance().exportCompanies(filePath.get() + "//companies.xml");
         }
     }//GEN-LAST:event_exportCompaniesActionPerformed
+
+    private void exportExpenseTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportExpenseTypesActionPerformed
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+
+            ExpenseCategoryExporter.getInstance().exportExpenseCategories(filePath.get() + "//expense_categories.xml");
+        }
+    }//GEN-LAST:event_exportExpenseTypesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -438,7 +357,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenuItem exportAll;
     private javax.swing.JMenuItem exportBillTypes;
     private javax.swing.JMenuItem exportBills;
-    private javax.swing.JMenuItem exportCompCatMenuItem;
     private javax.swing.JMenuItem exportCompanies;
     private javax.swing.JMenuItem exportExpenseTypes;
     private javax.swing.JMenuItem exportExpenses;

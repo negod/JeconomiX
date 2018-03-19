@@ -15,6 +15,7 @@ import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
+import se.backede.jeconomix.event.events.Events;
 
 /**
  *
@@ -34,22 +35,28 @@ public class CompanyImporter {
     }
 
     public void importCompanies(String filePath) {
-        Optional<Companies> importedCompanies = READER.readXml(filePath, Companies.class);
-        if (importedCompanies.isPresent()) {
+        new Thread(() -> {
+            Optional<Companies> importedCompanies = READER.readXml(filePath, Companies.class);
+            if (importedCompanies.isPresent()) {
+                Events.getInstance().fireProgressMaxValueEvent(importedCompanies.get().getCompany().size());
 
-            for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
-                CompanyDto dto = CompanyMapper.getInstance().mapToDto(companyExportDto);
+                for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
+                    CompanyDto dto = CompanyMapper.mapToDto(companyExportDto);
+                    Optional<ExpenseCategoryDto> expCat = ExpenseCategoryHandler.getInstance().getById(companyExportDto.getExpenseCategory());
+                    if (expCat.isPresent()) {
+                        dto.setExpenseCategory(expCat.get());
+                        CompanyHandler.getInstance().createCompany(dto);
 
-                Optional<ExpenseCategoryDto> expCat = ExpenseCategoryHandler.getInstance().getById(companyExportDto.getExpenseCategory());
-                if (expCat.isPresent()) {
-                    dto.setExpenseCategory(expCat.get());
-                    CompanyHandler.getInstance().createCompany(dto);
-                } else {
-                    log.error("Could not get Expense category for company {} aborting insert if this company", dto.getName());
+                        Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
+                    } else {
+                        log.error("Could not get Expense category for company {} aborting insert if this company", dto.getName());
+                    }
                 }
+                Events.getInstance().fireProgressDoneEvent();
+            } else {
+                Events.getInstance().fireErrorEvent();
+                return;
             }
-
-        }
+        }).start();
     }
-
 }

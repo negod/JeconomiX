@@ -73,29 +73,27 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportCompaniesActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportCompCatMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Companies and categories"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportExpenses">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Expenses"/>
               </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exportExpenseTypes">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Expense categories"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportExpenseTypesActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportBills">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Bills"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportExpenseTypes">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Expense types"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportBillTypes">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Bill types"/>
+                <Property name="text" type="java.lang.String" value="Bill categories"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportAll">

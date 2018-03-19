@@ -7,47 +7,44 @@ package se.backede.jeconomix.dto.export.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
-import se.backede.jeconomix.dto.export.CompanyExportDto;
+import se.backede.jeconomix.dto.ExpenseCategoryDto;
+import se.backede.jeconomix.dto.export.ExpenseCategoryExportDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CompanyMapper {
+public class ExpenseCategoryMapper {
 
-    public static CompanyExportDto mapToExportDto(CompanyDto input) {
-        CompanyExportDto dto = new CompanyExportDto();
+    public static ExpenseCategoryExportDto mapToExportDto(ExpenseCategoryDto input) {
+        ExpenseCategoryExportDto dto = new ExpenseCategoryExportDto();
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
-        dto.setExpenseCategory(input.getExpenseCategory().getId());
         return dto;
     }
 
-    public static CompanyDto mapToDto(CompanyExportDto input) {
-        CompanyDto dto = new CompanyDto();
+    public static ExpenseCategoryDto mapToDto(ExpenseCategoryExportDto input) {
+        ExpenseCategoryDto dto = new ExpenseCategoryDto();
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
         ExpenseCategoryDto expDto = new ExpenseCategoryDto();
-        expDto.setId(input.getExpenseCategory());
         return dto;
     }
 
-    public static List<CompanyExportDto> mapToExportDto(List<CompanyDto> dto) {
-        List<CompanyExportDto> expList = new ArrayList<>();
-        for (CompanyDto companyDto : dto) {
+    public static List<ExpenseCategoryExportDto> mapToExportDto(List<ExpenseCategoryDto> dto) {
+        List<ExpenseCategoryExportDto> expList = new ArrayList<>();
+        for (ExpenseCategoryDto companyDto : dto) {
             expList.add(mapToExportDto(companyDto));
         }
         return expList;
     }
 
-    public static List<CompanyDto> mapToDto(List<CompanyExportDto> dto) {
-        List<CompanyDto> expList = new ArrayList<>();
-        for (CompanyExportDto companyDto : dto) {
+    public static List<ExpenseCategoryDto> mapToDto(List<ExpenseCategoryExportDto> dto) {
+        List<ExpenseCategoryDto> expList = new ArrayList<>();
+        for (ExpenseCategoryExportDto companyDto : dto) {
             expList.add(mapToDto(companyDto));
         }
         return expList;

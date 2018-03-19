@@ -7,7 +7,6 @@ package se.backede.jeconomix.dto;
 
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
