@@ -27,7 +27,6 @@ import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.dto.ExpenseReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
-import se.backede.jeconomix.models.table.CompanyModel;
 import se.backede.jeconomix.models.table.ExpenseReportModel;
 import se.backede.jeconomix.database.ExpenseCategoryHandler;
 
@@ -44,13 +43,13 @@ public class expenseReport extends javax.swing.JDialog {
     public expenseReport(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-
+        
         List<ExpenseReportDto> calculatedReport = getCalculatedReport();
-
+        
         setTableData(calculatedReport);
         addLineChart(calculatedReport);
     }
-
+    
     public void addLineChart(List<ExpenseReportDto> reports) {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Total expenses",
@@ -58,37 +57,42 @@ public class expenseReport extends javax.swing.JDialog {
                 createDataset(reports),
                 PlotOrientation.VERTICAL,
                 false, true, false);
-
+        
         ChartPanel chartPanel = new ChartPanel(lineChart);
         chartPanel.setPreferredSize(new java.awt.Dimension(998, 135));
         lineChartPanel.setLayout(new BorderLayout());
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
-
+    
     private DefaultCategoryDataset createDataset(List<ExpenseReportDto> reports) {
-
+        
         String lineTitle = "Kronor";
-
+        
         Map<Month, BigDecimal> sums = new HashMap<>();
-
+        
         List<Month> monthList = new LinkedList<>(Arrays.asList(Month.values()));
-
+        
         for (Month month : monthList) {
-            sums.put(month, BigDecimal.valueOf(0));
+            sums.put(month, BigDecimal.valueOf(0.00));
         }
-
-        for (ExpenseReportDto report : reports) {
-            for (Month month : monthList) {
-                if (report.getMonthReport().containsKey(month)) {
-                    BigDecimal currentSum = sums.get(month);
-                    if (report.getSum() != null) {
-                        BigDecimal newSum = currentSum.add(report.getSum());
-                        sums.put(month, newSum);
-                    }
+        
+        for (Month month : monthList) {
+            BigDecimal currentSum = sums.get(month);
+            for (ExpenseReportDto report : reports) {
+                
+                BigDecimal get = report.getMonthReport().get(month);
+                if (get != null) {
+                    BigDecimal oldSum = currentSum;
+                    currentSum = currentSum.add(report.getMonthReport().get(month));
+                    log.error("GOT SUM FOR MONTH {} OLD SUM: {} ADDING: {} NEW SUM:", month.name(), oldSum, report.getMonthReport().get(month), currentSum);
+                    log.error("{} + {} = {}", oldSum, report.getMonthReport().get(month), currentSum);
+                    sums.put(month, currentSum);
                 }
+                
             }
+            
         }
-
+        
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(sums.get(Month.JANUARY), lineTitle, "Jan");
         dataset.addValue(sums.get(Month.FEBRUARY), lineTitle, "Feb");
@@ -104,40 +108,40 @@ public class expenseReport extends javax.swing.JDialog {
         dataset.addValue(sums.get(Month.DECEMBER), lineTitle, "Dec");
         return dataset;
     }
-
+    
     public void setTableData(List<ExpenseReportDto> calculatedReport) {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-
+        
         ExpenseReportModel model = new ExpenseReportModel(calculatedReport);
         reportTable.setModel(model);
-
+        
         for (int i = 1; i < 14; i++) {
             reportTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
-
+        
     }
-
+    
     public List<ExpenseReportDto> getCalculatedReport() {
-
+        
         List<ExpenseReportDto> transactionReports = new LinkedList<>();
         Optional<List<ExpenseCategoryDto>> allExpenseCategories = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
         if (allExpenseCategories.isPresent()) {
-
+            
             for (ExpenseCategoryDto expenseCategoryDto : allExpenseCategories.get()) {
                 ExpenseReportDto report = new ExpenseReportDto();
                 Set<CompanyDto> company = expenseCategoryDto.getCompany();
-
+                
                 if (!expenseCategoryDto.getName().equals("Överföringar")) {
                     BigDecimal sum = BigDecimal.valueOf(0);
                     for (CompanyDto companyDto : company) {
                         for (TransactionDto transaction : companyDto.getTransactions()) {
-
+                            
                             report.getTransctions().add(transaction);
 
                             //Add value to Month
                             Month month = transaction.getTransDate().toLocalDate().getMonth();
-
+                            
                             if (report.getMonthReport().containsKey(month)) {
                                 if (transaction.getSum() != null) {
                                     BigDecimal currentSum = report.getMonthReport().get(month);
@@ -151,7 +155,7 @@ public class expenseReport extends javax.swing.JDialog {
                             //Calculate total sum
                             BigDecimal addedSUm = sum.add(transaction.getSum());
                             sum = addedSUm;
-
+                            
                         }
                     }
                     report.setSum(sum);
@@ -253,21 +257,21 @@ public class expenseReport extends javax.swing.JDialog {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
+                    
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(expenseReport.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(expenseReport.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(expenseReport.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(expenseReport.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
