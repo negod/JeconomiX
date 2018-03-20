@@ -8,7 +8,7 @@ package se.backede.jeconomix.renderer.combobox;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import se.backede.jeconomix.database.entity.BillCategory;
+import se.backede.jeconomix.dto.BillCategoryDto;
 
 /**
  *
@@ -22,7 +22,7 @@ public class BillCategoryItemRenderer extends BasicComboBoxRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected,
                 cellHasFocus);
 
-        BillCategory category = (BillCategory) value;
+        BillCategoryDto category = (BillCategoryDto) value;
         if (category != null) {
             setText(category.getName());
         }

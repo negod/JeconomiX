@@ -26,6 +26,7 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.events.Events;
+import se.backede.jeconomix.forms.ImportBill;
 import se.backede.jeconomix.forms.ImportExpense;
 
 /**
@@ -33,14 +34,14 @@ import se.backede.jeconomix.forms.ImportExpense;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class ExpenseImporter {
+public class TransactionImporter {
 
-    private static final ExpenseImporter INSTANCE = new ExpenseImporter();
+    private static final TransactionImporter INSTANCE = new TransactionImporter();
 
-    protected ExpenseImporter() {
+    protected TransactionImporter() {
     }
 
-    public static final ExpenseImporter getInstance() {
+    public static final TransactionImporter getInstance() {
         return INSTANCE;
     }
 
@@ -101,6 +102,73 @@ public class ExpenseImporter {
                     }
 
                     new ImportExpense(parent, true, companiesToAdd).setVisible(true);
+                }
+
+                Events.getInstance().fireProgressDoneEvent();
+
+            } catch (BeckedeFileException | IOException ex) {
+                log.error("Error when importing expenses", ex);
+            }
+        }).start();
+    }
+
+    public void importBillsFromCSV(String filePath, JFrame parent) {
+        new Thread(() -> {
+            try {
+                CsvReaderHandler handler = new CsvReaderHandler(filePath, Boolean.TRUE);
+                Iterable<CSVRecord> build = new Normalizer(handler.getRecords())
+                        .removePeriod("Belopp")
+                        .removePeriod("Saldo")
+                        .removeWord("Transaktion", "Kortköp")
+                        .removeWord("Transaktion", "Reservation")
+                        .removeLeadingSpaces("Transaktion")
+                        .removeWordStartingWith("Transaktion", "18", 7)
+                        .removeWordStartingWith("Transaktion", "17", 7)
+                        .removeTrailingAndLeadingSpaces("Transaktion")
+                        .replaceComma("Belopp")
+                        .replaceComma("Saldo")
+                        .removeMinus("Belopp")
+                        .build(handler.getHeaderMap());
+
+                Map<String, Set<TransactionDto>> companyTransactions = new LinkedHashMap<>();
+
+                Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) build).size());
+                for (CSVRecord cSVRecord : build) {
+
+                    Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
+
+                    if (search.isPresent() && search.get().size() == 1) {
+                        CompanyDto company = (CompanyDto) search.get().toArray()[0];
+                        TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
+                        company.getTransactions().add(transaction);
+                        transaction.setCompany(company);
+                        TransactionHandler.getInstance().createTransaction(transaction);
+                    } else {
+
+                        TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
+
+                        if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
+                            companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
+                        } else {
+                            Set<TransactionDto> transactionList = new LinkedHashSet<>();
+                            transactionList.add(transaction);
+                            companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
+                        }
+
+                    }
+                    Events.getInstance().fireProgressIncreaseValueEvent(1, cSVRecord.get("Transaktion"));
+                }
+
+                if (!companyTransactions.isEmpty()) {
+                    LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
+                    for (String companyName : companyTransactions.keySet()) {
+                        CompanyDto companyToAdd = new CompanyDto();
+                        companyToAdd.setName(companyName);
+                        companyToAdd.setTransactions(companyTransactions.get(companyName));
+                        companiesToAdd.add(companyToAdd);
+                    }
+
+                    new ImportBill(parent, true, companiesToAdd).setVisible(true);
                 }
 
                 Events.getInstance().fireProgressDoneEvent();

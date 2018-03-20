@@ -5,6 +5,8 @@
  */
 package se.backede.jeconomix.forms;
 
+import se.backede.jeconomix.database.BillCategoryHandler;
+import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
@@ -16,12 +18,12 @@ import se.backede.jeconomix.event.events.fields.CategoryValues;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class AddExpCategory extends javax.swing.JDialog implements EventObserver {
+public class AddBillCategory extends javax.swing.JDialog implements EventObserver {
 
     /**
      * Creates new form AddCompany
      */
-    public AddExpCategory(java.awt.Frame parent, boolean modal) {
+    public AddBillCategory(java.awt.Dialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
         registerAsObserver();
@@ -46,9 +48,14 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
-        categoryInputText.setText("Expense category");
+        categoryInputText.setToolTipText("Expense category");
 
         okButton.setText("Ok");
+        okButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                okButtonMouseClicked(evt);
+            }
+        });
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -56,13 +63,18 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
         });
 
         cancelButton.setText("Cancel");
+        cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cancelButtonMouseClicked(evt);
+            }
+        });
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Add expensece category");
+        jLabel1.setText("Add bill category");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -112,6 +124,10 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         Dto data = new Dto(CategoryValues.class);
         data.set(CategoryValues.NAME, categoryInputText.getText());
+
+        BillCategoryDto dto = new BillCategoryDto();
+        dto.setName(categoryInputText.getText());
+        BillCategoryHandler.getInstance().createBillCategory(dto);
         EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
@@ -119,6 +135,14 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void okButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_okButtonMouseClicked
+
+    }//GEN-LAST:event_okButtonMouseClicked
+
+    private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cancelButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -137,30 +161,32 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddExpCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBillCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddExpCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBillCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddExpCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBillCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddExpCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddBillCategory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                AddExpCategory dialog = new AddExpCategory(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                AddBillCategory dialog = new AddBillCategory(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -173,7 +199,6 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
 
     @Override
     public void update(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

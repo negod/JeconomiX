@@ -9,6 +9,6 @@ package se.backede.jeconomix.event.events;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public enum ExpenseCategoryEvent {
+public enum CategoryEvent {
     CREATE, UPDATE, DELETE;
 }

@@ -25,6 +25,7 @@ import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.database.entity.search.CompanySearch;
+import se.backede.jeconomix.dto.BillCategoryDto;
 
 /**
  *
@@ -129,22 +130,50 @@ public class CompanyHandler {
     }
 
     public Optional<CompanyDto> setExpenseCategory(CompanyDto companyDto, ExpenseCategoryDto expenseCategory) {
-        ObjectUpdate update = new ObjectUpdate();
-        update.setObject("expenseCategory");
-        update.setType(UpdateType.UPDATE);
-        update.setObjectId(expenseCategory.getId());
+        if (expenseCategory != null) {
+            ObjectUpdate update = new ObjectUpdate();
+            update.setObject("expenseCategory");
+            update.setType(UpdateType.UPDATE);
+            update.setObjectId(expenseCategory.getId());
 
-        try {
-            dao.startTransaction();
-            Optional<Company> company = dao.update(companyDto.getId(), update);
-            dao.commitTransaction();
+            try {
+                dao.startTransaction();
+                Optional<Company> company = dao.update(companyDto.getId(), update);
+                dao.commitTransaction();
 
-            if (company.isPresent()) {
-                return companyMapper.mapFromEntityToDto(company.get());
+                if (company.isPresent()) {
+                    return companyMapper.mapFromEntityToDto(company.get());
+                }
+
+            } catch (DaoException ex) {
+                Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
 
-        } catch (DaoException ex) {
-            Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
+        return Optional.empty();
+
+    }
+
+    public Optional<CompanyDto> setBillCategory(CompanyDto companyDto, BillCategoryDto billCategory) {
+
+        if (billCategory != null) {
+            ObjectUpdate update = new ObjectUpdate();
+            update.setObject("billCategory");
+            update.setType(UpdateType.UPDATE);
+            update.setObjectId(billCategory.getId());
+
+            try {
+                dao.startTransaction();
+                Optional<Company> company = dao.update(companyDto.getId(), update);
+                dao.commitTransaction();
+
+                if (company.isPresent()) {
+                    return companyMapper.mapFromEntityToDto(company.get());
+                }
+
+            } catch (DaoException ex) {
+                Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return Optional.empty();

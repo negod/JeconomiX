@@ -9,6 +9,6 @@ package se.backede.jeconomix.event.events.fields;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public enum ExpenseCategoryValues {
+public enum CategoryValues {
     NAME;
 }

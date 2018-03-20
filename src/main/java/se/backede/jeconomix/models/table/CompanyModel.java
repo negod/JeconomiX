@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.database.entity.Company;
 
 /**
  *
@@ -30,6 +29,8 @@ public class CompanyModel extends AbstractTableModel {
                 return "Company";
             case 1:
                 return "Expense category";
+            case 2:
+                return "Bill category";
         }
         return "";
     }
@@ -41,7 +42,7 @@ public class CompanyModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -57,6 +58,11 @@ public class CompanyModel extends AbstractTableModel {
                     value = company.getExpenseCategory().getName();
                 }
                 break;
+            case 2:
+                if (company.getBillCategory()!= null) {
+                    value = company.getBillCategory().getName();
+                }
+                break;
         }
         return value;
     }
@@ -67,6 +73,8 @@ public class CompanyModel extends AbstractTableModel {
             case 0:
                 return String.class;
             case 1:
+                return String.class;
+            case 2:
                 return String.class;
         }
         return null;

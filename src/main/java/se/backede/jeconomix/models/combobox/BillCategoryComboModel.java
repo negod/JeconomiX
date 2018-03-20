@@ -8,7 +8,7 @@ package se.backede.jeconomix.models.combobox;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
-import se.backede.jeconomix.database.entity.BillCategory;
+import se.backede.jeconomix.dto.BillCategoryDto;
 
 /**
  *
@@ -16,10 +16,10 @@ import se.backede.jeconomix.database.entity.BillCategory;
  */
 public class BillCategoryComboModel extends AbstractListModel implements ComboBoxModel {
 
-    List<BillCategory> categories;
-    BillCategory selection = null;
+    List<BillCategoryDto> categories;
+    BillCategoryDto selection = null;
 
-    public BillCategoryComboModel(List<BillCategory> categories) {
+    public BillCategoryComboModel(List<BillCategoryDto> categories) {
         this.categories = categories;
     }
 
@@ -35,7 +35,7 @@ public class BillCategoryComboModel extends AbstractListModel implements ComboBo
 
     @Override
     public void setSelectedItem(Object anItem) {
-        selection = (BillCategory) anItem;
+        selection = (BillCategoryDto) anItem;
         fireContentsChanged(this, -1, -1);
     } // item from the pull-down list
 

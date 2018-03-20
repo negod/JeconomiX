@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.dto.export;
 
-import java.util.Date;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +16,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@XmlRootElement
-public class BillCategoryExportDto {
+@XmlRootElement(name = "bill_categories")
+public class BillCategories {
 
-    private String id;
-    private Date updatedDate;
-    private String name;
+    List<BillCategoryExportDto> billCategory;
 
 }

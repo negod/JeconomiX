@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
+import se.backede.jeconomix.database.BillCategoryHandler;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.ExpenseCategoryHandler;
+import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
+import se.backede.jeconomix.models.combobox.BillCategoryComboModel;
 import se.backede.jeconomix.models.combobox.ExpenseCategoryComboModel;
 import se.backede.jeconomix.models.table.CompanyModel;
 import se.backede.jeconomix.models.table.TransactionModel;
+import se.backede.jeconomix.renderer.combobox.BillCategoryItemRenderer;
 import se.backede.jeconomix.renderer.combobox.ExpenseCategoryItemRenderer;
 
 /**
@@ -31,9 +35,10 @@ public class CompanyEditor extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setExpenseCategoryComboBoxData();
+        setBillCategoryComboBoxData();
         setTableData();
     }
-    
+
     public void setExpenseCategoryComboBoxData() {
         Optional<List<ExpenseCategoryDto>> all = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
         if (all.isPresent()) {
@@ -41,6 +46,17 @@ public class CompanyEditor extends javax.swing.JDialog {
             expenseCategoryComboBox.setModel(comboModel);
             if (all.get().size() > 0) {
                 expenseCategoryComboBox.setRenderer(new ExpenseCategoryItemRenderer());
+            }
+        }
+    }
+
+    public void setBillCategoryComboBoxData() {
+        Optional<List<BillCategoryDto>> all = BillCategoryHandler.getInstance().getAllBillCategories();
+        if (all.isPresent()) {
+            BillCategoryComboModel comboModel = new BillCategoryComboModel(all.get());
+            billCategoryComboBox.setModel(comboModel);
+            if (all.get().size() > 0) {
+                billCategoryComboBox.setRenderer(new BillCategoryItemRenderer());
             }
         }
     }
@@ -53,9 +69,16 @@ public class CompanyEditor extends javax.swing.JDialog {
             if (!all.get().isEmpty()) {
                 companyTable.setRowSelectionInterval(0, 0);
                 CompanyDto selectedCompany = companyModel.getCompanyAt(0);
-                ExpenseCategoryComboModel comboBoxModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
-                comboBoxModel.setSelectedItem(selectedCompany.getExpenseCategory());
 
+                //Set expense combobox
+                ExpenseCategoryComboModel expenseComboBoxModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
+                expenseComboBoxModel.setSelectedItem(selectedCompany.getExpenseCategory());
+
+                //Set bill combobox
+                BillCategoryComboModel billComboBoxModel = (BillCategoryComboModel) billCategoryComboBox.getModel();
+                billComboBoxModel.setSelectedItem(selectedCompany.getBillCategory());
+
+                //Align columns to right
                 DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
                 rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
                 TransactionModel transModel = new TransactionModel(selectedCompany.getTransactions());
@@ -93,11 +116,17 @@ public class CompanyEditor extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        billCategoryComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                billCategoryComboBoxItemStateChanged(evt);
+            }
+        });
+
         billCategoryLabel.setText("Bill Category");
 
-        expenseCategoryComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expenseCategoryComboBoxActionPerformed(evt);
+        expenseCategoryComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                expenseCategoryComboBoxItemStateChanged(evt);
             }
         });
 
@@ -151,23 +180,24 @@ public class CompanyEditor extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(companyNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(expenseCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(billCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sumLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(transactionSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(expenseCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(billCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(expenseCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(7, 7, 7)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(sumLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(transactionSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))))
+                                .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -195,17 +225,6 @@ public class CompanyEditor extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void expenseCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryComboBoxActionPerformed
-        int selectedRow = companyTable.getSelectedRow();
-        CompanyModel model = (CompanyModel) companyTable.getModel();
-        CompanyDto company = model.getCompanyAt(selectedRow);
-
-        ExpenseCategoryComboModel expModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
-        ExpenseCategoryDto category = (ExpenseCategoryDto) expModel.getSelectedItem();
-        company.setExpenseCategory(category);
-        CompanyHandler.getInstance().setExpenseCategory(company, category);
-    }//GEN-LAST:event_expenseCategoryComboBoxActionPerformed
-
     private void companyTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_companyTableMouseClicked
         int selectedRow = companyTable.getSelectedRow();
         CompanyModel model = (CompanyModel) companyTable.getModel();
@@ -229,6 +248,32 @@ public class CompanyEditor extends javax.swing.JDialog {
 
         companyNameLabel.setText(company.getName());
     }//GEN-LAST:event_companyTableMouseClicked
+
+    private void expenseCategoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_expenseCategoryComboBoxItemStateChanged
+        int selectedRow = companyTable.getSelectedRow();
+        CompanyModel model = (CompanyModel) companyTable.getModel();
+        CompanyDto company = model.getCompanyAt(selectedRow);
+
+        ExpenseCategoryComboModel expModel = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
+        ExpenseCategoryDto category = (ExpenseCategoryDto) expModel.getSelectedItem();
+        company.setExpenseCategory(category);
+        CompanyHandler.getInstance().setExpenseCategory(company, category);
+        
+        model.fireTableDataChanged();
+    }//GEN-LAST:event_expenseCategoryComboBoxItemStateChanged
+
+    private void billCategoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_billCategoryComboBoxItemStateChanged
+        int selectedRow = companyTable.getSelectedRow();
+        CompanyModel model = (CompanyModel) companyTable.getModel();
+        CompanyDto company = model.getCompanyAt(selectedRow);
+
+        BillCategoryComboModel expModel = (BillCategoryComboModel) billCategoryComboBox.getModel();
+        BillCategoryDto category = (BillCategoryDto) expModel.getSelectedItem();
+        company.setBillCategory(category);
+        CompanyHandler.getInstance().setBillCategory(company, category);
+        
+        model.fireTableDataChanged();
+    }//GEN-LAST:event_billCategoryComboBoxItemStateChanged
 
     /**
      * @param args the command line arguments

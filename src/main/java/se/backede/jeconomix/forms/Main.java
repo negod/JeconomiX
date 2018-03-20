@@ -5,36 +5,21 @@
  */
 package se.backede.jeconomix.forms;
 
-import com.backede.fileutils.csv.reader.CsvReaderHandler;
-import com.backede.fileutils.exception.BeckedeFileException;
-import com.backede.fileutils.csv.parser.Normalizer;
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVRecord;
-import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.database.TransactionHandler;
-import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
+import se.backede.jeconomix.exporter.BillCategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.exporter.ExpenseCategoryExporter;
+import se.backede.jeconomix.importer.BillCategoryImporter;
 import se.backede.jeconomix.importer.CompanyImporter;
 import se.backede.jeconomix.importer.ExpenseCategoryImporter;
-import se.backede.jeconomix.importer.ExpenseImporter;
+import se.backede.jeconomix.importer.TransactionImporter;
 
 /**
  *
@@ -72,8 +57,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         exitMenuItem = new javax.swing.JMenuItem();
         importerMenu = new javax.swing.JMenu();
         importExpensesMenuItem = new javax.swing.JMenuItem();
+        importBillMenuItem = new javax.swing.JMenuItem();
         importMenu = new javax.swing.JMenu();
         importExpCatMenuitem = new javax.swing.JMenuItem();
+        importBillCatMenuItem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         exportCompanies = new javax.swing.JMenuItem();
@@ -87,6 +74,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         handleCompaniesMenuItem = new javax.swing.JMenuItem();
         reportMenu = new javax.swing.JMenu();
         expenseReportMenuItem = new javax.swing.JMenuItem();
+        billReportMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
@@ -117,6 +105,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         });
         importerMenu.add(importExpensesMenuItem);
 
+        importBillMenuItem.setText("Bills");
+        importBillMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importBillMenuItemActionPerformed(evt);
+            }
+        });
+        importerMenu.add(importBillMenuItem);
+
         importMenu.setText("Listdata");
 
         importExpCatMenuitem.setText("Expense categories");
@@ -126,6 +122,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             }
         });
         importMenu.add(importExpCatMenuitem);
+
+        importBillCatMenuItem.setText("Bill Categories");
+        importBillCatMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importBillCatMenuItemActionPerformed(evt);
+            }
+        });
+        importMenu.add(importBillCatMenuItem);
 
         importCompanyMenuItem.setText("Companies");
         importCompanyMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -161,9 +165,19 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         jMenu2.add(exportExpenseTypes);
 
         exportBills.setText("Bills");
+        exportBills.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportBillsActionPerformed(evt);
+            }
+        });
         jMenu2.add(exportBills);
 
         exportBillTypes.setText("Bill categories");
+        exportBillTypes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportBillTypesActionPerformed(evt);
+            }
+        });
         jMenu2.add(exportBillTypes);
 
         exportAll.setText("All");
@@ -200,6 +214,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             }
         });
         reportMenu.add(expenseReportMenuItem);
+
+        billReportMenuItem.setText("Bill report");
+        billReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                billReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(billReportMenuItem);
 
         menuBar.add(reportMenu);
 
@@ -241,7 +263,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
-            ExpenseImporter.getInstance().importExpensesFromCSV(csvFilePath.get(), this);
+            TransactionImporter.getInstance().importExpensesFromCSV(csvFilePath.get(), this);
         }
     }//GEN-LAST:event_importExpensesMenuItemActionPerformed
 
@@ -275,7 +297,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
 
     private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed
-        new expenseReport(this, true).setVisible(true);
+        new ExpenseReport(this, true).setVisible(true);
     }//GEN-LAST:event_expenseReportMenuItemActionPerformed
 
     private void reindecLuceneMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reindecLuceneMenuItemActionPerformed
@@ -307,6 +329,45 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             ExpenseCategoryExporter.getInstance().exportExpenseCategories(filePath.get() + "//expense_categories.xml");
         }
     }//GEN-LAST:event_exportExpenseTypesActionPerformed
+
+    private void importBillMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBillMenuItemActionPerformed
+        Optional<String> csvFilePath = FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES);
+        if (csvFilePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+            TransactionImporter.getInstance().importBillsFromCSV(csvFilePath.get(), this);
+        }
+    }//GEN-LAST:event_importBillMenuItemActionPerformed
+
+    private void exportBillTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBillTypesActionPerformed
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+
+            BillCategoryExporter.getInstance().exportBillCategories(filePath.get() + "//bill_categories.xml");
+        }
+    }//GEN-LAST:event_exportBillTypesActionPerformed
+
+    private void exportBillsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBillsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exportBillsActionPerformed
+
+    private void importBillCatMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBillCatMenuItemActionPerformed
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+            BillCategoryImporter.getInstance().importBillCategories(filePath.get());
+        }
+    }//GEN-LAST:event_importBillCatMenuItemActionPerformed
+
+    private void billReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billReportMenuItemActionPerformed
+        new BillReport(this, true).setVisible(true);
+    }//GEN-LAST:event_billReportMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -351,6 +412,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem billReportMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
@@ -363,6 +425,8 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem handleCompaniesMenuItem;
     private javax.swing.JMenu handleListMenu;
+    private javax.swing.JMenuItem importBillCatMenuItem;
+    private javax.swing.JMenuItem importBillMenuItem;
     private javax.swing.JMenuItem importCompanyMenuItem;
     private javax.swing.JMenuItem importExpCatMenuitem;
     private javax.swing.JMenuItem importExpensesMenuItem;

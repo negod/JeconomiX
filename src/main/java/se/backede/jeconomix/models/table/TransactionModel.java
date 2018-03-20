@@ -24,8 +24,10 @@ public class TransactionModel extends AbstractTableModel {
         this.transactions = new LinkedList<TransactionDto>(transactions);
 
         for (TransactionDto transaction : transactions) {
-            BigDecimal result = sum.add(transaction.getSum());
-            sum = result;
+            if (transaction.getSum() != null) {
+                BigDecimal result = sum.add(transaction.getSum());
+                sum = result;
+            }
         }
     }
 
