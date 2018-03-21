@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -30,5 +32,9 @@ public class ExpenseCategory extends GenericEntity {
 
     @OneToMany(mappedBy = "expenseCategory", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Company> company;
+
+    @ManyToOne
+    @JoinColumn(name = "category_type", referencedColumnName = "id")
+    private CategoryType categoryType;
 
 }

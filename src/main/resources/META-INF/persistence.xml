@@ -6,6 +6,7 @@
     <class>se.backede.jeconomix.database.entity.ExpenseCategory</class>
     <class>se.backede.jeconomix.database.entity.CompanyType</class>
     <class>se.backede.jeconomix.database.entity.Company</class>
+    <class>se.backede.jeconomix.database.entity.CategoryType</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <!-- CONFIGURE LUCENE -->

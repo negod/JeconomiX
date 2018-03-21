@@ -52,7 +52,7 @@ public class BillReport extends javax.swing.JDialog {
 
     public void addLineChart(List<BillReportDto> reports) {
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total expenses",
+                "Total bills",
                 "Month", "Kronor",
                 createDataset(reports),
                 PlotOrientation.VERTICAL,

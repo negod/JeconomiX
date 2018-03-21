@@ -36,8 +36,4 @@ public class Transaction extends GenericEntity {
     @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
     private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "transaction_type", referencedColumnName = "id")
-    private TransactionType transactionType;
-
 }

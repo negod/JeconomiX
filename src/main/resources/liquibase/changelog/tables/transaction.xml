@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
  
     <changeSet id="Create transaction Table" author="Joakim Backede">
@@ -31,18 +31,10 @@
         </createTable>
         
         <addForeignKeyConstraint baseColumnNames="company"
-                                  baseTableName="transaction"
-                                  constraintName="company_transaction_fk"                                 
-                                  referencedColumnNames="id"
-                                  referencedTableName="company"
-                                  onDelete="NO ACTION"
-                                  onUpdate="RESTRICT"/>
-        
-        <addForeignKeyConstraint baseColumnNames="transaction_type"
                                  baseTableName="transaction"
-                                 constraintName="transaction_transaction_type_fk"                                 
+                                 constraintName="company_transaction_fk"                                 
                                  referencedColumnNames="id"
-                                 referencedTableName="transaction_type"
+                                 referencedTableName="company"
                                  onDelete="NO ACTION"
                                  onUpdate="RESTRICT"/>
         
