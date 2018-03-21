@@ -44,4 +44,9 @@ public class ExpenseCategoryComboModel extends AbstractListModel implements Comb
     public Object getSelectedItem() {
         return selection; // to add the selection to the combo box
     }
+
+    public void addElement(ExpenseCategoryDto category) {
+        categories.add(category);
+        fireContentsChanged(this, categories.size(), categories.size());
+    }
 }

@@ -25,6 +25,18 @@ public abstract class DataHolder<T extends Enum<T>> extends DtoErrorHandler {
     public DataHolder(String message, String code) {
         super(message, code);
     }
+    
+    /**
+     * Sets a field in the Dto
+     *
+     * @param field
+     * @param data
+     */
+    public void set(T field, Object data) {
+        if (data != null) {
+            FIELDS.put(field, new Value(data, field));
+        }
+    }
 
     /**
      * Sets a field in the Dto

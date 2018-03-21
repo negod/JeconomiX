@@ -5,6 +5,8 @@
  */
 package se.backede.jeconomix.forms;
 
+import java.util.Optional;
+import javax.swing.JOptionPane;
 import se.backede.jeconomix.database.BillCategoryHandler;
 import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.event.EventController;
@@ -123,13 +125,16 @@ public class AddBillCategory extends javax.swing.JDialog implements EventObserve
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         Dto data = new Dto(CategoryValues.class);
-        data.set(CategoryValues.NAME, categoryInputText.getText());
-
         BillCategoryDto dto = new BillCategoryDto();
         dto.setName(categoryInputText.getText());
-        BillCategoryHandler.getInstance().createBillCategory(dto);
-        EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
-        this.dispose();
+        Optional<BillCategoryDto> createBillCategory = BillCategoryHandler.getInstance().createBillCategory(dto);
+        if (createBillCategory.isPresent()) {
+            data.set(CategoryValues.BILL_CATEGORY_DTO, createBillCategory.get());
+            EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error when creating Bill category!");
+        }
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

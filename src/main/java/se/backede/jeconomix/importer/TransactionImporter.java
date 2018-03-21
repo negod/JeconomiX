@@ -68,13 +68,12 @@ public class TransactionImporter {
                 Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) build).size());
                 for (CSVRecord cSVRecord : build) {
 
-                    Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
+                    Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
 
-                    if (search.isPresent() && search.get().size() == 1) {
-                        CompanyDto company = (CompanyDto) search.get().toArray()[0];
+                    if (company.isPresent()) {
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-                        company.getTransactions().add(transaction);
-                        transaction.setCompany(company);
+                        company.get().getTransactions().add(transaction);
+                        transaction.setCompany(company.get());
                         TransactionHandler.getInstance().createTransaction(transaction);
                     } else {
 
@@ -135,13 +134,12 @@ public class TransactionImporter {
                 Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) build).size());
                 for (CSVRecord cSVRecord : build) {
 
-                    Optional<List<CompanyDto>> search = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
+                    Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
 
-                    if (search.isPresent() && search.get().size() == 1) {
-                        CompanyDto company = (CompanyDto) search.get().toArray()[0];
+                    if (company.isPresent()) {
                         TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
-                        company.getTransactions().add(transaction);
-                        transaction.setCompany(company);
+                        company.get().getTransactions().add(transaction);
+                        transaction.setCompany(company.get());
                         TransactionHandler.getInstance().createTransaction(transaction);
                     } else {
 

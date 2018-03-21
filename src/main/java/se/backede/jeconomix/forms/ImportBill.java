@@ -21,6 +21,7 @@ import se.backede.jeconomix.utils.GenericIterator;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.event.events.CategoryEvent;
+import se.backede.jeconomix.event.events.fields.CategoryValues;
 import se.backede.jeconomix.models.combobox.BillCategoryComboModel;
 import se.backede.jeconomix.renderer.combobox.BillCategoryItemRenderer;
 
@@ -365,12 +366,16 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
     @Override
     public void update(NegodEvent event) {
         if (event.equalsEvent(CategoryEvent.CREATE)) {
-            setBillCategoryComboBoxData();
+            Optional<BillCategoryDto> category = event.getValues().get(CategoryValues.BILL_CATEGORY_DTO).getObject();
+            if (category.isPresent()) {
+                BillCategoryComboModel model = (BillCategoryComboModel) billCategoryComboBox.getModel();
+                model.addElement(category.get());
+            }
         }
     }
 
     @Override
-    public void registerAsObserver() {
+    public final void registerAsObserver() {
         EventController.getInstance().addObserver(this);
     }
 }

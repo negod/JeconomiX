@@ -7,7 +7,6 @@ package se.backede.jeconomix.dto.export.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.dto.export.CompanyExportDto;

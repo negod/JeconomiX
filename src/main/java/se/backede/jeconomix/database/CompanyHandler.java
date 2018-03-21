@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.database;
 
+import com.negod.generics.persistence.entity.GenericEntity_;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
@@ -17,6 +18,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
@@ -115,13 +119,11 @@ public class CompanyHandler {
         return Optional.empty();
     }
 
-    public Optional<List<CompanyDto>> getCompanyByName(String name) {
-        GenericFilter companyNameSearch = CompanySearch.createCompanyNameSearch(name);
+    public Optional<CompanyDto> getCompanyByName(String name) {
         try {
-            Optional<Set<Company>> search = dao.search(companyNameSearch);
-            if (search.isPresent()) {
-                List<Company> companyList = new ArrayList<>(search.get());
-                return companyMapper.mapToDtoList(companyList);
+            Optional<Company> company = dao.getCompanyByName(name);
+            if (company.isPresent()) {
+                return companyMapper.mapFromEntityToDto(company.get());
             }
         } catch (DaoException ex) {
             Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);

@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Joakikm Johansson (joakimjohansson@outlook.com)
  */
 @Slf4j
-public class DataGetter {
+public class DataGetter<T> {
 
     Object value;
 
@@ -24,6 +24,15 @@ public class DataGetter {
 
     public boolean isNotNull() {
         return value != null;
+    }
+
+    public Optional<T> getObject() {
+        try {
+            return (T) value != null ? Optional.ofNullable((T) value) : Optional.empty();
+        } catch (Exception e) {
+            log.error("Error when converting to String", e);
+        }
+        return Optional.empty();
     }
 
     public Optional<String> getString() {

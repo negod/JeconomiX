@@ -44,4 +44,9 @@ public class BillCategoryComboModel extends AbstractListModel implements ComboBo
     public Object getSelectedItem() {
         return selection; // to add the selection to the combo box
     }
+
+    public void addElement(BillCategoryDto category) {
+        categories.add(category);
+        fireContentsChanged(this, categories.size(), categories.size());
+    }
 }

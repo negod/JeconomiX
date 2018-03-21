@@ -6,9 +6,15 @@
 package se.backede.jeconomix.database.dao;
 
 import com.negod.generics.persistence.GenericDao;
+import com.negod.generics.persistence.exception.DaoException;
+import java.util.Optional;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.PersistenceHandler;
+import se.backede.jeconomix.database.entity.Company_;
 
 /**
  *
@@ -19,6 +25,14 @@ public class CompanyDao extends GenericDao<Company> {
     @Override
     public EntityManager getEntityManager() {
         return PersistenceHandler.getInstance().getEntityManager();
+    }
+
+    public Optional<Company> getCompanyByName(String name) throws DaoException {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
+        Root entity = cq.from(getEntityClass());
+        cq.where(entity.get(Company_.name).in(name));
+        return get(cq);
     }
 
 }

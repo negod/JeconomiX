@@ -22,8 +22,8 @@ import se.backede.jeconomix.renderer.combobox.ExpenseCategoryItemRenderer;
 import se.backede.jeconomix.utils.GenericIterator;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.ExpenseCategoryHandler;
-import se.backede.jeconomix.database.TransactionHandler;
-import se.backede.jeconomix.database.dao.TransactionDao;
+import se.backede.jeconomix.event.events.CategoryEvent;
+import se.backede.jeconomix.event.events.fields.CategoryValues;
 
 /**
  *
@@ -310,7 +310,13 @@ public class ImportExpense extends javax.swing.JDialog implements EventObserver 
 
     @Override
     public void update(NegodEvent event) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (event.equalsEvent(CategoryEvent.CREATE)) {
+            Optional<ExpenseCategoryDto> category = event.getValues().get(CategoryValues.EXPENSE_CATEGORY_DTO).getObject();
+            if (category.isPresent()) {
+                ExpenseCategoryComboModel model = (ExpenseCategoryComboModel) expenseCategoryComboBox.getModel();
+                model.addElement(category.get());
+            }
+        }
     }
 
     @Override

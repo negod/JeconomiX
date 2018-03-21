@@ -65,6 +65,7 @@ public class BillCategoryHandler {
 
             } catch (DaoException | ConstraintException ex) {
                 log.error("Error when persisting expense category", ex);
+
             }
         }
         return Optional.empty();

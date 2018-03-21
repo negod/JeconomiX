@@ -5,6 +5,11 @@
  */
 package se.backede.jeconomix.forms;
 
+import java.util.Optional;
+import javax.swing.JOptionPane;
+import se.backede.jeconomix.database.ExpenseCategoryHandler;
+import se.backede.jeconomix.dto.BillCategoryDto;
+import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
@@ -111,9 +116,16 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         Dto data = new Dto(CategoryValues.class);
-        data.set(CategoryValues.NAME, categoryInputText.getText());
-        EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
-        this.dispose();
+        ExpenseCategoryDto dto = new ExpenseCategoryDto();
+        dto.setName(categoryInputText.getText());
+        Optional<ExpenseCategoryDto> createExpenseCategory = ExpenseCategoryHandler.getInstance().createExpenseCategory(dto);
+        if (createExpenseCategory.isPresent()) {
+            data.set(CategoryValues.EXPENSE_CATEGORY_DTO, createExpenseCategory.get());
+            EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error when creating Bill category!");
+        }
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -173,7 +185,7 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
 
     @Override
     public void update(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
