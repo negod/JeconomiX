@@ -132,7 +132,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="expenseCategoryMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Expense categories"/>
+                <Property name="text" type="java.lang.String" value="Categories"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="expenseCategoryMenuItemActionPerformed"/>

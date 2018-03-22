@@ -6,10 +6,9 @@
 package se.backede.jeconomix.dto;
 
 import com.negod.generics.persistence.dto.GenericDto;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
+import se.backede.jeconomix.constants.CategoryTypeType;
 
 /**
  *
@@ -17,13 +16,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ExpenseCategoryDto extends GenericDto {
+public class CategoryTypeDto extends GenericDto {
 
-    private String name;
-
-    private CategoryTypeDto categoryType;
-
-    @XmlTransient
-    private Set<CompanyDto> company;
+    private CategoryTypeType type;
 
 }

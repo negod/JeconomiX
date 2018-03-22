@@ -29,6 +29,6 @@ public class TransactionDto extends GenericDto {
 
     private CompanyDto company;
 
-    private TransactionTypeDto transactionType;
+    private CategoryTypeDto transactionType;
 
 }
