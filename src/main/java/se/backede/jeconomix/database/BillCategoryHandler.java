@@ -8,6 +8,8 @@ package se.backede.jeconomix.database;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
+import com.negod.generics.persistence.update.ObjectUpdate;
+import com.negod.generics.persistence.update.UpdateType;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.database.dao.BillCategoryDao;
 import se.backede.jeconomix.database.entity.BillCategory;
+import se.backede.jeconomix.database.entity.ExpenseCategory;
+import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**
  *
@@ -80,6 +84,30 @@ public class BillCategoryHandler {
         } catch (DaoException e) {
             log.error("Error when getting expenseCategories", e);
         }
+        return Optional.empty();
+    }
+
+    public Optional<BillCategoryDto> setBillCategoryType(BillCategoryDto category, CategoryTypeDto categoryType) {
+        if (categoryType != null) {
+            ObjectUpdate update = new ObjectUpdate();
+            update.setObject("categoryType");
+            update.setType(UpdateType.UPDATE);
+            update.setObjectId(categoryType.getId());
+
+            try {
+                dao.startTransaction();
+                Optional<BillCategory> billCategory = dao.update(category.getId(), update);
+                dao.commitTransaction();
+
+                if (billCategory.isPresent()) {
+                    return mapper.mapFromEntityToDto(billCategory.get());
+                }
+
+            } catch (DaoException ex) {
+                log.error("Error when updating expense category");
+            }
+        }
+
         return Optional.empty();
     }
 }

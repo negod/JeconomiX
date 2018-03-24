@@ -6,10 +6,9 @@
     
     <!-- tables -->
     <include file="tables/category_type.xml" relativeToChangelogFile="true"/>
-    <include file="tables/transaction_type.xml" relativeToChangelogFile="true"/>
     <include file="tables/bill_category.xml" relativeToChangelogFile="true"/>
-    
     <include file="tables/expense_category.xml" relativeToChangelogFile="true"/>
+
     <include file="tables/company.xml" relativeToChangelogFile="true"/>
     <include file="tables/transaction.xml" relativeToChangelogFile="true"/>
     

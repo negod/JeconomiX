@@ -30,7 +30,7 @@ public class BillCategory extends GenericEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "billCategory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "billCategory", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Company> company;
 
     @ManyToOne

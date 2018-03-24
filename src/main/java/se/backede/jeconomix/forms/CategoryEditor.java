@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import se.backede.jeconomix.database.BillCategoryHandler;
 import se.backede.jeconomix.database.CategoryTypeHandler;
+import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.ExpenseCategoryHandler;
 import se.backede.jeconomix.dto.BillCategoryDto;
 import se.backede.jeconomix.dto.CategoryTypeDto;
@@ -22,12 +23,12 @@ import se.backede.jeconomix.renderer.combobox.CategoryTypeComboBoxRenderer;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CategoryHandler extends javax.swing.JDialog {
+public class CategoryEditor extends javax.swing.JDialog {
 
     /**
      * Creates new form CategoryHandler
      */
-    public CategoryHandler(java.awt.Frame parent, boolean modal) {
+    public CategoryEditor(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setBillCategoryTableData();
@@ -35,7 +36,7 @@ public class CategoryHandler extends javax.swing.JDialog {
         setExpenseCategoryTypeComboBox();
         setBillCategoryTypeComboBox();
     }
-    
+
     public void setBillCategoryTableData() {
         Optional<List<BillCategoryDto>> allBillCategories = BillCategoryHandler.getInstance().getAllBillCategories();
         if (allBillCategories.isPresent()) {
@@ -43,7 +44,7 @@ public class CategoryHandler extends javax.swing.JDialog {
             billCategoryTable.setModel(model);
         }
     }
-    
+
     public void setExpenseCategoryTableData() {
         Optional<List<ExpenseCategoryDto>> allExpenseCategories = ExpenseCategoryHandler.getInstance().getAllExpenseCategories();
         if (allExpenseCategories.isPresent()) {
@@ -51,7 +52,7 @@ public class CategoryHandler extends javax.swing.JDialog {
             expenseCategoryTable.setModel(model);
         }
     }
-    
+
     public void setExpenseCategoryTypeComboBox() {
         Optional<List<CategoryTypeDto>> allCategoryTypes = CategoryTypeHandler.getInstance().getAllCategoryTypes();
         if (allCategoryTypes.isPresent()) {
@@ -60,7 +61,7 @@ public class CategoryHandler extends javax.swing.JDialog {
             expenseCategoryTypeCB.setRenderer(new CategoryTypeComboBoxRenderer());
         }
     }
-    
+
     public void setBillCategoryTypeComboBox() {
         Optional<List<CategoryTypeDto>> allCategoryTypes = CategoryTypeHandler.getInstance().getAllCategoryTypes();
         if (allCategoryTypes.isPresent()) {
@@ -108,9 +109,19 @@ public class CategoryHandler extends javax.swing.JDialog {
 
             }
         ));
+        expenseCategoryTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                expenseCategoryTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(expenseCategoryTable);
 
         expenseCategoryAdd.setText("Add");
+        expenseCategoryAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expenseCategoryAddActionPerformed(evt);
+            }
+        });
 
         expenseCategoryRemove.setText("Remove");
 
@@ -122,6 +133,11 @@ public class CategoryHandler extends javax.swing.JDialog {
         });
 
         expenseCategoryTypeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        expenseCategoryTypeCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expenseCategoryTypeCBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -167,6 +183,11 @@ public class CategoryHandler extends javax.swing.JDialog {
 
             }
         ));
+        billCategoryTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                billCategoryTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(billCategoryTable);
 
         billCategoryAddButton.setText("Add");
@@ -179,6 +200,11 @@ public class CategoryHandler extends javax.swing.JDialog {
         billCategoryRemoveButton.setText("Remove");
 
         billCategoryTypeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        billCategoryTypeCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                billCategoryTypeCBActionPerformed(evt);
+            }
+        });
 
         jButton5billCategoryEditButton.setText("Edit");
 
@@ -236,8 +262,62 @@ public class CategoryHandler extends javax.swing.JDialog {
     }//GEN-LAST:event_expenseCategoryEditActionPerformed
 
     private void billCategoryAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billCategoryAddButtonActionPerformed
-        // TODO add your handling code here:
+        new AddBillCategory(this, false).setEnabled(true);
     }//GEN-LAST:event_billCategoryAddButtonActionPerformed
+
+    private void expenseCategoryAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryAddActionPerformed
+        new AddExpCategory(this, false).setVisible(true);
+    }//GEN-LAST:event_expenseCategoryAddActionPerformed
+
+    private void expenseCategoryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expenseCategoryTableMouseClicked
+        int selectedRow = expenseCategoryTable.getSelectedRow();
+        ExpenseCategoryModel model = (ExpenseCategoryModel) expenseCategoryTable.getModel();
+        ExpenseCategoryDto expenseCategory = model.getExpenseCategoryAt(selectedRow);
+
+        if (expenseCategory.getCategoryType() != null) {
+            expenseCategoryTypeCB.setSelectedItem(expenseCategory.getCategoryType());
+        }
+    }//GEN-LAST:event_expenseCategoryTableMouseClicked
+
+    private void billCategoryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_billCategoryTableMouseClicked
+        int selectedRow = billCategoryTable.getSelectedRow();
+        BillCategoryModel model = (BillCategoryModel) billCategoryTable.getModel();
+        BillCategoryDto billCategory = model.getBillCategoryAt(selectedRow);
+
+        if (billCategory.getCategoryType() != null) {
+            billCategoryTypeCB.setSelectedItem(billCategory.getCategoryType());
+        }
+    }//GEN-LAST:event_billCategoryTableMouseClicked
+
+    private void expenseCategoryTypeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryTypeCBActionPerformed
+        int selectedRow = expenseCategoryTable.getSelectedRow();
+        ExpenseCategoryModel model = (ExpenseCategoryModel) expenseCategoryTable.getModel();
+        ExpenseCategoryDto expCategory = model.getExpenseCategoryAt(selectedRow);
+
+        CategoryTypeComboBoxModel expModel = (CategoryTypeComboBoxModel) expenseCategoryTypeCB.getModel();
+        CategoryTypeDto categoryType = (CategoryTypeDto) expModel.getSelectedItem();
+
+        Optional<ExpenseCategoryDto> setExpenseCategoryType = ExpenseCategoryHandler.getInstance().setExpenseCategoryType(expCategory, categoryType);
+        if (setExpenseCategoryType.isPresent()) {
+            expCategory.setCategoryType(categoryType);
+            model.fireTableDataChanged();
+        }
+    }//GEN-LAST:event_expenseCategoryTypeCBActionPerformed
+
+    private void billCategoryTypeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billCategoryTypeCBActionPerformed
+        int selectedRow = billCategoryTable.getSelectedRow();
+        BillCategoryModel model = (BillCategoryModel) billCategoryTable.getModel();
+        BillCategoryDto billCategory = model.getBillCategoryAt(selectedRow);
+
+        CategoryTypeComboBoxModel billModel = (CategoryTypeComboBoxModel) billCategoryTypeCB.getModel();
+        CategoryTypeDto categoryType = (CategoryTypeDto) billModel.getSelectedItem();
+
+        Optional<BillCategoryDto> setBillCategoryType = BillCategoryHandler.getInstance().setBillCategoryType(billCategory, categoryType);
+        if (setBillCategoryType.isPresent()) {
+            billCategory.setCategoryType(categoryType);
+            model.fireTableDataChanged();
+        }
+    }//GEN-LAST:event_billCategoryTypeCBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -256,20 +336,21 @@ public class CategoryHandler extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CategoryHandler.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CategoryEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CategoryHandler.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CategoryEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CategoryHandler.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CategoryEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CategoryHandler.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CategoryEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CategoryHandler dialog = new CategoryHandler(new javax.swing.JFrame(), true);
+                CategoryEditor dialog = new CategoryEditor(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

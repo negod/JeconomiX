@@ -293,7 +293,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_importCompanyMenuItemActionPerformed
 
     private void expenseCategoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryMenuItemActionPerformed
-        new CategoryHandler(this, Boolean.TRUE).setVisible(true);
+        new CategoryEditor(this, Boolean.TRUE).setVisible(true);
     }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
 
     private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed

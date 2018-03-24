@@ -17,7 +17,7 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="category_type" type="varchar(200)" >
-                <constraints nullable="true" unique="true"/>
+                <constraints nullable="true" unique="false"/>
             </column>
         </createTable>
         

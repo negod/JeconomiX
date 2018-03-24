@@ -8,6 +8,8 @@ package se.backede.jeconomix.database;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
+import com.negod.generics.persistence.update.ObjectUpdate;
+import com.negod.generics.persistence.update.UpdateType;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.database.dao.ExpenseCategoryDao;
 import se.backede.jeconomix.database.entity.ExpenseCategory;
+import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**
  *
@@ -23,25 +26,25 @@ import se.backede.jeconomix.database.entity.ExpenseCategory;
  */
 @Slf4j
 public class ExpenseCategoryHandler {
-
+    
     ExpenseCategoryDao dao = new ExpenseCategoryDao();
     DtoEntityBaseMapper<ExpenseCategoryDto, ExpenseCategory> mapper = new DtoEntityBaseMapper(ExpenseCategoryDto.class, ExpenseCategory.class);
-
-    private static final ExpenseCategoryHandler companyHandler = new ExpenseCategoryHandler();
-
+    
+    private static final ExpenseCategoryHandler handler = new ExpenseCategoryHandler();
+    
     protected ExpenseCategoryHandler() {
     }
-
+    
     public static final ExpenseCategoryHandler getInstance() {
-        return companyHandler;
+        return handler;
     }
-
+    
     public Optional<ExpenseCategoryDto> getById(String id) {
         try {
             dao.startTransaction();
             Optional<ExpenseCategory> byId = dao.getById(id);
             dao.commitTransaction();
-
+            
             if (byId.isPresent()) {
                 return mapper.mapFromEntityToDto(byId.get());
             }
@@ -50,7 +53,7 @@ public class ExpenseCategoryHandler {
         }
         return Optional.empty();
     }
-
+    
     public Optional<ExpenseCategoryDto> createExpenseCategory(ExpenseCategoryDto company) {
         Optional<ExpenseCategory> entity = mapper.mapFromDtoToEntity(company);
         if (entity.isPresent()) {
@@ -58,18 +61,18 @@ public class ExpenseCategoryHandler {
                 dao.startTransaction();
                 Optional<ExpenseCategory> persist = dao.persist(entity.get());
                 dao.commitTransaction();
-
+                
                 if (persist.isPresent()) {
                     return mapper.mapFromEntityToDto(entity.get());
                 }
-
+                
             } catch (DaoException | ConstraintException ex) {
                 log.error("Error when persisting expense category", ex);
             }
         }
         return Optional.empty();
     }
-
+    
     public Optional<List<ExpenseCategoryDto>> getAllExpenseCategories() {
         try {
             Optional<List<ExpenseCategory>> all = dao.getAll();
@@ -80,5 +83,31 @@ public class ExpenseCategoryHandler {
             log.error("Error when getting expenseCategories", e);
         }
         return Optional.empty();
+    }
+    
+    public Optional<ExpenseCategoryDto> setExpenseCategoryType(ExpenseCategoryDto expCategory, CategoryTypeDto categoryType) {
+        
+        if (categoryType != null) {
+            ObjectUpdate update = new ObjectUpdate();
+            update.setObject("categoryType");
+            update.setType(UpdateType.UPDATE);
+            update.setObjectId(categoryType.getId());
+            
+            try {
+                dao.startTransaction();
+                Optional<ExpenseCategory> expenseCategory = dao.update(expCategory.getId(), update);
+                dao.commitTransaction();
+                
+                if (expenseCategory.isPresent()) {
+                    return mapper.mapFromEntityToDto(expenseCategory.get());
+                }
+                
+            } catch (DaoException ex) {
+                log.error("Error when updating expense category");
+            }
+        }
+        
+        return Optional.empty();
+        
     }
 }

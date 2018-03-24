@@ -10,5 +10,5 @@ package se.backede.jeconomix.constants;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public enum CategoryTypeType {
-    INCOME, EXPENSE;
+    INCOME, EXPENSE, TRANSFER;
 }

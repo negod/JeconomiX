@@ -32,6 +32,12 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
         registerAsObserver();
     }
 
+    public AddExpCategory(java.awt.Dialog parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        registerAsObserver();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -185,7 +191,7 @@ public class AddExpCategory extends javax.swing.JDialog implements EventObserver
 
     @Override
     public void update(NegodEvent event) {
-        
+
     }
 
     @Override
