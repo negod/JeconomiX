@@ -26,12 +26,13 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ReportDto;
-import se.backede.jeconomix.dto.TransactionDto;
-import se.backede.jeconomix.models.table.TransactionReportModel;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.TransactionReportDto;
+import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.database.CategoryHandler;
+import se.backede.jeconomix.dto.TransactionReportDto;
+import se.backede.jeconomix.models.table.TransactionReportModel;
 
 /**
  *
@@ -47,16 +48,15 @@ public class TransactionReport extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        List<ReportDto> calculatedReport = getCalculatedReport(type);
+        List<TransactionReportDto> calculatedReport = getCalculatedReport(type);
 
         setTableData(calculatedReport);
         addLineChart(calculatedReport);
-
     }
 
-    public void addLineChart(List<ReportDto> reports) {
+    public void addLineChart(List<TransactionReportDto> reports) {
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total expenses",
+                "Total bills",
                 "Month", "Kronor",
                 createDataset(reports),
                 PlotOrientation.VERTICAL,
@@ -68,11 +68,7 @@ public class TransactionReport extends javax.swing.JDialog {
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
 
-    public void addLineToCreatedChart() {
-
-    }
-
-    private DefaultCategoryDataset createDataset(List<ReportDto> reports) {
+    private DefaultCategoryDataset createDataset(List<TransactionReportDto> reports) {
 
         String sumLineTitle = "Total Kr";
         String averageLineTitle = "Average Kr";
@@ -88,7 +84,7 @@ public class TransactionReport extends javax.swing.JDialog {
 
         for (Month month : monthList) {
             BigDecimal currentSum = sums.get(month);
-            for (ReportDto report : reports) {
+            for (TransactionReportDto report : reports) {
                 BigDecimal get = report.getMonthReport().get(month);
                 if (get != null) {
                     presentMonths.add(month);
@@ -137,7 +133,7 @@ public class TransactionReport extends javax.swing.JDialog {
         return dataset;
     }
 
-    public void setTableData(List<ReportDto> calculatedReport) {
+    public void setTableData(List<TransactionReportDto> calculatedReport) {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
 
@@ -150,15 +146,15 @@ public class TransactionReport extends javax.swing.JDialog {
 
     }
 
-    public List<ReportDto> getCalculatedReport(CategoryTypeEnum type) {
+    public List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type) {
 
-        List<ReportDto> transactionReports = new LinkedList<>();
-        Optional<List<CategoryDto>> allExpenseCategories = CategoryHandler.getInstance().getFilteredCategories(type);
-        if (allExpenseCategories.isPresent()) {
+        List<TransactionReportDto> transactionReports = new LinkedList<>();
+        Optional<List<CategoryDto>> allBillCategories = CategoryHandler.getInstance().getFilteredCategories(type);
+        if (allBillCategories.isPresent()) {
 
-            for (CategoryDto expenseCategoryDto : allExpenseCategories.get()) {
-                ReportDto report = new ReportDto();
-                Set<CompanyDto> company = expenseCategoryDto.getCompany();
+            for (CategoryDto billCategoryDto : allBillCategories.get()) {
+                TransactionReportDto report = new TransactionReportDto();
+                Set<CompanyDto> company = billCategoryDto.getCompany();
 
                 BigDecimal sum = BigDecimal.valueOf(0);
                 for (CompanyDto companyDto : company) {
@@ -186,7 +182,7 @@ public class TransactionReport extends javax.swing.JDialog {
                     }
                 }
                 report.setSum(sum);
-                report.setCategory(expenseCategoryDto.getName());
+                report.setCategory(billCategoryDto.getName());
                 transactionReports.add(report);
             }
         }
@@ -265,10 +261,66 @@ public class TransactionReport extends javax.swing.JDialog {
     private void reportTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reportTableMouseClicked
         int selectedRow = reportTable.getSelectedRow();
         TransactionReportModel model = (TransactionReportModel) reportTable.getModel();
-        ReportDto transactionAt = model.getTransactionAt(selectedRow);
-        new SingleExpenseReport(null, true, transactionAt).setVisible(true);
+        TransactionReportDto transactionAt = model.getTransactionAt(selectedRow);
+        new SingleTransactionReport(null, true, transactionAt).setVisible(true);
     }//GEN-LAST:event_reportTableMouseClicked
 
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TransactionReport.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TransactionReport.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TransactionReport.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TransactionReport.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                TransactionReport dialog = new TransactionReport(new javax.swing.JFrame(), true, CategoryTypeEnum.EXPENSE);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

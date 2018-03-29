@@ -8,7 +8,10 @@ package se.backede.jeconomix.models.table;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.table.AbstractTableModel;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 
 /**
@@ -20,8 +23,18 @@ public class CategoryModel extends AbstractTableModel {
     private LinkedList<CategoryDto> categories;
     private BigDecimal sum = BigDecimal.valueOf(0);
 
-    public CategoryModel(List<CategoryDto> categories) {
-        this.categories = new LinkedList<CategoryDto>(categories);
+    public CategoryModel(CategoryTypeEnum category) {
+        Optional<List<CategoryDto>> filteredCategories = CategoryHandler.getInstance().getFilteredCategories(category);
+        if (filteredCategories.isPresent()) {
+            this.categories = new LinkedList<>(filteredCategories.get());
+        }
+    }
+
+    public CategoryModel() {
+        Optional<List<CategoryDto>> filteredCategories = CategoryHandler.getInstance().getAllCategories();
+        if (filteredCategories.isPresent()) {
+            this.categories = new LinkedList<>(filteredCategories.get());
+        }
     }
 
     @Override

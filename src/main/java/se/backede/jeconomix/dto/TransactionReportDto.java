@@ -20,7 +20,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BillReportDto {
+public class TransactionReportDto {
 
     String category;
     Map<Month, BigDecimal> monthReport = new HashMap<Month, BigDecimal>();

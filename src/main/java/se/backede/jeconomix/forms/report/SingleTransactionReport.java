@@ -27,7 +27,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ReportDto;
+import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
@@ -37,12 +37,12 @@ import se.backede.jeconomix.renderer.combobox.CompanyComboBoxRenderer;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class SingleExpenseReport extends javax.swing.JDialog {
+public class SingleTransactionReport extends javax.swing.JDialog {
 
     /**
-     * Creates new form SingleExpenseReport
+     * Creates new form SingleTransactionReport
      */
-    ReportDto reports;
+    TransactionReportDto reports;
     Set<CompanyDto> companyList = new HashSet<CompanyDto>();
     Set<Integer> years = new HashSet<Integer>();
     SortedSet<Month> months = new TreeSet<Month>();
@@ -51,7 +51,7 @@ public class SingleExpenseReport extends javax.swing.JDialog {
     private final String ALL_YEARS = "All years";
     private final String ALL_COMPANIES = "All companies";
 
-    public SingleExpenseReport(java.awt.Frame parent, boolean modal, ReportDto reports) {
+    public SingleTransactionReport(java.awt.Frame parent, boolean modal, TransactionReportDto reports) {
         super(parent, modal);
         this.reports = reports;
         initComponents();
@@ -112,7 +112,7 @@ public class SingleExpenseReport extends javax.swing.JDialog {
         companyComboBox.setRenderer(new CompanyComboBoxRenderer());
     }
 
-    public void addLineChart(ReportDto reports) {
+    public void addLineChart(TransactionReportDto reports) {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Total expenses",
                 "Month", "Kronor",
@@ -201,7 +201,7 @@ public class SingleExpenseReport extends javax.swing.JDialog {
 
     }
 
-    private DefaultCategoryDataset createDataset(ReportDto reports) {
+    private DefaultCategoryDataset createDataset(TransactionReportDto reports) {
 
         String lineTitle = "Kronor";
 

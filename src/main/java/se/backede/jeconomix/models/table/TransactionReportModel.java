@@ -10,7 +10,7 @@ import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import se.backede.jeconomix.dto.ReportDto;
+import se.backede.jeconomix.dto.TransactionReportDto;
 
 /**
  *
@@ -18,11 +18,11 @@ import se.backede.jeconomix.dto.ReportDto;
  */
 public class TransactionReportModel extends AbstractTableModel {
 
-    private LinkedList<ReportDto> reports;
+    private LinkedList<TransactionReportDto> reports;
     private BigDecimal sum = BigDecimal.valueOf(0);
 
-    public TransactionReportModel(List<ReportDto> reports) {
-        this.reports = new LinkedList<ReportDto>(reports);
+    public TransactionReportModel(List<TransactionReportDto> reports) {
+        this.reports = new LinkedList<TransactionReportDto>(reports);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TransactionReportModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = "";
-        ReportDto report = reports.get(rowIndex);
+        TransactionReportDto report = reports.get(rowIndex);
         switch (columnIndex) {
             case 0:
                 value = report.getCategory();
@@ -221,7 +221,7 @@ public class TransactionReportModel extends AbstractTableModel {
      * @param row
      * @return
      */
-    public ReportDto getTransactionAt(int row) {
+    public TransactionReportDto getTransactionAt(int row) {
         return reports.get(row);
     }
 
