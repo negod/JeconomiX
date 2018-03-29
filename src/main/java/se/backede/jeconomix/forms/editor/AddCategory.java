@@ -7,14 +7,18 @@ package se.backede.jeconomix.forms.editor;
 
 import java.util.Optional;
 import javax.swing.JOptionPane;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.CategoryTypeDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.fields.CategoryValues;
+import se.backede.jeconomix.models.combobox.CategoryTypeComboBoxModel;
+import se.backede.jeconomix.renderer.combobox.CategoryTypeComboBoxRenderer;
 
 /**
  *
@@ -29,6 +33,12 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
         super(parent, modal);
         initComponents();
         registerAsObserver();
+        setBillCategoryTypeComboBox();
+    }
+
+    public void setBillCategoryTypeComboBox() {
+        categoryTypeCB.setModel(new CategoryTypeComboBoxModel());
+        categoryTypeCB.setRenderer(new CategoryTypeComboBoxRenderer());
     }
 
     /**
@@ -44,7 +54,7 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
         categoryInputText = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        categoryTypeCB = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -56,11 +66,6 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
         categoryInputText.setToolTipText("Expense category");
 
         okButton.setText("Ok");
-        okButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                okButtonMouseClicked(evt);
-            }
-        });
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -70,7 +75,7 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setText("Add category");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        categoryTypeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setText("Category type");
 
@@ -105,7 +110,7 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(okButton))
                             .addComponent(jLabel3)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(categoryTypeCB, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jLabel1)))
@@ -123,7 +128,7 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(categoryTypeCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -149,6 +154,10 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
         Dto data = new Dto(CategoryValues.class);
         CategoryDto dto = new CategoryDto();
         dto.setName(categoryInputText.getText());
+
+        CategoryTypeComboBoxModel catModel = (CategoryTypeComboBoxModel) categoryTypeCB.getModel();
+        dto.setCategoryType((CategoryTypeDto) catModel.getSelectedItem());
+
         Optional<CategoryDto> createCategory = CategoryHandler.getInstance().createCategory(dto);
         if (createCategory.isPresent()) {
             data.set(CategoryValues.CATEGORY_DTO, createCategory.get());
@@ -162,10 +171,6 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void okButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_okButtonMouseClicked
-
-    }//GEN-LAST:event_okButtonMouseClicked
 
     private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseClicked
         // TODO add your handling code here:
@@ -237,7 +242,7 @@ public class AddCategory extends javax.swing.JDialog implements EventObserver {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextField categoryInputText;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> categoryTypeCB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

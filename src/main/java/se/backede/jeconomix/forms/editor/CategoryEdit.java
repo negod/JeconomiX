@@ -35,14 +35,14 @@ public class CategoryEdit extends javax.swing.JPanel {
         this.TYPE = type;
         initComponents();
         setExpenseCategoryTableData(TYPE);
-        setBillCategoryTypeComboBox(TYPE);
+        setBillCategoryTypeComboBox();
     }
 
     public void setExpenseCategoryTableData(CategoryTypeEnum type) {
         categoryTable.setModel(new CategoryModel(TYPE));
     }
 
-    public void setBillCategoryTypeComboBox(CategoryTypeEnum type) {
+    public void setBillCategoryTypeComboBox() {
         categoryTypeCB.setModel(new CategoryTypeComboBoxModel());
         categoryTypeCB.setRenderer(new CategoryTypeComboBoxRenderer());
     }
