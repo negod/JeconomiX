@@ -22,6 +22,6 @@ public class CompanyExportDto {
     private String id;
     private Date updatedDate;
     private String name;
-    private String expenseCategory;
+    private String category;
 
 }

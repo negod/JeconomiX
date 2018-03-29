@@ -5,31 +5,23 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.entity.GenericEntity_;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
-import com.negod.generics.persistence.search.GenericFilter;
 import com.negod.generics.persistence.update.ObjectUpdate;
 import com.negod.generics.persistence.update.UpdateType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ExpenseCategoryDto;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Transaction;
-import se.backede.jeconomix.database.entity.search.CompanySearch;
-import se.backede.jeconomix.dto.BillCategoryDto;
+import se.backede.jeconomix.dto.CategoryDto;
 
 /**
  *
@@ -131,7 +123,7 @@ public class CompanyHandler {
         return Optional.empty();
     }
 
-    public Optional<CompanyDto> setExpenseCategory(CompanyDto companyDto, ExpenseCategoryDto expenseCategory) {
+    public Optional<CompanyDto> setExpenseCategory(CompanyDto companyDto, CategoryDto expenseCategory) {
         if (expenseCategory != null) {
             ObjectUpdate update = new ObjectUpdate();
             update.setObject("expenseCategory");
@@ -156,7 +148,7 @@ public class CompanyHandler {
 
     }
 
-    public Optional<CompanyDto> setBillCategory(CompanyDto companyDto, BillCategoryDto billCategory) {
+    public Optional<CompanyDto> setBillCategory(CompanyDto companyDto, CategoryDto billCategory) {
 
         if (billCategory != null) {
             ObjectUpdate update = new ObjectUpdate();

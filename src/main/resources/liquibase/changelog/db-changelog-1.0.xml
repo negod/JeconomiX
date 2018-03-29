@@ -5,12 +5,21 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     
     <!-- tables -->
+    
+    <!-- Bill and expenses -->
     <include file="tables/category_type.xml" relativeToChangelogFile="true"/>
-    <include file="tables/bill_category.xml" relativeToChangelogFile="true"/>
-    <include file="tables/expense_category.xml" relativeToChangelogFile="true"/>
-
+    <include file="tables/category.xml" relativeToChangelogFile="true"/>
     <include file="tables/company.xml" relativeToChangelogFile="true"/>
     <include file="tables/transaction.xml" relativeToChangelogFile="true"/>
+    
+    <!--include file="tables/budget_bill.xml" relativeToChangelogFile="true"/-->
+    <!--include file="tables/budget_expense.xml" relativeToChangelogFile="true"/-->
+    
+    <!-- Budget -->
+    <!--include file="tables/budget.xml" relativeToChangelogFile="true"/-->
+    <!--include file="tables/budget_budget_bill.xml" relativeToChangelogFile="true"/-->
+    <!--include file="tables/budget_budget_expense.xml" relativeToChangelogFile="true"/-->
+    
     
     <include file="script/script_init.xml" relativeToChangelogFile="true"/>
     

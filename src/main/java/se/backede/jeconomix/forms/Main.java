@@ -5,20 +5,23 @@
  */
 package se.backede.jeconomix.forms;
 
+import se.backede.jeconomix.forms.report.TransactionReport;
+import se.backede.jeconomix.forms.importexport.FileChooser;
+import se.backede.jeconomix.forms.editor.CompanyEditor;
+import se.backede.jeconomix.forms.editor.CategoryEditor;
 import java.util.Optional;
 import javax.swing.JFileChooser;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.exporter.BillCategoryExporter;
+import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
-import se.backede.jeconomix.exporter.ExpenseCategoryExporter;
-import se.backede.jeconomix.importer.BillCategoryImporter;
+import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.importer.CompanyImporter;
-import se.backede.jeconomix.importer.ExpenseCategoryImporter;
 import se.backede.jeconomix.importer.TransactionImporter;
 
 /**
@@ -52,6 +55,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        budgetQuarter1 = new se.backede.jeconomix.forms.BudgetQuarter();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -59,8 +63,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         importExpensesMenuItem = new javax.swing.JMenuItem();
         importBillMenuItem = new javax.swing.JMenuItem();
         importMenu = new javax.swing.JMenu();
-        importExpCatMenuitem = new javax.swing.JMenuItem();
-        importBillCatMenuItem = new javax.swing.JMenuItem();
+        importCategoriesMenuItem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         exportCompanies = new javax.swing.JMenuItem();
@@ -79,6 +82,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("JeconomiX");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -115,21 +119,13 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
         importMenu.setText("Listdata");
 
-        importExpCatMenuitem.setText("Expense categories");
-        importExpCatMenuitem.addActionListener(new java.awt.event.ActionListener() {
+        importCategoriesMenuItem.setText("Categories");
+        importCategoriesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importExpCatMenuitemActionPerformed(evt);
+                importCategoriesMenuItemActionPerformed(evt);
             }
         });
-        importMenu.add(importExpCatMenuitem);
-
-        importBillCatMenuItem.setText("Bill Categories");
-        importBillCatMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importBillCatMenuItemActionPerformed(evt);
-            }
-        });
-        importMenu.add(importBillCatMenuItem);
+        importMenu.add(importCategoriesMenuItem);
 
         importCompanyMenuItem.setText("Companies");
         importCompanyMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -243,11 +239,17 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 829, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 623, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -266,16 +268,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             TransactionImporter.getInstance().importExpensesFromCSV(csvFilePath.get(), this);
         }
     }//GEN-LAST:event_importExpensesMenuItemActionPerformed
-
-    private void importExpCatMenuitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpCatMenuitemActionPerformed
-        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
-        if (filePath.isPresent()) {
-            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
-            progressBar.setLocationRelativeTo(this);
-            progressBar.setVisible(true);
-            ExpenseCategoryImporter.getInstance().importExpenseCategories(filePath.get());
-        }
-    }//GEN-LAST:event_importExpCatMenuitemActionPerformed
 
     private void importCompanyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCompanyMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
@@ -297,7 +289,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
 
     private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed
-        new ExpenseReport(this, true).setVisible(true);
+        new TransactionReport(this, true, CategoryTypeEnum.EXPENSE).setVisible(true);
     }//GEN-LAST:event_expenseReportMenuItemActionPerformed
 
     private void reindecLuceneMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reindecLuceneMenuItemActionPerformed
@@ -326,7 +318,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
 
-            ExpenseCategoryExporter.getInstance().exportExpenseCategories(filePath.get() + "//expense_categories.xml");
+            CategoryExporter.getInstance().exportCategories(filePath.get() + "//expense_categories.xml");
         }
     }//GEN-LAST:event_exportExpenseTypesActionPerformed
 
@@ -347,7 +339,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
 
-            BillCategoryExporter.getInstance().exportBillCategories(filePath.get() + "//bill_categories.xml");
+            CategoryExporter.getInstance().exportCategories(filePath.get() + "//bill_categories.xml");
         }
     }//GEN-LAST:event_exportBillTypesActionPerformed
 
@@ -355,18 +347,18 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         // TODO add your handling code here:
     }//GEN-LAST:event_exportBillsActionPerformed
 
-    private void importBillCatMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBillCatMenuItemActionPerformed
+    private void importCategoriesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCategoriesMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
         if (filePath.isPresent()) {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
-            BillCategoryImporter.getInstance().importBillCategories(filePath.get());
+            CategoryImporter.getInstance().importBillCategories(filePath.get());
         }
-    }//GEN-LAST:event_importBillCatMenuItemActionPerformed
+    }//GEN-LAST:event_importCategoriesMenuItemActionPerformed
 
     private void billReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billReportMenuItemActionPerformed
-        new BillReport(this, true).setVisible(true);
+        new TransactionReport(this, true, CategoryTypeEnum.BILL).setVisible(true);
     }//GEN-LAST:event_billReportMenuItemActionPerformed
 
     /**
@@ -413,6 +405,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem billReportMenuItem;
+    private se.backede.jeconomix.forms.BudgetQuarter budgetQuarter1;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
@@ -425,10 +418,9 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem handleCompaniesMenuItem;
     private javax.swing.JMenu handleListMenu;
-    private javax.swing.JMenuItem importBillCatMenuItem;
     private javax.swing.JMenuItem importBillMenuItem;
+    private javax.swing.JMenuItem importCategoriesMenuItem;
     private javax.swing.JMenuItem importCompanyMenuItem;
-    private javax.swing.JMenuItem importExpCatMenuitem;
     private javax.swing.JMenuItem importExpensesMenuItem;
     private javax.swing.JMenu importMenu;
     private javax.swing.JMenu importerMenu;

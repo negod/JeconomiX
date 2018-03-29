@@ -8,7 +8,6 @@ package se.backede.jeconomix.dto;
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,9 +21,7 @@ public class CompanyDto extends GenericDto {
 
     private String name;
 
-    private ExpenseCategoryDto expenseCategory;
-
-    private BillCategoryDto billCategory;
+    private CategoryDto category;
 
     private Set<TransactionDto> transactions = new HashSet<>();
 

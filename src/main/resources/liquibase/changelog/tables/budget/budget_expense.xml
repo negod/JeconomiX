@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+ 
+    <changeSet id="Create Budget Expense table" author="Joakim Backede">
+        
+        <createTable tableName="budget_expense">
+            <column name="id" type="varchar(36)" >
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="updatedDate" type="timestamp" >
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="varchar(200)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="estimatedSum" type="DECIMAL(12, 2)" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="budget_expense" cascadeConstraints="true" />
+        </rollback>
+        
+    </changeSet>
+    
+</databaseChangeLog>

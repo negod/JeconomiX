@@ -9,9 +9,9 @@ import com.backede.fileutils.xml.reader.XmlReader;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.database.ExpenseCategoryHandler;
+import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ExpenseCategoryDto;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
@@ -42,9 +42,9 @@ public class CompanyImporter {
 
                 for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
                     CompanyDto dto = CompanyMapper.mapToDto(companyExportDto);
-                    Optional<ExpenseCategoryDto> expCat = ExpenseCategoryHandler.getInstance().getById(companyExportDto.getExpenseCategory());
+                    Optional<CategoryDto> expCat = CategoryHandler.getInstance().getById(companyExportDto.getCategory());
                     if (expCat.isPresent()) {
-                        dto.setExpenseCategory(expCat.get());
+                        dto.setCategory(expCat.get());
                         CompanyHandler.getInstance().createCompany(dto);
 
                         Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());

@@ -16,30 +16,19 @@
             <column name="name" type="varchar(200)" >
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="bill_category" type="varchar(36)" >
-                <constraints nullable="true" unique="false"/>
-            </column>
-            <column name="expense_category" type="varchar(36)" >
+            <column name="category" type="varchar(36)" >
                 <constraints nullable="true" unique="false"/>
             </column>
         </createTable>
         
-        <addForeignKeyConstraint baseColumnNames="bill_category"
+        <addForeignKeyConstraint baseColumnNames="category"
                                  baseTableName="company"
-                                 constraintName="bill_category_fk"                                 
+                                 constraintName="company_category_fk"                                 
                                  referencedColumnNames="id"
-                                 referencedTableName="bill_category"
+                                 referencedTableName="category"
                                  onDelete="NO ACTION"
                                  onUpdate="RESTRICT"/>
         
-        <addForeignKeyConstraint baseColumnNames="expense_category"
-                                 baseTableName="company"
-                                 constraintName="expense_category_fk"                                 
-                                 referencedColumnNames="id"
-                                 referencedTableName="expense_category"
-                                 onDelete="NO ACTION"
-                                 onUpdate="RESTRICT"/>
-
         <rollback>
             <dropTable tableName="company" cascadeConstraints="true" />
         </rollback>

@@ -11,10 +11,10 @@ package se.backede.jeconomix.constants;
  */
 public class EntityConstants {
 
-    public static final String BILL_CATEGORY = "bill_category";
-    public static final String EXPENSE_CATEGORY = "expense_category";
+    public static final String CATEGORY = "category";
     public static final String COMPANY = "company";
     public static final String TRANSACTION = "transaction";
     public static final String CATEGORY_TYPE = "category_type";
+    public static final String BUDGET = "budget";
 
 }

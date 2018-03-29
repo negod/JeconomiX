@@ -7,8 +7,8 @@ package se.backede.jeconomix.dto.export.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.ExpenseCategoryDto;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 
 /**
@@ -22,7 +22,7 @@ public class CompanyMapper {
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
-        dto.setExpenseCategory(input.getExpenseCategory().getId());
+        dto.setCategory(input.getCategory().getId());
         return dto;
     }
 
@@ -31,8 +31,8 @@ public class CompanyMapper {
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
-        ExpenseCategoryDto expDto = new ExpenseCategoryDto();
-        expDto.setId(input.getExpenseCategory());
+        CategoryDto expDto = new CategoryDto();
+        expDto.setId(input.getCategory());
         return dto;
     }
 

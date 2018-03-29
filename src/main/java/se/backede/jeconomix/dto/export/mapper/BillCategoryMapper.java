@@ -7,8 +7,8 @@ package se.backede.jeconomix.dto.export.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import se.backede.jeconomix.dto.BillCategoryDto;
-import se.backede.jeconomix.dto.export.BillCategoryExportDto;
+import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.export.CategoryExportDto;
 
 /**
  *
@@ -16,34 +16,34 @@ import se.backede.jeconomix.dto.export.BillCategoryExportDto;
  */
 public class BillCategoryMapper {
     
-    public static BillCategoryExportDto mapToExportDto(BillCategoryDto input) {
-        BillCategoryExportDto dto = new BillCategoryExportDto();
+    public static CategoryExportDto mapToExportDto(CategoryDto input) {
+        CategoryExportDto dto = new CategoryExportDto();
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
         return dto;
     }
 
-    public static BillCategoryDto mapToDto(BillCategoryExportDto input) {
-        BillCategoryDto dto = new BillCategoryDto();
+    public static CategoryDto mapToDto(CategoryExportDto input) {
+        CategoryDto dto = new CategoryDto();
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
-        BillCategoryDto expDto = new BillCategoryDto();
+        CategoryDto expDto = new CategoryDto();
         return dto;
     }
 
-    public static List<BillCategoryExportDto> mapToExportDto(List<BillCategoryDto> dto) {
-        List<BillCategoryExportDto> expList = new ArrayList<>();
-        for (BillCategoryDto companyDto : dto) {
+    public static List<CategoryExportDto> mapToExportDto(List<CategoryDto> dto) {
+        List<CategoryExportDto> expList = new ArrayList<>();
+        for (CategoryDto companyDto : dto) {
             expList.add(mapToExportDto(companyDto));
         }
         return expList;
     }
 
-    public static List<BillCategoryDto> mapToDto(List<BillCategoryExportDto> dto) {
-        List<BillCategoryDto> expList = new ArrayList<>();
-        for (BillCategoryExportDto companyDto : dto) {
+    public static List<CategoryDto> mapToDto(List<CategoryExportDto> dto) {
+        List<CategoryDto> expList = new ArrayList<>();
+        for (CategoryExportDto companyDto : dto) {
             expList.add(mapToDto(companyDto));
         }
         return expList;

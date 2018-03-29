@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+ 
+    <changeSet id="Create company Table" author="Joakim Backede">
+        
+        <createTable tableName="budget">
+            <column name="id" type="varchar(36)" >
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="updatedDate" type="timestamp" >
+                <constraints nullable="false" />
+            </column>
+            <column name="year" type="integer" >
+                <constraints nullable="false" unique="true"/>
+            </column>           
+            <column name="month" type="varchar(8)" >
+                <constraints nullable="true" unique="true"/>
+            </column>
+        </createTable>
+        
+        <addUniqueConstraint columnNames="year, month"
+                             constraintName="year_month_unique_constraint"
+                             initiallyDeferred="true"
+                             tableName="budget"/>
+        
+        <rollback>
+            <dropTable tableName="budget" cascadeConstraints="true" />
+        </rollback>
+        
+    </changeSet>
+    
+</databaseChangeLog>

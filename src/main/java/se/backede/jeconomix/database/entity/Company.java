@@ -58,12 +58,8 @@ public class Company extends GenericEntity {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "expense_category", referencedColumnName = "id")
-    private ExpenseCategory expenseCategory;
-
-    @ManyToOne
-    @JoinColumn(name = "bill_category", referencedColumnName = "id")
-    private BillCategory billCategory;
+    @JoinColumn(name = "category", referencedColumnName = "id")
+    private Category category;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Transaction> transactions = new HashSet<>();

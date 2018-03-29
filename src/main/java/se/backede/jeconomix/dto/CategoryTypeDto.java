@@ -8,7 +8,7 @@ package se.backede.jeconomix.dto;
 import com.negod.generics.persistence.dto.GenericDto;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.constants.CategoryTypeType;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 
 /**
  *
@@ -18,6 +18,6 @@ import se.backede.jeconomix.constants.CategoryTypeType;
 @Setter
 public class CategoryTypeDto extends GenericDto {
 
-    private CategoryTypeType type;
+    private CategoryTypeEnum type;
 
 }

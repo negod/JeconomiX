@@ -6,8 +6,10 @@
 package se.backede.jeconomix.models.combobox;
 
 import java.util.List;
+import java.util.Optional;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
+import se.backede.jeconomix.database.CategoryTypeHandler;
 import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**
@@ -19,8 +21,11 @@ public class CategoryTypeComboBoxModel extends AbstractListModel implements Comb
     List<CategoryTypeDto> categoryTypes;
     CategoryTypeDto selection = null;
 
-    public CategoryTypeComboBoxModel(List<CategoryTypeDto> categoryTypes) {
-        this.categoryTypes = categoryTypes;
+    public CategoryTypeComboBoxModel() {
+        Optional<List<CategoryTypeDto>> allCategoryTypes = CategoryTypeHandler.getInstance().getAllCategoryTypes();
+        if (allCategoryTypes.isPresent()) {
+            this.categoryTypes = allCategoryTypes.get();
+        }
     }
 
     @Override

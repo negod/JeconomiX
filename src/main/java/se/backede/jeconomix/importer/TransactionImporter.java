@@ -26,8 +26,8 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.events.Events;
-import se.backede.jeconomix.forms.ImportBill;
-import se.backede.jeconomix.forms.ImportExpense;
+import se.backede.jeconomix.forms.importexport.ImportBill;
+import se.backede.jeconomix.forms.importexport.ImportExpense;
 
 /**
  *

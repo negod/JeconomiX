@@ -28,9 +28,9 @@ public class CompanyModel extends AbstractTableModel {
             case 0:
                 return "Company";
             case 1:
-                return "Expense category";
+                return "Category";
             case 2:
-                return "Bill category";
+                return "Category type";
         }
         return "";
     }
@@ -54,13 +54,15 @@ public class CompanyModel extends AbstractTableModel {
                 value = company.getName();
                 break;
             case 1:
-                if (company.getExpenseCategory() != null) {
-                    value = company.getExpenseCategory().getName();
+                if (company.getCategory() != null) {
+                    value = company.getCategory().getName();
                 }
                 break;
             case 2:
-                if (company.getBillCategory()!= null) {
-                    value = company.getBillCategory().getName();
+                if (company.getCategory() != null) {
+                    if (company.getCategory().getCategoryType() != null) {
+                        value = company.getCategory().getCategoryType().getType().name();
+                    }
                 }
                 break;
         }

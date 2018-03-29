@@ -17,7 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.constants.CategoryTypeType;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.EntityConstants;
 
 /**
@@ -32,12 +32,9 @@ public class CategoryType extends GenericEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "name")
-    private CategoryTypeType type;
+    private CategoryTypeEnum type;
 
     @OneToMany(mappedBy = "categoryType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<ExpenseCategory> expenseCategory;
-
-    @OneToMany(mappedBy = "categoryType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<BillCategory> billCategory;
+    private Set<Category> category;
 
 }

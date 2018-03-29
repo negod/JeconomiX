@@ -10,5 +10,5 @@ package se.backede.jeconomix.event.events.fields;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public enum CategoryValues {
-    BILL_CATEGORY_DTO, EXPENSE_CATEGORY_DTO;
+    CATEGORY_DTO;
 }

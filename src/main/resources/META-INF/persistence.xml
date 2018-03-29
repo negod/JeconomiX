@@ -3,11 +3,16 @@
   <persistence-unit name="TestPu" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <class>se.backede.jeconomix.database.entity.Transaction</class>
-    <class>se.backede.jeconomix.database.entity.ExpenseCategory</class>
+    <class>se.backede.jeconomix.database.entity.Category</class>
     <class>se.backede.jeconomix.database.entity.CompanyType</class>
     <class>se.backede.jeconomix.database.entity.Company</class>
     <class>se.backede.jeconomix.database.entity.CategoryType</class>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <!--class>se.backede.jeconomix.database.entity.budget.BudgetExpense</class>
+    <class>se.backede.jeconomix.database.entity.budget.BudgetBudgetExpense</class>
+    <class>se.backede.jeconomix.database.entity.budget.Budget</class>
+    <class>se.backede.jeconomix.database.entity.budget.BudgetCategory</class>
+    <class>se.backede.jeconomix.database.entity.budget.BudgetBudgetCategory</class-->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <!-- CONFIGURE LUCENE -->
       <property name="hibernate.search.default.directory_provider" value="filesystem"/>
