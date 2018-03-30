@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 
 /**
  *
@@ -16,7 +17,6 @@ import javax.persistence.PersistenceContext;
  */
 public class PersistenceHandler {
 
-    @PersistenceContext
     private static EntityManager em;
     private static EntityManagerFactory emf;
 

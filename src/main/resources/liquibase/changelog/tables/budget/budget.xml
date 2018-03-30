@@ -14,22 +14,24 @@
                 <constraints nullable="false" />
             </column>
             <column name="year" type="integer" >
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>           
             <column name="month" type="varchar(8)" >
-                <constraints nullable="true" unique="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
-        
-        <addUniqueConstraint columnNames="year, month"
-                             constraintName="year_month_unique_constraint"
-                             initiallyDeferred="true"
-                             tableName="budget"/>
         
         <rollback>
             <dropTable tableName="budget" cascadeConstraints="true" />
         </rollback>
         
+    </changeSet>
+    
+    <changeSet id="add combined Unique constraint" author="Joakim Backede">
+        <addUniqueConstraint columnNames="year, month"
+                             constraintName="year_month_unique_constraint"
+                             initiallyDeferred="true"
+                             tableName="budget"/>
     </changeSet>
     
 </databaseChangeLog>

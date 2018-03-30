@@ -33,7 +33,6 @@ public class CompanyHandler {
     CompanyDao dao = new CompanyDao();
     DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
     DtoEntityBaseMapper<TransactionDto, Transaction> transactionMapper = new DtoEntityBaseMapper(TransactionDto.class, Transaction.class);
-    TransactionHandler transactionHandler = new TransactionHandler();
 
     private static final CompanyHandler companyHandler = new CompanyHandler();
 

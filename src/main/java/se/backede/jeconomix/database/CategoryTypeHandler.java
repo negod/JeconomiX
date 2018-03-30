@@ -5,17 +5,13 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
-import static java.lang.StrictMath.log;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.dao.CategoryTypeDao;
-import se.backede.jeconomix.database.entity.Category;
 import se.backede.jeconomix.database.entity.CategoryType;
-import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**

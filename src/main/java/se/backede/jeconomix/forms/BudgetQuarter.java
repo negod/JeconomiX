@@ -5,17 +5,26 @@
  */
 package se.backede.jeconomix.forms;
 
+import java.time.Month;
+
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class BudgetQuarter extends javax.swing.JPanel {
-
+    
     /**
      * Creates new form BudgetQuarter
      */
     public BudgetQuarter() {
         initComponents();
+        setUpData();
+    }
+
+    public void setUpData() {
+        budgetMonth1.setMonth(Month.JANUARY, 2018);
+        budgetMonth2.setMonth(Month.FEBRUARY, 2018);
+        budgetMonth3.setMonth(Month.MARCH, 2018);
     }
 
     /**

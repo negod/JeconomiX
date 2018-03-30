@@ -17,10 +17,10 @@ import se.backede.jeconomix.dto.CategoryDto;
  */
 @Getter
 @Setter
-public class BudgetCategoryDto extends GenericDto {
+public class BudgetExpenseDto extends GenericDto {
 
-    private String name;
-    private BigDecimal estimatedSum;
-    private CategoryDto billCategory;
+    private BigDecimal estimatedsum;
+    private BudgetDto budget;
+    private CategoryDto category;
 
 }

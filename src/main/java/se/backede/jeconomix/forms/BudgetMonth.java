@@ -5,7 +5,19 @@
  */
 package se.backede.jeconomix.forms;
 
-import se.backede.jeconomix.dto.budget.BudgetDto;
+import java.math.BigDecimal;
+import java.time.Month;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.models.combobox.CategoryComboModel;
+import se.backede.jeconomix.models.table.BudgetModel;
+import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
  *
@@ -20,14 +32,31 @@ public class BudgetMonth extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setMonth(BudgetDto month) {
+    public void setMonth(Month month, Integer year) {
+        monthLabel.setText(month.name());
 
-        monthLabel.setText(month.getMonth().name());
+        billTable.setModel(new BudgetModel(month, year, CategoryTypeEnum.BILL));
+        setUpDropDownColumn(billTable, billTable.getColumnModel().getColumn(0), CategoryTypeEnum.BILL);
+
+        expenseTable.setModel(new BudgetModel(month, year, CategoryTypeEnum.EXPENSE));
+        setUpDropDownColumn(expenseTable, expenseTable.getColumn(CategoryTypeEnum.EXPENSE.name()), CategoryTypeEnum.EXPENSE);
+
+        incomeTable.setModel(new BudgetModel(month, year, CategoryTypeEnum.INCOME));
+        setUpDropDownColumn(incomeTable, incomeTable.getColumn(CategoryTypeEnum.INCOME.name()), CategoryTypeEnum.INCOME);
 
     }
 
-    public void test() {
+    public void setUpDropDownColumn(JTable table, TableColumn column, CategoryTypeEnum type) {
+        //Set up the editor for the sport cells.
+        JComboBox comboBox = new JComboBox();
+        comboBox.setModel(new CategoryComboModel(type));
+        comboBox.setRenderer(new CategoryItemRenderer());
+        column.setCellEditor(new DefaultCellEditor(comboBox));
 
+        //Set up tool tips for the sport cells.
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click for combo box");
+        column.setCellRenderer(renderer);
     }
 
     /**
@@ -46,6 +75,8 @@ public class BudgetMonth extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         expenseTable = new javax.swing.JTable();
         monthLabel = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         incomeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -58,21 +89,15 @@ public class BudgetMonth extends javax.swing.JPanel {
             Class[] types = new Class [] {
                 java.lang.Double.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
         });
         jScrollPane1.setViewportView(incomeTable);
         if (incomeTable.getColumnModel().getColumnCount() > 0) {
             incomeTable.getColumnModel().getColumn(0).setResizable(false);
+            incomeTable.getColumnModel().getColumn(1).setResizable(false);
         }
 
         billTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -122,6 +147,20 @@ public class BudgetMonth extends javax.swing.JPanel {
         monthLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         monthLabel.setText("JANUARY");
 
+        jButton1.setText("+");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("-");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -133,7 +172,11 @@ public class BudgetMonth extends javax.swing.JPanel {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .addComponent(monthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,7 +184,12 @@ public class BudgetMonth extends javax.swing.JPanel {
                 .addGap(23, 23, 23)
                 .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -150,11 +198,28 @@ public class BudgetMonth extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        BudgetModel model = (BudgetModel) incomeTable.getModel();
+        BudgetExpenseDto dto = new BudgetExpenseDto();
+        CategoryDto category = new CategoryDto();
+        category.setName("");
+        dto.setCategory(category);
+        dto.setEstimatedsum(BigDecimal.valueOf(0.00));
+        model.addBudgetExpence(dto);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        BudgetModel model = (BudgetModel) incomeTable.getModel();
+        model.removeBudgetExpenseAt(incomeTable.getSelectedRow());
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable billTable;
     private javax.swing.JTable expenseTable;
     private javax.swing.JTable incomeTable;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

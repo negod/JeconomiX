@@ -7,7 +7,8 @@ package se.backede.jeconomix.dto.budget;
 
 import com.negod.generics.persistence.dto.GenericDto;
 import java.time.Month;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,6 @@ public class BudgetDto extends GenericDto {
 
     private int year;
     private Month month;
-    private Set<BudgetCategoryDto> budgetBills;
+    private List<BudgetExpenseDto> budgetExpenseSet = new LinkedList<>();
 
 }

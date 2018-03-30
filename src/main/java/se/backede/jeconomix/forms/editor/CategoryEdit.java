@@ -157,7 +157,7 @@ public class CategoryEdit extends javax.swing.JPanel {
     }//GEN-LAST:event_expenseCategoryEditActionPerformed
 
     private void expenseCategoryAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryAddActionPerformed
-        new AddCategory((JDialog) this.getParent(), false).setVisible(true);
+        new AddCategory(null, false).setVisible(true);
     }//GEN-LAST:event_expenseCategoryAddActionPerformed
 
 

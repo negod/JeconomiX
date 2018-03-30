@@ -39,11 +39,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     public Main() {
         initComponents();
         registerAsObserver();
-        test();
-    }
-
-    public void test() {
-        add(new BudgetMonth());
     }
 
     /**
