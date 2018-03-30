@@ -22,6 +22,7 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
+import se.backede.jeconomix.database.entity.CategoryType;
 import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**
@@ -60,22 +61,28 @@ public class CategoryHandler {
 
     public Optional<CategoryDto> createCategory(CategoryDto category) {
         Optional<Category> entity = mapper.mapFromDtoToEntity(category);
+        Optional<CategoryDto> persistedCategory = Optional.empty();
         if (entity.isPresent()) {
             try {
+
                 DAO.startTransaction();
+
+                Optional<CategoryType> categoryType = CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId());
+                entity.get().setCategoryType(categoryType.get());
                 Optional<Category> persist = DAO.persist(entity.get());
-                DAO.commitTransaction();
 
                 if (persist.isPresent()) {
-                    return mapper.mapFromEntityToDto(entity.get());
+                    persistedCategory = mapper.mapFromEntityToDto(entity.get());
                 }
+
+                DAO.commitTransaction();
 
             } catch (DaoException | ConstraintException ex) {
                 log.error("Error when persisting expense category", ex);
 
             }
         }
-        return Optional.empty();
+        return persistedCategory;
     }
 
     private Predicate<CategoryDto> isCategoryType(CategoryTypeEnum type) {

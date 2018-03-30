@@ -16,7 +16,7 @@
             <column name="year" type="integer" >
                 <constraints nullable="false"/>
             </column>           
-            <column name="month" type="varchar(8)" >
+            <column name="month" type="varchar(10)" >
                 <constraints nullable="false"/>
             </column>
         </createTable>

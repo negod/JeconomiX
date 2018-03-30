@@ -21,7 +21,7 @@ import se.backede.jeconomix.dto.CategoryTypeDto;
 @Slf4j
 public class CategoryTypeHandler {
 
-    CategoryTypeDao dao = new CategoryTypeDao();
+    private final CategoryTypeDao dao = new CategoryTypeDao();
 
     DtoEntityBaseMapper<CategoryTypeDto, CategoryType> mapper = new DtoEntityBaseMapper(CategoryTypeDto.class, CategoryType.class);
 
@@ -42,6 +42,15 @@ public class CategoryTypeHandler {
             }
         } catch (DaoException e) {
             log.error("Error when getting category types", e);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<CategoryType> getById(String id) {
+        try {
+            return dao.getById(id);
+        } catch (DaoException e) {
+            log.error("Error when getting category type by id {}", id, e);
         }
         return Optional.empty();
     }

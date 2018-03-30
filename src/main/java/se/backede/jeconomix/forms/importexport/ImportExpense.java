@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
@@ -49,7 +50,7 @@ public class ImportExpense extends javax.swing.JDialog implements EventObserver 
 
     public void setExpenseCategoryComboBoxData() {
         expenseCategoryComboBox.setModel(new CategoryComboModel(CategoryTypeEnum.EXPENSE));
-        expenseCategoryComboBox.setRenderer(new CategoryItemRenderer());
+        expenseCategoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.MULTIPLE));
     }
 
     public void setValues(CompanyDto company) {

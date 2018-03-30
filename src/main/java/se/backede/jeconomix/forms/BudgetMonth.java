@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.models.combobox.CategoryComboModel;
@@ -50,7 +51,7 @@ public class BudgetMonth extends javax.swing.JPanel {
         //Set up the editor for the sport cells.
         JComboBox comboBox = new JComboBox();
         comboBox.setModel(new CategoryComboModel(type));
-        comboBox.setRenderer(new CategoryItemRenderer());
+        comboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
         column.setCellEditor(new DefaultCellEditor(comboBox));
 
         //Set up tool tips for the sport cells.
@@ -75,9 +76,16 @@ public class BudgetMonth extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         expenseTable = new javax.swing.JTable();
         monthLabel = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        addIncomeBtn = new javax.swing.JButton();
+        removeIncomeBtn = new javax.swing.JButton();
+        removeBillBtn = new javax.swing.JButton();
+        addBillBtn = new javax.swing.JButton();
+        addExpenseBtn = new javax.swing.JButton();
+        removeExpenseBtn = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        incomeTable.setBackground(new java.awt.Color(255, 255, 255));
         incomeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -100,6 +108,7 @@ public class BudgetMonth extends javax.swing.JPanel {
             incomeTable.getColumnModel().getColumn(1).setResizable(false);
         }
 
+        billTable.setBackground(new java.awt.Color(255, 255, 255));
         billTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -143,21 +152,56 @@ public class BudgetMonth extends javax.swing.JPanel {
             expenseTable.getColumnModel().getColumn(0).setResizable(false);
         }
 
-        monthLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        monthLabel.setBackground(new java.awt.Color(255, 255, 255));
+        monthLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         monthLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         monthLabel.setText("JANUARY");
 
-        jButton1.setText("+");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        addIncomeBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addIncomeBtn.setText("+");
+        addIncomeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                addIncomeBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText("-");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        removeIncomeBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeIncomeBtn.setText("-");
+        removeIncomeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                removeIncomeBtnActionPerformed(evt);
+            }
+        });
+
+        removeBillBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeBillBtn.setText("-");
+        removeBillBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBillBtnActionPerformed(evt);
+            }
+        });
+
+        addBillBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addBillBtn.setText("+");
+        addBillBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBillBtnActionPerformed(evt);
+            }
+        });
+
+        addExpenseBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addExpenseBtn.setText("+");
+        addExpenseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addExpenseBtnActionPerformed(evt);
+            }
+        });
+
+        removeExpenseBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeExpenseBtn.setText("-");
+        removeExpenseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeExpenseBtnActionPerformed(evt);
             }
         });
 
@@ -166,63 +210,105 @@ public class BudgetMonth extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
-                    .addComponent(monthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(addIncomeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeIncomeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeExpenseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
                 .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(addIncomeBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(removeIncomeBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addBillBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeBillBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addExpenseBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeExpenseBtn)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        BudgetModel model = (BudgetModel) incomeTable.getModel();
+    public void addBudgetExense(JTable table) {
+        BudgetModel model = (BudgetModel) table.getModel();
         BudgetExpenseDto dto = new BudgetExpenseDto();
         CategoryDto category = new CategoryDto();
         category.setName("");
         dto.setCategory(category);
         dto.setEstimatedsum(BigDecimal.valueOf(0.00));
         model.addBudgetExpence(dto);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        BudgetModel model = (BudgetModel) incomeTable.getModel();
-        model.removeBudgetExpenseAt(incomeTable.getSelectedRow());
-    }//GEN-LAST:event_jButton2ActionPerformed
+    public void removeBudgetExpense(JTable table) {
+        BudgetModel model = (BudgetModel) table.getModel();
+        model.removeBudgetExpenseAt(table.getSelectedRow());
+    }
+
+    private void addIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIncomeBtnActionPerformed
+        addBudgetExense(incomeTable);
+    }//GEN-LAST:event_addIncomeBtnActionPerformed
+
+    private void removeIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeIncomeBtnActionPerformed
+        removeBudgetExpense(incomeTable);
+    }//GEN-LAST:event_removeIncomeBtnActionPerformed
+
+    private void removeExpenseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeExpenseBtnActionPerformed
+        removeBudgetExpense(expenseTable);
+    }//GEN-LAST:event_removeExpenseBtnActionPerformed
+
+    private void addBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBillBtnActionPerformed
+        addBudgetExense(billTable);
+    }//GEN-LAST:event_addBillBtnActionPerformed
+
+    private void removeBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBillBtnActionPerformed
+        removeBudgetExpense(billTable);
+    }//GEN-LAST:event_removeBillBtnActionPerformed
+
+    private void addExpenseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addExpenseBtnActionPerformed
+        addBudgetExense(expenseTable);
+    }//GEN-LAST:event_addExpenseBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBillBtn;
+    private javax.swing.JButton addExpenseBtn;
+    private javax.swing.JButton addIncomeBtn;
     private javax.swing.JTable billTable;
     private javax.swing.JTable expenseTable;
     private javax.swing.JTable incomeTable;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel monthLabel;
+    private javax.swing.JButton removeBillBtn;
+    private javax.swing.JButton removeExpenseBtn;
+    private javax.swing.JButton removeIncomeBtn;
     // End of variables declaration//GEN-END:variables
 }

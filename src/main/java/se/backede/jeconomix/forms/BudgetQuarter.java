@@ -6,25 +6,58 @@
 package se.backede.jeconomix.forms;
 
 import java.time.Month;
+import java.time.Year;
+import se.backede.jeconomix.constants.BudgetQuarterEnum;
+import se.backede.jeconomix.utils.TimeDecider;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class BudgetQuarter extends javax.swing.JPanel {
-    
+
+    BudgetQuarterEnum currentQuarter = TimeDecider.getCurrenQuarter();
+    Integer currentYear = TimeDecider.getCurrentYear();
+
     /**
      * Creates new form BudgetQuarter
      */
     public BudgetQuarter() {
         initComponents();
-        setUpData();
     }
 
-    public void setUpData() {
-        budgetMonth1.setMonth(Month.JANUARY, 2018);
-        budgetMonth2.setMonth(Month.FEBRUARY, 2018);
-        budgetMonth3.setMonth(Month.MARCH, 2018);
+    public void setData(BudgetQuarterEnum quarter, Integer year) {
+        currentYear = year;
+        currentQuarter = quarter;
+        yearLabel.setText(year.toString());
+        switch (quarter) {
+            case QUARTER1:
+                budgetMonth1.setMonth(Month.JANUARY, year);
+                budgetMonth2.setMonth(Month.FEBRUARY, year);
+                budgetMonth3.setMonth(Month.MARCH, year);
+                quarterLabel.setText("Quarter 1");
+                break;
+            case QUARTER2:
+                budgetMonth1.setMonth(Month.APRIL, year);
+                budgetMonth2.setMonth(Month.MAY, year);
+                budgetMonth3.setMonth(Month.JUNE, year);
+                quarterLabel.setText("Quarter 2");
+                break;
+            case QUARTER3:
+                budgetMonth1.setMonth(Month.JULY, year);
+                budgetMonth2.setMonth(Month.AUGUST, year);
+                budgetMonth3.setMonth(Month.SEPTEMBER, year);
+                quarterLabel.setText("Quarter 3");
+                break;
+            case QUARTER4:
+                budgetMonth1.setMonth(Month.OCTOBER, year);
+                budgetMonth2.setMonth(Month.NOVEMBER, year);
+                budgetMonth3.setMonth(Month.DECEMBER, year);
+                quarterLabel.setText("Quarter 4");
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
 
     /**
@@ -40,27 +73,78 @@ public class BudgetQuarter extends javax.swing.JPanel {
         budgetMonth2 = new se.backede.jeconomix.forms.BudgetMonth();
         budgetMonth3 = new se.backede.jeconomix.forms.BudgetMonth();
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        quarterFwrdBtn = new javax.swing.JButton();
+        quarterBackBtn = new javax.swing.JButton();
+        quarterLabel = new javax.swing.JLabel();
+        yearLabel = new javax.swing.JLabel();
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Quarter 1");
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(349, 349, 349)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(28, 28, 28))
+            .addGap(0, 97, Short.MAX_VALUE)
+        );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        quarterFwrdBtn.setBackground(new java.awt.Color(255, 255, 255));
+        quarterFwrdBtn.setText(">");
+        quarterFwrdBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quarterFwrdBtnActionPerformed(evt);
+            }
+        });
+
+        quarterBackBtn.setBackground(new java.awt.Color(255, 255, 255));
+        quarterBackBtn.setText("<");
+        quarterBackBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quarterBackBtnActionPerformed(evt);
+            }
+        });
+
+        quarterLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        quarterLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        quarterLabel.setText("Quarter");
+
+        yearLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        yearLabel.setText("Year");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(quarterBackBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(quarterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(quarterFwrdBtn)
+                .addGap(262, 262, 262)
+                .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(quarterFwrdBtn)
+                        .addComponent(quarterBackBtn)
+                        .addComponent(quarterLabel)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -68,39 +152,81 @@ public class BudgetQuarter extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(budgetMonth1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(budgetMonth2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(budgetMonth3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addComponent(budgetMonth1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(budgetMonth2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(budgetMonth3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(budgetMonth1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(budgetMonth2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(budgetMonth3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31))
+                .addGap(134, 134, 134))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void quarterBackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quarterBackBtnActionPerformed
+        switch (currentQuarter) {
+            case QUARTER1:
+                currentQuarter = BudgetQuarterEnum.QUARTER4;
+                currentYear = currentYear - 1;
+                break;
+            case QUARTER2:
+                currentQuarter = BudgetQuarterEnum.QUARTER1;
+                break;
+            case QUARTER3:
+                currentQuarter = BudgetQuarterEnum.QUARTER2;
+                break;
+            case QUARTER4:
+                currentQuarter = BudgetQuarterEnum.QUARTER3;
+                break;
+            default:
+                throw new AssertionError();
+        }
+        setData(currentQuarter, currentYear);
+    }//GEN-LAST:event_quarterBackBtnActionPerformed
+
+    private void quarterFwrdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quarterFwrdBtnActionPerformed
+        switch (currentQuarter) {
+            case QUARTER1:
+                currentQuarter = BudgetQuarterEnum.QUARTER2;
+                break;
+            case QUARTER2:
+                currentQuarter = BudgetQuarterEnum.QUARTER3;
+                break;
+            case QUARTER3:
+                currentQuarter = BudgetQuarterEnum.QUARTER4;
+                break;
+            case QUARTER4:
+                currentQuarter = BudgetQuarterEnum.QUARTER1;
+                currentYear = currentYear + 1;
+                break;
+            default:
+                throw new AssertionError();
+        }
+        setData(currentQuarter, currentYear);
+    }//GEN-LAST:event_quarterFwrdBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.backede.jeconomix.forms.BudgetMonth budgetMonth1;
     private se.backede.jeconomix.forms.BudgetMonth budgetMonth2;
     private se.backede.jeconomix.forms.BudgetMonth budgetMonth3;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton quarterBackBtn;
+    private javax.swing.JButton quarterFwrdBtn;
+    private javax.swing.JLabel quarterLabel;
+    private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -23,6 +23,7 @@ import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.importer.CompanyImporter;
 import se.backede.jeconomix.importer.TransactionImporter;
+import se.backede.jeconomix.utils.TimeDecider;
 
 /**
  *
@@ -39,6 +40,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     public Main() {
         initComponents();
         registerAsObserver();
+        budgetQuarter1.setData(TimeDecider.getCurrenQuarter(), TimeDecider.getCurrentYear());
     }
 
     /**
@@ -73,6 +75,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         reportMenu = new javax.swing.JMenu();
         expenseReportMenuItem = new javax.swing.JMenuItem();
         billReportMenuItem = new javax.swing.JMenuItem();
+        incomeReportMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
@@ -214,6 +217,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         });
         reportMenu.add(billReportMenuItem);
 
+        incomeReportMenuItem.setText("Income report");
+        incomeReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incomeReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(incomeReportMenuItem);
+
         menuBar.add(reportMenu);
 
         jMenu1.setText("Admin");
@@ -234,17 +245,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -356,6 +361,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         new TransactionReport(this, true, CategoryTypeEnum.BILL).setVisible(true);
     }//GEN-LAST:event_billReportMenuItemActionPerformed
 
+    private void incomeReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeReportMenuItemActionPerformed
+        new TransactionReport(this, true, CategoryTypeEnum.INCOME).setVisible(true);
+    }//GEN-LAST:event_incomeReportMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -419,6 +428,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenuItem importExpensesMenuItem;
     private javax.swing.JMenu importMenu;
     private javax.swing.JMenu importerMenu;
+    private javax.swing.JMenuItem incomeReportMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar menuBar;
@@ -428,17 +438,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
     @Override
     public void update(NegodEvent event) {
-//        if (event.equalsEvent(ExpenseCategoryEvent.CREATE)) {
-//            String value;
-//            if (event.getValues().get(ExpenseCategoryValues.NAME).getString().isPresent()) {
-//                ExpenseCategoryDto category = new ExpenseCategoryDto();
-//                category.setName(event.getValues().get(ExpenseCategoryValues.NAME).getString().get());
-//                ExpenseCategoryHandler.getInstance().createExpenseCategory(category);
-//                setExpenseCategoryComboBoxData();
-//            }
-//        } else if (event.equalsEvent(TransactionEvent.CREATE)) {
-//            setTableData();
-//        }
     }
 
     @Override

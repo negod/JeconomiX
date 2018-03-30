@@ -31,10 +31,11 @@ public class Category extends GenericEntity {
 
     private String name;
 
-//    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-//    private Set<Company> company;
-    
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Company> company;
+
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "category_type", referencedColumnName = "id")
     private CategoryType categoryType;
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
@@ -52,8 +53,8 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
     }
 
     public void setBillCategoryComboBoxData() {
-        billCategoryComboBox.setModel(new CategoryComboModel(CategoryTypeEnum.BILL));
-        billCategoryComboBox.setRenderer(new CategoryItemRenderer());
+        billCategoryComboBox.setModel(new CategoryComboModel(CategoryTypeEnum.BILL, CategoryTypeEnum.INCOME));
+        billCategoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.MULTIPLE));
     }
 
     public void setValues(CompanyDto company) {
@@ -103,7 +104,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         companyName.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         companyName.setText("company");
@@ -111,6 +112,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel5.setText("New company detected");
 
+        transactionsTable.setBackground(new java.awt.Color(255, 255, 255));
         transactionsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -121,6 +123,9 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         ));
         jScrollPane1.setViewportView(transactionsTable);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        prevButton.setBackground(new java.awt.Color(255, 255, 255));
         prevButton.setText("<- Previous");
         prevButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,6 +133,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
             }
         });
 
+        nextButton.setBackground(new java.awt.Color(255, 255, 255));
         nextButton.setText("Next ->");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,6 +164,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
 
         jLabel2.setText("Transactions");
 
+        billCategoryComboBox.setBackground(new java.awt.Color(255, 255, 255));
         billCategoryComboBox.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         billCategoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         billCategoryComboBox.addItemListener(new java.awt.event.ItemListener() {
@@ -173,6 +180,9 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
 
         jLabel4.setText("Set Category!");
 
+        progressBar.setBackground(new java.awt.Color(255, 255, 255));
+
+        addCategoryComboBox.setBackground(new java.awt.Color(255, 255, 255));
         addCategoryComboBox.setText("Add");
         addCategoryComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,14 +203,13 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
                         .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel4)
-                        .addComponent(companyName, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(addCategoryComboBox))))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4)
+                    .addComponent(companyName, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addCategoryComboBox)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(

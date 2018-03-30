@@ -30,7 +30,10 @@ public class BudgetModel extends AbstractTableModel {
     private BudgetDto BUDGET;
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
     private BigDecimal sum = BigDecimal.valueOf(0);
-    private final CategoryTypeEnum CATEGORY_TYPE;
+    private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;
+
+    public BudgetModel() {
+    }
 
     public BudgetModel(Month month, Integer year, CategoryTypeEnum category) {
         Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(month, year);

@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.models.combobox;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.AbstractListModel;
@@ -19,13 +20,16 @@ import se.backede.jeconomix.dto.CategoryDto;
  */
 public class CategoryComboModel extends AbstractListModel implements ComboBoxModel {
 
-    List<CategoryDto> categories;
+    List<CategoryDto> categories = new LinkedList<>();
     CategoryDto selection = null;
 
-    public CategoryComboModel(CategoryTypeEnum category) {
-        Optional<List<CategoryDto>> filteredCategories = CategoryHandler.getInstance().getFilteredCategories(category);
-        if (filteredCategories.isPresent()) {
-            this.categories = filteredCategories.get();
+    public CategoryComboModel(CategoryTypeEnum... category) {
+
+        for (CategoryTypeEnum categoryTypeEnum : category) {
+            Optional<List<CategoryDto>> filteredCategories = CategoryHandler.getInstance().getFilteredCategories(categoryTypeEnum);
+            if (filteredCategories.isPresent()) {
+                this.categories.addAll(filteredCategories.get());
+            }
         }
     }
 

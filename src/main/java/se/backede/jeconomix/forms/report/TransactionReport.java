@@ -72,6 +72,7 @@ public class TransactionReport extends javax.swing.JDialog {
 
         String sumLineTitle = "Total Kr";
         String averageLineTitle = "Average Kr";
+        BigDecimal averageCaclulated = BigDecimal.valueOf(0.00);
 
         Map<Month, BigDecimal> sums = new HashMap<>();
 
@@ -82,26 +83,29 @@ public class TransactionReport extends javax.swing.JDialog {
             sums.put(month, BigDecimal.valueOf(0.00));
         }
 
-        for (Month month : monthList) {
-            BigDecimal currentSum = sums.get(month);
-            for (TransactionReportDto report : reports) {
-                BigDecimal get = report.getMonthReport().get(month);
-                if (get != null) {
-                    presentMonths.add(month);
-                    BigDecimal oldSum = currentSum;
-                    currentSum = currentSum.add(report.getMonthReport().get(month));
-                    sums.put(month, currentSum);
+        if (reports != null || !reports.isEmpty()) {
+
+            for (Month month : monthList) {
+                BigDecimal currentSum = sums.get(month);
+                for (TransactionReportDto report : reports) {
+                    BigDecimal get = report.getMonthReport().get(month);
+                    if (get != null) {
+                        presentMonths.add(month);
+                        BigDecimal oldSum = currentSum;
+                        currentSum = currentSum.add(report.getMonthReport().get(month));
+                        sums.put(month, currentSum);
+                    }
                 }
             }
-        }
 
-        BigDecimal average = BigDecimal.valueOf(0.00);
-        for (Month presentMonth : presentMonths) {
-            BigDecimal oldSum = average;
-            average = average.add(sums.get(presentMonth));
-        }
-        BigDecimal averageCaclulated = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
+            BigDecimal average = BigDecimal.valueOf(0.00);
+            for (Month presentMonth : presentMonths) {
+                BigDecimal oldSum = average;
+                average = average.add(sums.get(presentMonth));
+            }
+            averageCaclulated = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
 
+        }
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         dataset.addValue(sums.get(Month.JANUARY), sumLineTitle, "Jan");

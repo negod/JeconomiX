@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
@@ -37,7 +38,7 @@ public class CompanyEditor extends javax.swing.JDialog {
 
     public void setCategoryCBData() {
         categoryComboBox.setModel(new CategoryComboModel());
-        categoryComboBox.setRenderer(new CategoryItemRenderer());
+        categoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
     }
 
     public void setTableData() {
