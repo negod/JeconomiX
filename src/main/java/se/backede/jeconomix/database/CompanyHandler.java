@@ -29,34 +29,34 @@ import se.backede.jeconomix.dto.CategoryDto;
  */
 @Slf4j
 public class CompanyHandler {
-
+    
     CompanyDao dao = new CompanyDao();
     DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
     DtoEntityBaseMapper<TransactionDto, Transaction> transactionMapper = new DtoEntityBaseMapper(TransactionDto.class, Transaction.class);
-
+    
     private static final CompanyHandler companyHandler = new CompanyHandler();
-
+    
     protected CompanyHandler() {
     }
-
+    
     public static final CompanyHandler getInstance() {
         return companyHandler;
     }
-
+    
     public Optional<CompanyDto> createCompany(CompanyDto company) {
-
+        
         Optional<Company> entity = companyMapper.mapFromDtoToEntity(company);
 
         //Handle transactions
         entity.get().getTransactions().clear();
-
+        
         if (entity.isPresent()) {
             try {
-
+                
                 dao.startTransaction();
                 Optional<Company> persist = dao.persist(entity.get());
                 dao.commitTransaction();
-
+                
                 if (company.getTransactions() != null && !company.getTransactions().isEmpty()) {
                     for (TransactionDto transaction : company.getTransactions()) {
                         dao.startTransaction();
@@ -67,18 +67,18 @@ public class CompanyHandler {
                         dao.commitTransaction();
                     }
                 }
-
+                
                 if (persist.isPresent()) {
                     return companyMapper.mapFromEntityToDto(entity.get());
                 }
-
+                
             } catch (DaoException | ConstraintException ex) {
                 log.error("Error when persisting Company", ex);
             }
         }
         return Optional.empty();
     }
-
+    
     public Optional<CompanyDto> updateCompany(CompanyDto company) {
         Optional<Company> entity = companyMapper.mapFromDtoToEntity(company);
         if (entity.isPresent()) {
@@ -86,18 +86,18 @@ public class CompanyHandler {
                 dao.startTransaction();
                 Optional<Company> persist = dao.update(entity.get());
                 dao.commitTransaction();
-
+                
                 if (persist.isPresent()) {
                     return companyMapper.mapFromEntityToDto(entity.get());
                 }
-
+                
             } catch (DaoException ex) {
                 log.error("Error when updating Company", ex);
             }
         }
         return Optional.empty();
     }
-
+    
     public Optional<List<CompanyDto>> getAllCompanies() {
         try {
             Optional<List<Company>> all = dao.getAll();
@@ -109,7 +109,7 @@ public class CompanyHandler {
         }
         return Optional.empty();
     }
-
+    
     public Optional<CompanyDto> getCompanyByName(String name) {
         try {
             Optional<Company> company = dao.getCompanyByName(name);
@@ -117,62 +117,62 @@ public class CompanyHandler {
                 return companyMapper.mapFromEntityToDto(company.get());
             }
         } catch (DaoException ex) {
-            Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Error when getting company by name", ex);
         }
         return Optional.empty();
     }
-
+    
     public Optional<CompanyDto> setExpenseCategory(CompanyDto companyDto, CategoryDto expenseCategory) {
         if (expenseCategory != null) {
             ObjectUpdate update = new ObjectUpdate();
             update.setObject("expenseCategory");
             update.setType(UpdateType.UPDATE);
             update.setObjectId(expenseCategory.getId());
-
+            
             try {
                 dao.startTransaction();
                 Optional<Company> company = dao.update(companyDto.getId(), update);
                 dao.commitTransaction();
-
+                
                 if (company.isPresent()) {
                     return companyMapper.mapFromEntityToDto(company.get());
                 }
-
+                
             } catch (DaoException ex) {
                 Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         return Optional.empty();
-
+        
     }
-
+    
     public Optional<CompanyDto> setBillCategory(CompanyDto companyDto, CategoryDto billCategory) {
-
+        
         if (billCategory != null) {
             ObjectUpdate update = new ObjectUpdate();
             update.setObject("billCategory");
             update.setType(UpdateType.UPDATE);
             update.setObjectId(billCategory.getId());
-
+            
             try {
                 dao.startTransaction();
                 Optional<Company> company = dao.update(companyDto.getId(), update);
                 dao.commitTransaction();
-
+                
                 if (company.isPresent()) {
                     return companyMapper.mapFromEntityToDto(company.get());
                 }
-
+                
             } catch (DaoException ex) {
                 Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         return Optional.empty();
-
+        
     }
-
+    
     public Optional<CompanyDto> getCompanyById(String id) {
         try {
             Optional<Company> byId = dao.getById(id);
@@ -184,9 +184,9 @@ public class CompanyHandler {
         }
         return Optional.empty();
     }
-
+    
     public void reIndex() {
         dao.indexEntity();
     }
-
+    
 }

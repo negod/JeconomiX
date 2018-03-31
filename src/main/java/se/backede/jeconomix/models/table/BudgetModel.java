@@ -174,6 +174,7 @@ public class BudgetModel extends AbstractTableModel {
         Dto dto = new Dto(BudgetValues.class);
 
         Double total = BigDecimal.ZERO.doubleValue();
+
         for (BudgetExpenseDto filteredCategory : filteredCategories) {
             total += filteredCategory.getEstimatedsum().doubleValue();
         }

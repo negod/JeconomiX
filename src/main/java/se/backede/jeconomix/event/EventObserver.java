@@ -12,4 +12,9 @@ package se.backede.jeconomix.event;
 public interface EventObserver extends EventRegistry {
 
     public void update(NegodEvent event);
+
+    @Override
+    public default void registerAsObserver() {
+        EventController.getInstance().addObserver(this);
+    }
 }

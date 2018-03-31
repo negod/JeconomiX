@@ -28,8 +28,6 @@ public class BudgetQuarter extends javax.swing.JPanel {
     }
 
     public void setData(BudgetQuarterEnum quarter, Integer year) {
-        currentYear = year;
-        currentQuarter = quarter;
         yearLabel.setText(year.toString());
         switch (quarter) {
             case QUARTER1:

@@ -249,7 +249,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, 742, Short.MAX_VALUE)
         );
 
         pack();

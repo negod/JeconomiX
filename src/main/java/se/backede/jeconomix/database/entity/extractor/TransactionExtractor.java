@@ -22,8 +22,6 @@ public class TransactionExtractor {
     public static TransactionDto createTransaction(CSVRecord cSVRecord) {
         TransactionDto transaction = new TransactionDto();
 
-        log.error("TRANSDATE:" + cSVRecord.get("Datum").toString());
-
         try {
             if (cSVRecord.get("Belopp") != null && !cSVRecord.get("Belopp").isEmpty()) {
                 BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Belopp")));

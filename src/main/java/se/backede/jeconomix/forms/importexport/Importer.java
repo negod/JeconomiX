@@ -7,12 +7,10 @@ package se.backede.jeconomix.forms.importexport;
 
 import se.backede.jeconomix.forms.editor.AddCategory;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
-import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
@@ -33,37 +31,36 @@ import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class ImportBill extends javax.swing.JDialog implements EventObserver {
+public class Importer extends javax.swing.JDialog implements EventObserver {
 
     /**
      * Creates new form AddCompany
      */
-    private GenericIterator<CompanyDto> companyIterator;
+    private final GenericIterator<CompanyDto> companyIterator;
 
-    public ImportBill(java.awt.Frame parent, boolean modal, LinkedList<CompanyDto> companies) {
+    public Importer(java.awt.Frame parent, boolean modal, LinkedList<CompanyDto> companies) {
         super(parent, modal);
         companyIterator = new GenericIterator(companies);
         initComponents();
         registerAsObserver();
         setBillCategoryComboBoxData();
         setValues(companyIterator.first());
-        setBillCategoryComboBoxData();
 
         progressBar.setMaximum(companyIterator.getAll().size());
     }
 
-    public void setBillCategoryComboBoxData() {
-        billCategoryComboBox.setModel(new CategoryComboModel(CategoryTypeEnum.BILL, CategoryTypeEnum.INCOME));
-        billCategoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.MULTIPLE));
+    public final void setBillCategoryComboBoxData() {
+        categoryComboBox.setModel(new CategoryComboModel());
+        categoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.MULTIPLE));
     }
 
-    public void setValues(CompanyDto company) {
+    public final void setValues(CompanyDto company) {
         companyName.setText(company.getName());
         TransactionModel transactionModel = new TransactionModel(company.getTransactions());
         transactionsTable.setModel(transactionModel);
 
         if (company.getCategory() != null) {
-            billCategoryComboBox.setSelectedItem(company.getCategory());
+            categoryComboBox.setSelectedItem(company.getCategory());
         }
 
         if (!companyIterator.hasNext()) {
@@ -97,7 +94,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         prevButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        billCategoryComboBox = new javax.swing.JComboBox<>();
+        categoryComboBox = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
         addCategoryComboBox = new javax.swing.JButton();
@@ -110,7 +107,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         companyName.setText("company");
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel5.setText("New company detected");
+        jLabel5.setText("Handle new companies");
 
         transactionsTable.setBackground(new java.awt.Color(255, 255, 255));
         transactionsTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -164,17 +161,17 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
 
         jLabel2.setText("Transactions");
 
-        billCategoryComboBox.setBackground(new java.awt.Color(255, 255, 255));
-        billCategoryComboBox.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        billCategoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        billCategoryComboBox.addItemListener(new java.awt.event.ItemListener() {
+        categoryComboBox.setBackground(new java.awt.Color(255, 255, 255));
+        categoryComboBox.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        categoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        categoryComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                billCategoryComboBoxItemStateChanged(evt);
+                categoryComboBoxItemStateChanged(evt);
             }
         });
-        billCategoryComboBox.addActionListener(new java.awt.event.ActionListener() {
+        categoryComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                billCategoryComboBoxActionPerformed(evt);
+                categoryComboBoxActionPerformed(evt);
             }
         });
 
@@ -183,7 +180,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         progressBar.setBackground(new java.awt.Color(255, 255, 255));
 
         addCategoryComboBox.setBackground(new java.awt.Color(255, 255, 255));
-        addCategoryComboBox.setText("Add");
+        addCategoryComboBox.setText("Create  new category");
         addCategoryComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addCategoryComboBoxActionPerformed(evt);
@@ -201,16 +198,16 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
                         .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(companyName, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addCategoryComboBox)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addComponent(addCategoryComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,12 +220,10 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
                 .addComponent(companyName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addCategoryComboBox)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(billCategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addCategoryComboBox))
                 .addGap(16, 16, 16)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -275,20 +270,20 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         }
     }//GEN-LAST:event_prevButtonActionPerformed
 
-    private void billCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billCategoryComboBoxActionPerformed
-    }//GEN-LAST:event_billCategoryComboBoxActionPerformed
+    private void categoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryComboBoxActionPerformed
+    }//GEN-LAST:event_categoryComboBoxActionPerformed
 
     private void addCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCategoryComboBoxActionPerformed
         new AddCategory(this, false).setVisible(true);
     }//GEN-LAST:event_addCategoryComboBoxActionPerformed
 
-    private void billCategoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_billCategoryComboBoxItemStateChanged
-        CategoryComboModel expModel = (CategoryComboModel) billCategoryComboBox.getModel();
+    private void categoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_categoryComboBoxItemStateChanged
+        CategoryComboModel expModel = (CategoryComboModel) categoryComboBox.getModel();
         CategoryDto category = (CategoryDto) expModel.getSelectedItem();
         CompanyDto selectedCompany = companyIterator.getAtCurrentIndex();
         selectedCompany.setCategory(category);
         companyIterator.replaceAtCurrentIndex(selectedCompany);
-    }//GEN-LAST:event_billCategoryComboBoxItemStateChanged
+    }//GEN-LAST:event_categoryComboBoxItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -307,19 +302,53 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ImportBill.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Importer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ImportBill.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Importer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ImportBill.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Importer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ImportBill.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Importer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
+//        /* Create and display the dialog */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                ImportExpense dialog = new ImportExpense(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+//        /* Create and display the dialog */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                ImportExpense dialog = new ImportExpense(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 //        /* Create and display the dialog */
 //        java.awt.EventQueue.invokeLater(new Runnable() {
 //            public void run() {
@@ -354,7 +383,7 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addCategoryComboBox;
-    private javax.swing.JComboBox<String> billCategoryComboBox;
+    private javax.swing.JComboBox<String> categoryComboBox;
     private javax.swing.JLabel companyName;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -373,14 +402,10 @@ public class ImportBill extends javax.swing.JDialog implements EventObserver {
         if (event.equalsEvent(CategoryEvent.CREATE)) {
             Optional<CategoryDto> category = event.getValues().get(CategoryValues.CATEGORY_DTO).getObject();
             if (category.isPresent()) {
-                CategoryComboModel model = (CategoryComboModel) billCategoryComboBox.getModel();
+                CategoryComboModel model = (CategoryComboModel) categoryComboBox.getModel();
                 model.addElement(category.get());
             }
         }
     }
 
-    @Override
-    public final void registerAsObserver() {
-        EventController.getInstance().addObserver(this);
-    }
 }

@@ -157,6 +157,10 @@
                 </Column>
               </TableColumnModel>
             </Property>
+            <Property name="focusCycleRoot" type="boolean" value="true"/>
+            <Property name="rowSorter" type="javax.swing.RowSorter" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="null"/>
+            </Property>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
@@ -330,7 +334,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="totalIncomeLbl">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="2"/>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="0.00"/>
       </Properties>
     </Component>
@@ -348,7 +352,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="totalBillLbl">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="2"/>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="0.00"/>
       </Properties>
     </Component>
@@ -360,7 +364,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="totalExpenseLbl">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="2"/>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="0.00"/>
       </Properties>
     </Component>

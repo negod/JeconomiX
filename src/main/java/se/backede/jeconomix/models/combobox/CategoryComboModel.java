@@ -24,7 +24,6 @@ public class CategoryComboModel extends AbstractListModel implements ComboBoxMod
     CategoryDto selection = null;
 
     public CategoryComboModel(CategoryTypeEnum... category) {
-
         for (CategoryTypeEnum categoryTypeEnum : category) {
             Optional<List<CategoryDto>> filteredCategories = CategoryHandler.getInstance().getFilteredCategories(categoryTypeEnum);
             if (filteredCategories.isPresent()) {

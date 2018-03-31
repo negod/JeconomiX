@@ -64,7 +64,7 @@ public class BudgetHandler {
                 return mapper.mapFromEntityToDto(budget);
             }
         } catch (NoResultException ex) {
-            log.info("No result for query when getting Budget");
+            log.debug("No result for query when getting Budget", ex);
         } finally {
             dao.commitTransaction();
         }

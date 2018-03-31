@@ -10,7 +10,8 @@ package se.backede.jeconomix.constants;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class EntityQueries {
-    
+
     public static final String FIND_BUDGET_BY_YEAR_AND_MONTH = "Budget.findByYearAndMonth";
-    
+    public static final String TRANSACTION_EXISTS = "Transaction.transactionExists";
+
 }

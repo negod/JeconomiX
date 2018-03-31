@@ -8,13 +8,17 @@ package se.backede.jeconomix.database.entity;
 import com.negod.generics.persistence.entity.GenericEntity;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import se.backede.jeconomix.constants.EntityConstants;
+import se.backede.jeconomix.constants.EntityQueries;
+import se.backede.jeconomix.dto.TransactionDto;
 
 /**
  *
@@ -24,6 +28,7 @@ import se.backede.jeconomix.constants.EntityConstants;
 @Entity
 @Getter
 @Setter
+@NamedQuery(name = EntityQueries.TRANSACTION_EXISTS, query = "select t from Transaction t where t.company =:company  AND t.transDate =:date and t.saldo=:saldo and t.sum=:sum")
 public class Transaction extends GenericEntity {
 
     private Date transDate;
@@ -35,5 +40,31 @@ public class Transaction extends GenericEntity {
     @ManyToOne
     @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
     private Company company;
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.transDate);
+        hash = 59 * hash + Objects.hashCode(this.sum);
+        hash = 59 * hash + Objects.hashCode(this.saldo);
+        return hash;
+    }
+
+    public boolean equals(TransactionDto obj) {
+        if (obj == null) {
+            return false;
+        }
+        final TransactionDto other = (TransactionDto) obj;
+        if (!Objects.equals(this.transDate, other.getTransDate())) {
+            return false;
+        }
+        if (!Objects.equals(this.sum, other.getSum())) {
+            return false;
+        }
+        if (!Objects.equals(this.saldo, other.getSaldo())) {
+            return false;
+        }
+        return true;
+    }
 
 }

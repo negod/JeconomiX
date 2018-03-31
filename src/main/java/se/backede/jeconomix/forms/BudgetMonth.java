@@ -120,6 +120,8 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
                 return types [columnIndex];
             }
         });
+        incomeTable.setFocusCycleRoot(true);
+        incomeTable.setRowSorter(null);
         jScrollPane1.setViewportView(incomeTable);
         if (incomeTable.getColumnModel().getColumnCount() > 0) {
             incomeTable.getColumnModel().getColumn(0).setResizable(false);
@@ -231,7 +233,7 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
             }
         });
 
-        totalIncomeLbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        totalIncomeLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalIncomeLbl.setText("0.00");
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -240,13 +242,13 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Total:");
 
-        totalBillLbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        totalBillLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalBillLbl.setText("0.00");
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Total:");
 
-        totalExpenseLbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        totalExpenseLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalExpenseLbl.setText("0.00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -454,8 +456,4 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
 
     }
 
-    @Override
-    public void registerAsObserver() {
-        EventController.getInstance().addObserver(this);
-    }
 }

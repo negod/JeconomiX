@@ -12,4 +12,5 @@ package se.backede.jeconomix.event;
 public interface EventRegistry {
 
     public void registerAsObserver();
+
 }
