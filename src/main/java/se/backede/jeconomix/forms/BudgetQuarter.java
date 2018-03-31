@@ -7,6 +7,7 @@ package se.backede.jeconomix.forms;
 
 import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.utils.TimeDecider;
 
@@ -32,27 +33,27 @@ public class BudgetQuarter extends javax.swing.JPanel {
         yearLabel.setText(year.toString());
         switch (quarter) {
             case QUARTER1:
-                budgetMonth1.setMonth(Month.JANUARY, year);
-                budgetMonth2.setMonth(Month.FEBRUARY, year);
-                budgetMonth3.setMonth(Month.MARCH, year);
+                budgetMonth1.setMonth(YearMonth.of(year, Month.JANUARY));
+                budgetMonth2.setMonth(YearMonth.of(year, Month.FEBRUARY));
+                budgetMonth3.setMonth(YearMonth.of(year, Month.MARCH));
                 quarterLabel.setText("Quarter 1");
                 break;
             case QUARTER2:
-                budgetMonth1.setMonth(Month.APRIL, year);
-                budgetMonth2.setMonth(Month.MAY, year);
-                budgetMonth3.setMonth(Month.JUNE, year);
+                budgetMonth1.setMonth(YearMonth.of(year, Month.APRIL));
+                budgetMonth2.setMonth(YearMonth.of(year, Month.MAY));
+                budgetMonth3.setMonth(YearMonth.of(year, Month.JUNE));
                 quarterLabel.setText("Quarter 2");
                 break;
             case QUARTER3:
-                budgetMonth1.setMonth(Month.JULY, year);
-                budgetMonth2.setMonth(Month.AUGUST, year);
-                budgetMonth3.setMonth(Month.SEPTEMBER, year);
+                budgetMonth1.setMonth(YearMonth.of(year, Month.JULY));
+                budgetMonth2.setMonth(YearMonth.of(year, Month.AUGUST));
+                budgetMonth3.setMonth(YearMonth.of(year, Month.SEPTEMBER));
                 quarterLabel.setText("Quarter 3");
                 break;
             case QUARTER4:
-                budgetMonth1.setMonth(Month.OCTOBER, year);
-                budgetMonth2.setMonth(Month.NOVEMBER, year);
-                budgetMonth3.setMonth(Month.DECEMBER, year);
+                budgetMonth1.setMonth(YearMonth.of(year, Month.OCTOBER));
+                budgetMonth2.setMonth(YearMonth.of(year, Month.NOVEMBER));
+                budgetMonth3.setMonth(YearMonth.of(year, Month.DECEMBER));
                 quarterLabel.setText("Quarter 4");
                 break;
             default:

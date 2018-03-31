@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Month;
+import java.time.Year;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -28,7 +29,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.TransactionReportDto;
@@ -152,6 +152,19 @@ public class TransactionReport extends javax.swing.JDialog {
 
     public List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type) {
 
+        /* 
+        
+        Need to be based on the transactions instead
+        
+        1 Get all transactions for the current year
+        2 Filter by the category type
+        3 loop through transactions
+        4 Get the company
+        5 add the sum for each month
+        6 add the total for each year
+        
+        */
+        
         List<TransactionReportDto> transactionReports = new LinkedList<>();
         Optional<List<CategoryDto>> allBillCategories = CategoryHandler.getInstance().getFilteredCategories(type);
         if (allBillCategories.isPresent()) {

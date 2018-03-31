@@ -8,9 +8,7 @@ package se.backede.jeconomix.database;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
-import com.negod.generics.persistence.update.ObjectUpdate;
-import com.negod.generics.persistence.update.UpdateType;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.Optional;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -18,9 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.entity.budget.Budget;
-import se.backede.jeconomix.database.entity.budget.Budget_;
 import se.backede.jeconomix.dto.budget.BudgetDto;
-import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 
 /**
  *
@@ -56,12 +52,12 @@ public class BudgetHandler {
         return Optional.empty();
     }
 
-    public Optional<BudgetDto> getBudget(Month month, Integer year) {
+    public Optional<BudgetDto> getBudget(YearMonth yearMonth) {
         try {
             dao.startTransaction();
             Query query = dao.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH);
-            query.setParameter("month", month);
-            query.setParameter("year", year);
+            query.setParameter("month", yearMonth.getMonth());
+            query.setParameter("year", yearMonth.getYear());
             Budget budget = (Budget) query.getSingleResult();
 
             if (budget != null) {

@@ -6,7 +6,7 @@
 package se.backede.jeconomix.models.table;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,9 @@ import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.dto.Dto;
+import se.backede.jeconomix.event.events.fields.BudgetValues;
 
 /**
  *
@@ -31,12 +34,14 @@ public class BudgetModel extends AbstractTableModel {
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
     private BigDecimal sum = BigDecimal.valueOf(0);
     private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;
+    private YearMonth yearMonth;
 
     public BudgetModel() {
     }
 
-    public BudgetModel(Month month, Integer year, CategoryTypeEnum category) {
-        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(month, year);
+    public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {
+        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(yearMonth);
+        this.yearMonth = yearMonth;
         this.CATEGORY_TYPE = category;
 
         if (retrievedBudget.isPresent()) {
@@ -48,14 +53,16 @@ public class BudgetModel extends AbstractTableModel {
             this.BUDGET = retrievedBudget.get();
         } else {
             this.BUDGET = new BudgetDto();
-            this.BUDGET.setMonth(month);
-            this.BUDGET.setYear(year);
+            this.BUDGET.setMonth(yearMonth.getMonth());
+            this.BUDGET.setYear(yearMonth.getYear());
             Optional<BudgetDto> createBudget = BudgetHandler.getInstance().createBudget(BUDGET);
 
             if (createBudget.isPresent()) {
                 this.BUDGET = createBudget.get();
             }
         }
+
+        calculateTotalSumAndSendEvent();
 
     }
 
@@ -155,11 +162,27 @@ public class BudgetModel extends AbstractTableModel {
             if (upsertBudgetExpense.isPresent()) {
                 filteredCategories.set(rowIndex, upsertBudgetExpense.get());
                 fireTableCellUpdated(rowIndex, columnIndex);
+                calculateTotalSumAndSendEvent();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Budget transaction must have a category set!", "close", JOptionPane.INFORMATION_MESSAGE);
         }
 
+    }
+
+    public void calculateTotalSumAndSendEvent() {
+        Dto dto = new Dto(BudgetValues.class);
+
+        Double total = BigDecimal.ZERO.doubleValue();
+        for (BudgetExpenseDto filteredCategory : filteredCategories) {
+            total += filteredCategory.getEstimatedsum().doubleValue();
+        }
+
+        dto.set(BudgetValues.TOTAL, total);
+        dto.set(BudgetValues.MONTH, yearMonth.getMonth().name());
+        dto.set(BudgetValues.YEAR, yearMonth.getYear());
+
+        EventController.getInstance().notifyObservers(CATEGORY_TYPE, dto);
     }
 
     /**
@@ -177,6 +200,7 @@ public class BudgetModel extends AbstractTableModel {
         if (deleteBudgetExpense) {
             filteredCategories.remove(row);
             this.fireTableRowsDeleted(row, row);
+            calculateTotalSumAndSendEvent();
         }
     }
 
@@ -184,5 +208,6 @@ public class BudgetModel extends AbstractTableModel {
         dto.setBudget(BUDGET);
         filteredCategories.add(dto);
         this.fireTableDataChanged();
+        calculateTotalSumAndSendEvent();
     }
 }
