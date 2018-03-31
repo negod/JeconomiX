@@ -157,10 +157,10 @@ public class TransactionImporter {
             new Importer(parent, true, companiesToAdd).setVisible(true);
         }
 
-        log.error("Total records found {} ", ((Collection<?>) records).size());
-        log.error("Total duplicates found {} ", duplicateTransactions.size());
-        log.error("Total invalid found {} ", invalidTransactions.size());
-        Events.getInstance().fireProgressDoneEvent();
+        Events.getInstance().fireProgressDoneEvent(
+                ((Collection<?>) records).size(),
+                duplicateTransactions.size(),
+                invalidTransactions.size());
     }
 
 }

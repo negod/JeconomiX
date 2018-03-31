@@ -12,7 +12,9 @@ import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.ProgressEvent;
+import se.backede.jeconomix.event.events.fields.ImportSummaryValues;
 import se.backede.jeconomix.event.events.fields.ProgressEventValues;
 
 /**
@@ -40,7 +42,7 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
         super(parent, modal);
         registerAsObserver();
         initComponents();
-        
+
         switch (importExport) {
             case ProgressDialog.IMPORT:
                 importLabel.setText(IMPORT_LABEL_TEXT);
@@ -210,12 +212,29 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
             nameLabel.setText("");
             importLabel.setText("Processing Done!");
             okButton.setEnabled(true);
+            setDoneLabelText(event.getValues());
         }
         if (event.equalsEvent(ProgressEvent.ERROR)) {
             progressBar.setValue(progressBar.getMaximum());
             nameLabel.setText("");
             importLabel.setText("Error when processing data");
             okButton.setEnabled(true);
+        }
+    }
+
+    public void setDoneLabelText(Dto dto) {
+        if (dto != null) {
+
+            Optional integer = dto.getValue(ImportSummaryValues.DUPLICATE_RECORDS).getValue().getInteger();
+            Optional integer1 = dto.getValue(ImportSummaryValues.INVALID_RECORDS).getValue().getInteger();
+            Optional integer2 = dto.getValue(ImportSummaryValues.TOTAL_RECORDS).getValue().getInteger();
+
+            String data = "Total records processed: ".concat(integer2.get().toString()).concat("\n");
+            String concat = data.concat("Total invalid records discarded: ").concat(integer1.get().toString()).concat("\n");
+            String concat1 = concat.concat("Total duplicate records discarded: ").concat(integer.get().toString());
+
+            new ImportSummaryDialog(this, true, concat1).setVisible(true);
+
         }
     }
 
