@@ -20,6 +20,7 @@ import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
+import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.importer.CompanyImporter;
 import se.backede.jeconomix.importer.TransactionImporter;
@@ -76,6 +77,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         expenseReportMenuItem = new javax.swing.JMenuItem();
         billReportMenuItem = new javax.swing.JMenuItem();
         incomeReportMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
@@ -225,6 +227,14 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         });
         reportMenu.add(incomeReportMenuItem);
 
+        jMenuItem1.setText("Total report");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        reportMenu.add(jMenuItem1);
+
         menuBar.add(reportMenu);
 
         jMenu1.setText("Admin");
@@ -365,6 +375,10 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         new TransactionReport(this, true, CategoryTypeEnum.INCOME).setVisible(true);
     }//GEN-LAST:event_incomeReportMenuItemActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        new TransactionsTotalReport(this, true).setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -431,6 +445,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenuItem incomeReportMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;
