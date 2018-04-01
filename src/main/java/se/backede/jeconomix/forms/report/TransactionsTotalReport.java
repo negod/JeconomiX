@@ -6,27 +6,18 @@
 package se.backede.jeconomix.forms.report;
 
 import java.awt.BorderLayout;
-import java.math.BigDecimal;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.dto.TransactionDto;
-import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.TransactionReportDto;
+import se.backede.jeconomix.utils.ReportUtils;
 
 /**
  *
@@ -42,9 +33,9 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        List<TransactionReportDto> calculatedBillReport = getCalculatedReport(CategoryTypeEnum.BILL);
-        List<TransactionReportDto> calculatedExpenseReport = getCalculatedReport(CategoryTypeEnum.EXPENSE);
-        List<TransactionReportDto> calculatedIncomeReport = getCalculatedReport(CategoryTypeEnum.INCOME);
+        List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL);
+        List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE);
+        List<TransactionReportDto> calculatedIncomeReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.INCOME);
 
         List<TransactionReportDto> aggregatedExpenseReport = new LinkedList<>();
         aggregatedExpenseReport.addAll(calculatedBillReport);
@@ -61,7 +52,7 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Total",
                 "Month", "Kronor",
-                createDataset(reports),
+                ReportUtils.createDataset(reports, Boolean.FALSE),
                 PlotOrientation.VERTICAL,
                 true, true, true);
 
@@ -69,99 +60,6 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
         lineChartPanel.setLayout(new BorderLayout());
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
-    }
-
-    private Map<Month, BigDecimal> calculateSums(List<TransactionReportDto> reports) {
-        Map<Month, BigDecimal> sums = new HashMap<>();
-
-        for (Month month : Month.values()) {
-            sums.put(month, BigDecimal.valueOf(0.00));
-        }
-
-        for (Month month : Month.values()) {
-            BigDecimal currentSum = sums.get(month);
-            for (TransactionReportDto report : reports) {
-                BigDecimal reportSum = report.getMonthReport().get(month);
-                if (reportSum != null) {
-                    BigDecimal oldSum = currentSum;
-                    currentSum = currentSum.add(report.getMonthReport().get(month));
-                    sums.put(month, currentSum);
-                }
-            }
-        }
-
-        return sums;
-    }
-
-    private DefaultCategoryDataset createDataset(Map<String, List<TransactionReportDto>> reports) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (Map.Entry<String, List<TransactionReportDto>> entry : reports.entrySet()) {
-            addNewDataset(dataset, entry.getKey(), entry.getValue());
-        }
-        return dataset;
-    }
-
-    private void addNewDataset(DefaultCategoryDataset dataset, String lineTitle, List<TransactionReportDto> reports) {
-        Map<Month, BigDecimal> calculateSums = calculateSums(reports);
-        dataset.addValue(calculateSums.get(Month.JANUARY), lineTitle, "Jan");
-        dataset.addValue(calculateSums.get(Month.FEBRUARY), lineTitle, "Feb");
-        dataset.addValue(calculateSums.get(Month.MARCH), lineTitle, "Mar");
-        dataset.addValue(calculateSums.get(Month.APRIL), lineTitle, "Apr");
-        dataset.addValue(calculateSums.get(Month.MAY), lineTitle, "May");
-        dataset.addValue(calculateSums.get(Month.JUNE), lineTitle, "Jun");
-        dataset.addValue(calculateSums.get(Month.JULY), lineTitle, "Jul");
-        dataset.addValue(calculateSums.get(Month.AUGUST), lineTitle, "Aug");
-        dataset.addValue(calculateSums.get(Month.SEPTEMBER), lineTitle, "Sep");
-        dataset.addValue(calculateSums.get(Month.OCTOBER), lineTitle, "Oct");
-        dataset.addValue(calculateSums.get(Month.NOVEMBER), lineTitle, "Nov");
-        dataset.addValue(calculateSums.get(Month.DECEMBER), lineTitle, "Dec");
-    }
-
-    public List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories) {
-        List<TransactionReportDto> transactionReports = new ArrayList<>();
-
-        for (CategoryDto categoryDto : allBillCategories) {
-            TransactionReportDto report = new TransactionReportDto();
-            Set<CompanyDto> company = categoryDto.getCompany();
-
-            BigDecimal sum = BigDecimal.valueOf(0);
-            for (CompanyDto companyDto : company) {
-                for (TransactionDto transaction : companyDto.getTransactions()) {
-
-                    report.getTransctions().add(transaction);
-
-                    //Add value to Month
-                    Month month = transaction.getTransDate().toLocalDate().getMonth();
-
-                    if (report.getMonthReport().containsKey(month)) {
-                        if (transaction.getSum() != null) {
-                            BigDecimal currentSum = report.getMonthReport().get(month);
-                            BigDecimal newSum = currentSum.add(transaction.getSum());
-                            report.getMonthReport().put(month, newSum);
-                        }
-                    } else {
-                        report.getMonthReport().put(month, transaction.getSum());
-                    }
-
-                    //Calculate total sum
-                    BigDecimal addedSUm = sum.add(transaction.getSum());
-                    sum = addedSUm;
-
-                }
-            }
-            report.setSum(sum);
-            report.setCategory(categoryDto.getName());
-            transactionReports.add(report);
-        }
-        return transactionReports;
-    }
-
-    public List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type) {
-        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(type);
-        if (categories.isPresent()) {
-            return extractTransactionReportList(categories.get());
-        }
-        return new ArrayList<>();
     }
 
     /**

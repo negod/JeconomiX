@@ -33,6 +33,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
+import se.backede.jeconomix.utils.ReportUtils;
 
 /**
  *
@@ -44,97 +45,31 @@ public class TransactionReport extends javax.swing.JDialog {
     /**
      * Creates new form expenseReport
      */
-    public TransactionReport(java.awt.Frame parent, boolean modal, CategoryTypeEnum type) {
+    public TransactionReport(java.awt.Frame parent, boolean modal, CategoryTypeEnum type, Boolean average) {
         super(parent, modal);
         initComponents();
 
-        List<TransactionReportDto> calculatedReport = getCalculatedReport(type);
+        List<TransactionReportDto> calculatedReports = ReportUtils.getCalculatedReport(type);
 
-        setTableData(calculatedReport);
-        addLineChart(calculatedReport);
+        Map<String, List<TransactionReportDto>> reports = new HashMap<>();
+        reports.put(type.name(), calculatedReports);
+
+        setTableData(calculatedReports);
+        addLineChart(reports, average);
     }
 
-    public void addLineChart(List<TransactionReportDto> reports) {
+    public void addLineChart(Map<String, List<TransactionReportDto>> reports, Boolean average) {
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total bills",
+                "Total",
                 "Month", "Kronor",
-                createDataset(reports),
+                ReportUtils.createDataset(reports, average),
                 PlotOrientation.VERTICAL,
-                false, true, false);
+                true, true, true);
 
         ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(998, 135));
+        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
         lineChartPanel.setLayout(new BorderLayout());
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
-    }
-
-    private DefaultCategoryDataset createDataset(List<TransactionReportDto> reports) {
-
-        String sumLineTitle = "Total Kr";
-        String averageLineTitle = "Average Kr";
-        BigDecimal averageCaclulated = BigDecimal.valueOf(0.00);
-
-        Map<Month, BigDecimal> sums = new HashMap<>();
-
-        List<Month> monthList = new LinkedList<>(Arrays.asList(Month.values()));
-        Set<Month> presentMonths = new LinkedHashSet<>();
-
-        for (Month month : monthList) {
-            sums.put(month, BigDecimal.valueOf(0.00));
-        }
-
-        if (reports != null || !reports.isEmpty()) {
-
-            for (Month month : monthList) {
-                BigDecimal currentSum = sums.get(month);
-                for (TransactionReportDto report : reports) {
-                    BigDecimal get = report.getMonthReport().get(month);
-                    if (get != null) {
-                        presentMonths.add(month);
-                        BigDecimal oldSum = currentSum;
-                        currentSum = currentSum.add(report.getMonthReport().get(month));
-                        sums.put(month, currentSum);
-                    }
-                }
-            }
-
-            BigDecimal average = BigDecimal.valueOf(0.00);
-            for (Month presentMonth : presentMonths) {
-                BigDecimal oldSum = average;
-                average = average.add(sums.get(presentMonth));
-            }
-            averageCaclulated = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
-
-        }
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        dataset.addValue(sums.get(Month.JANUARY), sumLineTitle, "Jan");
-        dataset.addValue(sums.get(Month.FEBRUARY), sumLineTitle, "Feb");
-        dataset.addValue(sums.get(Month.MARCH), sumLineTitle, "Mar");
-        dataset.addValue(sums.get(Month.APRIL), sumLineTitle, "Apr");
-        dataset.addValue(sums.get(Month.MAY), sumLineTitle, "May");
-        dataset.addValue(sums.get(Month.JUNE), sumLineTitle, "Jun");
-        dataset.addValue(sums.get(Month.JULY), sumLineTitle, "Jul");
-        dataset.addValue(sums.get(Month.AUGUST), sumLineTitle, "Aug");
-        dataset.addValue(sums.get(Month.SEPTEMBER), sumLineTitle, "Sep");
-        dataset.addValue(sums.get(Month.OCTOBER), sumLineTitle, "Oct");
-        dataset.addValue(sums.get(Month.NOVEMBER), sumLineTitle, "Nov");
-        dataset.addValue(sums.get(Month.DECEMBER), sumLineTitle, "Dec");
-
-        dataset.addValue(averageCaclulated, averageLineTitle, "Jan");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Feb");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Mar");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Apr");
-        dataset.addValue(averageCaclulated, averageLineTitle, "May");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Jun");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Jul");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Aug");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Sep");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Oct");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Nov");
-        dataset.addValue(averageCaclulated, averageLineTitle, "Dec");
-
-        return dataset;
     }
 
     public void setTableData(List<TransactionReportDto> calculatedReport) {
@@ -148,62 +83,6 @@ public class TransactionReport extends javax.swing.JDialog {
             reportTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
 
-    }
-
-    public List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type) {
-
-        /* 
-        
-        Need to be based on the transactions instead
-        
-        1 Get all transactions for the current year
-        2 Filter by the category type
-        3 loop through transactions
-        4 Get the company
-        5 add the sum for each month
-        6 add the total for each year
-        
-        */
-        
-        List<TransactionReportDto> transactionReports = new LinkedList<>();
-        Optional<List<CategoryDto>> allBillCategories = CategoryHandler.getInstance().getFilteredCategories(type);
-        if (allBillCategories.isPresent()) {
-
-            for (CategoryDto billCategoryDto : allBillCategories.get()) {
-                TransactionReportDto report = new TransactionReportDto();
-                Set<CompanyDto> company = billCategoryDto.getCompany();
-
-                BigDecimal sum = BigDecimal.valueOf(0);
-                for (CompanyDto companyDto : company) {
-                    for (TransactionDto transaction : companyDto.getTransactions()) {
-
-                        report.getTransctions().add(transaction);
-
-                        //Add value to Month
-                        Month month = transaction.getTransDate().toLocalDate().getMonth();
-
-                        if (report.getMonthReport().containsKey(month)) {
-                            if (transaction.getSum() != null) {
-                                BigDecimal currentSum = report.getMonthReport().get(month);
-                                BigDecimal newSum = currentSum.add(transaction.getSum());
-                                report.getMonthReport().put(month, newSum);
-                            }
-                        } else {
-                            report.getMonthReport().put(month, transaction.getSum());
-                        }
-
-                        //Calculate total sum
-                        BigDecimal addedSUm = sum.add(transaction.getSum());
-                        sum = addedSUm;
-
-                    }
-                }
-                report.setSum(sum);
-                report.setCategory(billCategoryDto.getName());
-                transactionReports.add(report);
-            }
-        }
-        return transactionReports;
     }
 
     /**
@@ -281,63 +160,6 @@ public class TransactionReport extends javax.swing.JDialog {
         TransactionReportDto transactionAt = model.getTransactionAt(selectedRow);
         new SingleTransactionReport(null, true, transactionAt).setVisible(true);
     }//GEN-LAST:event_reportTableMouseClicked
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TransactionReport.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TransactionReport.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TransactionReport.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TransactionReport.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                TransactionReport dialog = new TransactionReport(new javax.swing.JFrame(), true, CategoryTypeEnum.EXPENSE);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

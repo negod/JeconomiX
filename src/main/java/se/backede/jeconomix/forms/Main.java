@@ -299,7 +299,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
 
     private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed
-        new TransactionReport(this, true, CategoryTypeEnum.EXPENSE).setVisible(true);
+        new TransactionReport(this, true, CategoryTypeEnum.EXPENSE, Boolean.TRUE).setVisible(true);
     }//GEN-LAST:event_expenseReportMenuItemActionPerformed
 
     private void reindecLuceneMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reindecLuceneMenuItemActionPerformed
@@ -368,11 +368,11 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     }//GEN-LAST:event_importCategoriesMenuItemActionPerformed
 
     private void billReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billReportMenuItemActionPerformed
-        new TransactionReport(this, true, CategoryTypeEnum.BILL).setVisible(true);
+        new TransactionReport(this, true, CategoryTypeEnum.BILL, Boolean.TRUE).setVisible(true);
     }//GEN-LAST:event_billReportMenuItemActionPerformed
 
     private void incomeReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeReportMenuItemActionPerformed
-        new TransactionReport(this, true, CategoryTypeEnum.INCOME).setVisible(true);
+        new TransactionReport(this, true, CategoryTypeEnum.INCOME, Boolean.TRUE).setVisible(true);
     }//GEN-LAST:event_incomeReportMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

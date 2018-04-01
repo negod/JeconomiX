@@ -91,8 +91,9 @@ public class TransactionHandler {
                 return mapper.mapToDtoList(all.get());
             }
         } catch (DaoException e) {
-            log.error("Error when getting expenseCategories", e);
+            log.error("Error when getting all transactions", e);
         }
         return Optional.empty();
     }
+
 }
