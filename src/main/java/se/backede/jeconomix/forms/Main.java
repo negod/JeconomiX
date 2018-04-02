@@ -22,6 +22,7 @@ import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
+import se.backede.jeconomix.importer.CategoryModelmporter;
 import se.backede.jeconomix.importer.CompanyImporter;
 import se.backede.jeconomix.importer.TransactionImporter;
 import se.backede.jeconomix.utils.TimeDecider;
@@ -42,6 +43,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         initComponents();
         registerAsObserver();
         budgetQuarter1.setData(TimeDecider.getCurrenQuarter(), TimeDecider.getCurrentYear());
+        
     }
 
     /**

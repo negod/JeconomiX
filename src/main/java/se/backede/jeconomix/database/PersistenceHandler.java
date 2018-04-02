@@ -8,8 +8,7 @@ package se.backede.jeconomix.database;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import org.hibernate.Session;
 
 /**
  *
@@ -38,6 +37,10 @@ public class PersistenceHandler {
             em = emf.createEntityManager();
         }
         return em;
+    }
+
+    public static Session getHibernateSession() {
+        return getEntityManager().unwrap(org.hibernate.Session.class);
     }
 
 }

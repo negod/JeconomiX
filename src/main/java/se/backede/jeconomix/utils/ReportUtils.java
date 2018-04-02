@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.utils;
 
+import static java.lang.StrictMath.log;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Month;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
@@ -27,18 +29,26 @@ import se.backede.jeconomix.dto.TransactionReportDto;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
+@Slf4j
 public class ReportUtils {
 
-    public static List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type) {
-        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(type);
+    public static List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type, Integer year) {
+        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(type, year);
         if (categories.isPresent()) {
-            return extractTransactionReportList(categories.get());
+            return extractTransactionReportList(categories.get(), year);
         }
         return new ArrayList<>();
     }
 
+    /**
+     * Gets tha average sum for all reports. Takes in to consideration if a sum
+     * is 0.00.
+     *
+     * @param reports
+     * @return
+     */
     public static Map<Month, BigDecimal> calculateAvg(List<TransactionReportDto> reports) {
-        Map<Month, BigDecimal> calculatedSums = calculateSums(reports);
+        Map<Month, BigDecimal> calculatedSums = calculateTotalSumsPerMonth(reports);
         Set<Month> presentMonths = getPresentMonths(reports);
 
         BigDecimal average = BigDecimal.valueOf(0.00);
@@ -47,14 +57,23 @@ public class ReportUtils {
             average = average.add(calculatedSums.get(presentMonth));
         }
 
-        BigDecimal divide = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
-        for (Month month : presentMonths) {
-            calculatedSums.put(month, divide);
+        if (!presentMonths.isEmpty()) {
+            BigDecimal divide = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
+
+            for (Month month : presentMonths) {
+                calculatedSums.put(month, divide);
+            }
         }
 
         return calculatedSums;
     }
 
+    /**
+     * Gets all months where the total sum for the month is above 0
+     *
+     * @param reports
+     * @return
+     */
     private static Set<Month> getPresentMonths(List<TransactionReportDto> reports) {
         Set<Month> presentMonths = new HashSet<>();
         for (TransactionReportDto report : reports) {
@@ -67,6 +86,13 @@ public class ReportUtils {
         return presentMonths;
     }
 
+    /**
+     * Creates the dataset
+     *
+     * @param reports the reports
+     * @param avg if an average calculation should be done
+     * @return
+     */
     public static DefaultCategoryDataset createDataset(Map<String, List<TransactionReportDto>> reports, Boolean avg) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Map.Entry<String, List<TransactionReportDto>> entry : reports.entrySet()) {
@@ -81,7 +107,7 @@ public class ReportUtils {
         return dataset;
     }
 
-    private static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories) {
+    private static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories, Integer year) {
         List<TransactionReportDto> transactionReports = new ArrayList<>();
 
         for (CategoryDto categoryDto : allBillCategories) {
@@ -92,26 +118,30 @@ public class ReportUtils {
             for (CompanyDto companyDto : company) {
                 for (TransactionDto transaction : companyDto.getTransactions()) {
 
-                    report.getTransctions().add(transaction);
+                    if (transaction.getBudgetYear().equals(year)) {
 
-                    //Add value to Month
-                    Month month = transaction.getTransDate().toLocalDate().getMonth();
+                        report.getTransctions().add(transaction);
 
-                    if (report.getMonthReport().containsKey(month)) {
-                        if (transaction.getSum() != null) {
-                            BigDecimal currentSum = report.getMonthReport().get(month);
-                            BigDecimal newSum = currentSum.add(transaction.getSum());
-                            report.getMonthReport().put(month, newSum);
+                        //Add value to Month
+                        Month month = transaction.getBudgetMonth();
+
+                        if (report.getMonthReport().containsKey(month)) {
+
+                            if (transaction.getSum() != null) {
+                                BigDecimal currentSum = report.getMonthReport().get(month);
+                                BigDecimal newSum = currentSum.add(transaction.getSum());
+                                report.getMonthReport().put(month, newSum);
+                            }
+                        } else {
+                            report.getMonthReport().put(month, transaction.getSum());
                         }
-                    } else {
-                        report.getMonthReport().put(month, transaction.getSum());
+
+                        //Calculate total sum
+                        BigDecimal addedSUm = sum.add(transaction.getSum());
+                        sum = addedSUm;
                     }
-
-                    //Calculate total sum
-                    BigDecimal addedSUm = sum.add(transaction.getSum());
-                    sum = addedSUm;
-
                 }
+
             }
             report.setSum(sum);
             report.setCategory(categoryDto.getName());
@@ -120,7 +150,7 @@ public class ReportUtils {
         return transactionReports;
     }
 
-    private static Map<Month, BigDecimal> calculateSums(List<TransactionReportDto> reports) {
+    private static Map<Month, BigDecimal> calculateTotalSumsPerMonth(List<TransactionReportDto> reports) {
         Map<Month, BigDecimal> sums = new HashMap<>();
 
         for (Month month : Month.values()) {
@@ -147,7 +177,7 @@ public class ReportUtils {
         if (average) {
             calculateSums = calculateAvg(reports);
         } else {
-            calculateSums = calculateSums(reports);
+            calculateSums = calculateTotalSumsPerMonth(reports);
         }
 
         dataset.addValue(calculateSums.get(Month.JANUARY), lineTitle, "Jan");

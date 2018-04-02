@@ -19,14 +19,15 @@ import java.util.Set;
 import javax.swing.JFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.events.Events;
 import se.backede.jeconomix.forms.importexport.Importer;
+import se.backede.jeconomix.importer.CategoryDecider.CategoryDecider;
 
 /**
  *
@@ -45,30 +46,27 @@ public class TransactionImporter {
     }
 
     public void importExpensesFromCSV(String filePath, JFrame parent) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    CsvReaderHandler handler = new CsvReaderHandler(filePath, Boolean.TRUE);
-                    Iterable<CSVRecord> build = new Normalizer(handler.getRecords())
-                            .removePeriod("Belopp")
-                            .removePeriod("Saldo")
-                            .removeWord("Transaktion", "Kortköp")
-                            .removeWord("Transaktion", "Reservation")
-                            .removeLeadingSpaces("Transaktion")
-                            .removeWordStartingWith("Transaktion", "18", 7)
-                            .removeWordStartingWith("Transaktion", "17", 7)
-                            .removeTrailingAndLeadingSpaces("Transaktion")
-                            .replaceComma("Belopp")
-                            .replaceComma("Saldo")
-                            .removeMinus("Belopp")
-                            .build(handler.getHeaderMap());
+        new Thread(() -> {
+            try {
+                CsvReaderHandler handler = new CsvReaderHandler(filePath, Boolean.TRUE);
+                Iterable<CSVRecord> build = new Normalizer(handler.getRecords())
+                        .removePeriod("Belopp")
+                        .removePeriod("Saldo")
+                        .removeWord("Transaktion", "Kortköp")
+                        .removeWord("Transaktion", "Reservation")
+                        .removeLeadingSpaces("Transaktion")
+                        .removeWordStartingWith("Transaktion", "18", 7)
+                        .removeWordStartingWith("Transaktion", "17", 7)
+                        .removeTrailingAndLeadingSpaces("Transaktion")
+                        .replaceComma("Belopp")
+                        .replaceComma("Saldo")
+                        .removeMinus("Belopp")
+                        .build(handler.getHeaderMap());
 
-                    handleNormalizedImports(build, parent);
+                handleNormalizedImports(build, parent);
 
-                } catch (BeckedeFileException | IOException ex) {
-                    log.error("Error when importing expenses", ex);
-                }
+            } catch (BeckedeFileException | IOException ex) {
+                log.error("Error when importing expenses", ex);
             }
         }).start();
     }
@@ -118,10 +116,10 @@ public class TransactionImporter {
                 if (transactionExists) {
                     duplicateTransactions.add(transaction);
                 } else {
-                    if (transaction.getSaldo() != null) {
-                        TransactionHandler.getInstance().createTransaction(transaction);
-                    } else {
+                    if (/*transaction.getSaldo() == null ||*/transaction.getSum() == null) {
                         invalidTransactions.add(transaction);
+                    } else {
+                        TransactionHandler.getInstance().createTransaction(transaction);
                     }
                 }
 
@@ -129,12 +127,16 @@ public class TransactionImporter {
 
                 TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
 
-                if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
-                    companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
+                if (transaction.getSum() != null) {
+                    if (companyTransactions.containsKey(cSVRecord.get("Transaktion"))) {
+                        companyTransactions.get(cSVRecord.get("Transaktion")).add(transaction);
+                    } else {
+                        Set<TransactionDto> transactionList = new LinkedHashSet<>();
+                        transactionList.add(transaction);
+                        companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
+                    }
                 } else {
-                    Set<TransactionDto> transactionList = new LinkedHashSet<>();
-                    transactionList.add(transaction);
-                    companyTransactions.put(cSVRecord.get("Transaktion"), transactionList);
+                    invalidTransactions.add(transaction);
                 }
 
             }
@@ -147,11 +149,19 @@ public class TransactionImporter {
 
         if (!companyTransactions.isEmpty()) {
             LinkedList<CompanyDto> companiesToAdd = new LinkedList<>();
+
             for (String companyName : companyTransactions.keySet()) {
+                Optional<CategoryDto> decideCactegory = CategoryDecider.getInstance().decideCactegory(companyName);
                 CompanyDto companyToAdd = new CompanyDto();
                 companyToAdd.setName(companyName);
                 companyToAdd.setTransactions(companyTransactions.get(companyName));
-                companiesToAdd.add(companyToAdd);
+
+                if (decideCactegory.isPresent()) {
+                    companyToAdd.setCategory(decideCactegory.get());
+                    CompanyHandler.getInstance().createCompany(companyToAdd);
+                } else {
+                    companiesToAdd.add(companyToAdd);
+                }
             }
 
             new Importer(parent, true, companiesToAdd).setVisible(true);
@@ -160,7 +170,8 @@ public class TransactionImporter {
         Events.getInstance().fireProgressDoneEvent(
                 ((Collection<?>) records).size(),
                 duplicateTransactions.size(),
-                invalidTransactions.size());
+                invalidTransactions.size()
+        );
     }
 
 }

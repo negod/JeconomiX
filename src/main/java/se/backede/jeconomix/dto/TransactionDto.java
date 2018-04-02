@@ -8,7 +8,10 @@ package se.backede.jeconomix.dto;
 import com.negod.generics.persistence.dto.GenericDto;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.Month;
 import java.util.Objects;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 import se.backede.jeconomix.database.entity.Transaction;
@@ -29,7 +32,9 @@ public class TransactionDto extends GenericDto {
 
     private CompanyDto company;
 
-    private CategoryTypeDto transactionType;
+    private Month budgetMonth;
+
+    private Integer budgetYear;
 
     @Override
     public int hashCode() {

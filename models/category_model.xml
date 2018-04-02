@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<models>    
+    <model>
+        <word>spotify</word>
+        <category>2d75b2ac-a0c9-4971-ab77-d1bd336e19fe</category>
+    </model>
+    <model>
+        <word>apotek</word>
+        <category>cba81810-6d94-43f6-8fc7-3342ef248eab</category>
+    </model>
+    <model>
+        <word>taxi</word>
+        <category>74717ac7-f875-475c-880c-4d4ebcda3906</category>
+    </model>
+    <model>
+        <word>swish</word>
+        <category>4c04ef13-da23-46dd-ad0c-7a9aa3be6395</category>
+    </model>
+    <model>
+        <word>coop</word>
+        <category>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</category>
+    </model>
+    <model>
+        <word>ica</word>
+        <category>b3e11464-2b2c-4fa6-a0a7-04a69bcd0303</category>
+    </model>
+    <model>
+        <word>restaurang</word>
+        <category>176e9c44-f06e-4345-b1f4-3f948ac4f5ae</category>
+    </model>
+    <model>
+        <word>cafe</word>
+        <category>e29e2e6e-115f-437c-a3da-181a5cfdce0c</category>
+    </model>
+    <model>
+        <word>bageri</word>
+        <category>e29e2e6e-115f-437c-a3da-181a5cfdce0c</category>
+    </model>
+    <model>
+        <word>iz</word>
+        <category>2cc5b6fb-2de2-4333-b22a-143381b3f708</category>
+    </model>
+    <model>
+        <word>överföring</word>
+        <category>5faddad9-b366-4c9e-89e4-81d0e9568a68</category>
+    </model>    
+</models>

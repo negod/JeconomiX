@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.GenericDao;
 import com.negod.generics.persistence.exception.ConstraintException;
 import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
@@ -17,7 +16,10 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.persistence.NoResultException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
@@ -97,6 +99,23 @@ public class CategoryHandler {
             }
         } catch (DaoException e) {
             log.error("Error when getting expenseCategories", e);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type, Integer year) {
+        try {
+            DAO.startTransaction();
+            Query query = DAO.getHibernateSession().getNamedQuery("test");
+            query.setParameter("year", year);
+            query.setParameter("type", type);
+            query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            List<Category> categories = (List<Category>) query.list();
+            return mapper.mapToDtoList(categories);
+        } catch (NoResultException ex) {
+            log.debug("No result for query when getting Category");
+        } finally {
+            DAO.commitTransaction();
         }
         return Optional.empty();
     }

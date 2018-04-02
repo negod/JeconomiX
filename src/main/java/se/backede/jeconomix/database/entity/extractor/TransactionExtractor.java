@@ -37,7 +37,7 @@ public class TransactionExtractor {
                 BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Saldo")));
                 transaction.setSaldo(valueOf);
             }
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             log.error("Failure when parsing field Saldo to BigDecimal");
         }
 

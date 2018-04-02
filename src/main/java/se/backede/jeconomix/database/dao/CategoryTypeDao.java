@@ -7,6 +7,7 @@ package se.backede.jeconomix.database.dao;
 
 import com.negod.generics.persistence.GenericDao;
 import javax.persistence.EntityManager;
+import org.hibernate.Session;
 import se.backede.jeconomix.database.PersistenceHandler;
 import se.backede.jeconomix.database.entity.CategoryType;
 
@@ -19,6 +20,11 @@ public class CategoryTypeDao extends GenericDao<CategoryType> {
     @Override
     public EntityManager getEntityManager() {
         return PersistenceHandler.getInstance().getEntityManager();
+    }
+
+    @Override
+    public Session getHibernateSession() {
+        return PersistenceHandler.getInstance().getHibernateSession();
     }
 
 }

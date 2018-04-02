@@ -6,6 +6,7 @@
 package se.backede.jeconomix.forms.report;
 
 import java.awt.BorderLayout;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,8 @@ import se.backede.jeconomix.utils.ReportUtils;
 @Slf4j
 public class TransactionsTotalReport extends javax.swing.JDialog {
 
+    Integer currentYear = YearMonth.now().getYear();
+
     /**
      * Creates new form expenseReport
      */
@@ -33,9 +36,9 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL);
-        List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE);
-        List<TransactionReportDto> calculatedIncomeReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.INCOME);
+        List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL, currentYear);
+        List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE, currentYear);
+        List<TransactionReportDto> calculatedIncomeReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.INCOME, currentYear);
 
         List<TransactionReportDto> aggregatedExpenseReport = new LinkedList<>();
         aggregatedExpenseReport.addAll(calculatedBillReport);

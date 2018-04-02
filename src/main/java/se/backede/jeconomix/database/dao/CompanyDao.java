@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.hibernate.Session;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.PersistenceHandler;
 import se.backede.jeconomix.database.entity.Company_;
@@ -25,6 +26,11 @@ public class CompanyDao extends GenericDao<Company> {
     @Override
     public EntityManager getEntityManager() {
         return PersistenceHandler.getInstance().getEntityManager();
+    }
+
+    @Override
+    public Session getHibernateSession() {
+        return PersistenceHandler.getInstance().getHibernateSession();
     }
 
     public Optional<Company> getCompanyByName(String name) throws DaoException {

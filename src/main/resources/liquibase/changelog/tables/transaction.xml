@@ -22,6 +22,12 @@
             <column name="saldo" type="DECIMAL(12, 2)" >
                 <constraints nullable="true"/>
             </column>
+            <column name="budgetMonth" type="varchar(10)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="budgetYear" type="Integer" >
+                <constraints nullable="false"/>
+            </column>
             <column name="company" type="varchar(36)" >
                 <constraints nullable="false"/>
             </column>

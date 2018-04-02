@@ -75,13 +75,13 @@ public class SingleTransactionReport extends javax.swing.JDialog {
 
     public void extractYears() {
         for (TransactionDto transction : reports.getTransctions()) {
-            years.add(transction.getTransDate().toLocalDate().getYear());
+            years.add(transction.getBudgetYear());
         }
     }
 
     public void extractMonths() {
         for (TransactionDto transction : reports.getTransctions()) {
-            months.add(transction.getTransDate().toLocalDate().getMonth());
+            months.add(transction.getBudgetMonth());
         }
     }
 
@@ -164,7 +164,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
         if (yearString != null) {
             if (!yearString.equals(ALL_YEARS)) {
                 for (TransactionDto filteredTransaction : filteredCompanies) {
-                    if (filteredTransaction.getTransDate().toLocalDate().getYear() != year) {
+                    if (filteredTransaction.getBudgetYear() != year) {
                         filteredByYear.remove(filteredTransaction);
                     }
                 }
@@ -175,7 +175,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
         if (monthString != null) {
             if (!monthString.equals(ALL_MONTHS)) {
                 for (TransactionDto filteredTransaction : filteredByYear) {
-                    if (filteredTransaction.getTransDate().toLocalDate().getMonth() != month) {
+                    if (filteredTransaction.getBudgetMonth() != month) {
                         filteredByMonth.remove(filteredTransaction);
                     }
                 }
@@ -215,7 +215,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
 
         for (TransactionDto transaction : reports.getTransctions()) {
             for (Month month : monthList) {
-                if (transaction.getTransDate().toLocalDate().getMonth().equals(month)) {
+                if (transaction.getBudgetMonth().equals(month)) {
                     BigDecimal currentSum = sums.get(month);
                     if (transaction.getSum() != null) {
                         BigDecimal newSum = currentSum.add(transaction.getSum());

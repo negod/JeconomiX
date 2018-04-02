@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 @Entity
 @Getter
 @Setter
+@NamedQuery(name = "test", query = "select t from Category t left join t.company c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id")
 public class Category extends GenericEntity {
 
     private String name;
@@ -34,7 +36,6 @@ public class Category extends GenericEntity {
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Company> company;
 
-    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ManyToOne()
     @JoinColumn(name = "category_type", referencedColumnName = "id")
     private CategoryType categoryType;

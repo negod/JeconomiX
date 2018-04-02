@@ -8,8 +8,11 @@ package se.backede.jeconomix.database.entity;
 import com.negod.generics.persistence.entity.GenericEntity;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.Month;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
@@ -36,6 +39,11 @@ public class Transaction extends GenericEntity {
     private BigDecimal sum;
 
     private BigDecimal saldo;
+
+    @Enumerated(EnumType.STRING)
+    private Month budgetMonth;
+
+    private Integer budgetYear;
 
     @ManyToOne
     @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
