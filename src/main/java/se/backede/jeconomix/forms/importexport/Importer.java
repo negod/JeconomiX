@@ -8,6 +8,7 @@ package se.backede.jeconomix.forms.importexport;
 import se.backede.jeconomix.forms.editor.AddCategory;
 import java.util.LinkedList;
 import java.util.Optional;
+import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
@@ -98,7 +99,6 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
         jLabel4 = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
         addCategoryComboBox = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         counterLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -171,11 +171,6 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
                 categoryComboBoxItemStateChanged(evt);
             }
         });
-        categoryComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categoryComboBoxActionPerformed(evt);
-            }
-        });
 
         jLabel4.setText("Set Category!");
 
@@ -188,8 +183,6 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
                 addCategoryComboBoxActionPerformed(evt);
             }
         });
-
-        jLabel1.setText("jLabel1");
 
         counterLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         counterLabel.setText("1 of 25");
@@ -208,10 +201,7 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
                             .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(jScrollPane1)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1))
+                        .addComponent(jLabel2)
                         .addComponent(jLabel4)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,19 +222,14 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
                 .addComponent(companyName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addCategoryComboBox))
-                        .addGap(16, 16, 16)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addCategoryComboBox))
+                .addGap(16, 16, 16)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(counterLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -268,9 +253,24 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         if (companyIterator.hasNext()) {
+            
+            CompanyDto atCurrentIndex = companyIterator.getAtCurrentIndex();
+            if(atCurrentIndex.getCategory() == null){
+                CategoryDto category = (CategoryDto) categoryComboBox.getSelectedItem();
+                companyIterator.getAtCurrentIndex().setCategory(category);
+            }
+            
             progressBar.setValue(progressBar.getValue() + 1);
             setValues(companyIterator.next());
         } else {
+
+            for (CompanyDto company : companyIterator.getAll()) {
+                if (company.getCategory() == null) {
+                    JOptionPane.showMessageDialog(rootPane, "Company: " + company.getName() + " must have a category set!", "close", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+            }
+
             for (CompanyDto company : companyIterator.getAll()) {
                 for (TransactionDto transaction : company.getTransactions()) {
                     transaction.setCompany(company);
@@ -289,16 +289,12 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
         }
     }//GEN-LAST:event_prevButtonActionPerformed
 
-    private void categoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryComboBoxActionPerformed
-    }//GEN-LAST:event_categoryComboBoxActionPerformed
-
     private void addCategoryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCategoryComboBoxActionPerformed
         new AddCategory(this, false).setVisible(true);
     }//GEN-LAST:event_addCategoryComboBoxActionPerformed
 
     private void categoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_categoryComboBoxItemStateChanged
-        CategoryComboModel expModel = (CategoryComboModel) categoryComboBox.getModel();
-        CategoryDto category = (CategoryDto) expModel.getSelectedItem();
+        CategoryDto category = (CategoryDto) evt.getItem();
         CompanyDto selectedCompany = companyIterator.getAtCurrentIndex();
         selectedCompany.setCategory(category);
         companyIterator.replaceAtCurrentIndex(selectedCompany);
@@ -309,7 +305,6 @@ public class Importer extends javax.swing.JDialog implements EventObserver {
     private javax.swing.JComboBox<String> categoryComboBox;
     private javax.swing.JLabel companyName;
     private javax.swing.JLabel counterLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

@@ -45,6 +45,7 @@ public class TransactionImporter {
         return INSTANCE;
     }
 
+    // TODO Add removeStrating with with current year last 2 digits
     public void importExpensesFromCSV(String filePath, JFrame parent) {
         new Thread(() -> {
             try {
@@ -57,6 +58,7 @@ public class TransactionImporter {
                         .removeLeadingSpaces("Transaktion")
                         .removeWordStartingWith("Transaktion", "18", 7)
                         .removeWordStartingWith("Transaktion", "17", 7)
+                        .removeWordStartingWith("Transaktion", "16", 7)
                         .removeTrailingAndLeadingSpaces("Transaktion")
                         .replaceComma("Belopp")
                         .replaceComma("Saldo")
@@ -83,6 +85,7 @@ public class TransactionImporter {
                         .removeLeadingSpaces("Transaktion")
                         .removeWordStartingWith("Transaktion", "18", 7)
                         .removeWordStartingWith("Transaktion", "17", 7)
+                        .removeWordStartingWith("Transaktion", "16", 7)
                         .removeTrailingAndLeadingSpaces("Transaktion")
                         .replaceComma("Belopp")
                         .replaceComma("Saldo")
@@ -105,7 +108,7 @@ public class TransactionImporter {
         Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) records).size());
         for (CSVRecord cSVRecord : records) {
 
-            Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion"));
+            Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion").toUpperCase());
 
             if (company.isPresent()) {
                 TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
@@ -153,7 +156,7 @@ public class TransactionImporter {
             for (String companyName : companyTransactions.keySet()) {
                 Optional<CategoryDto> decideCactegory = CategoryDecider.getInstance().decideCactegory(companyName);
                 CompanyDto companyToAdd = new CompanyDto();
-                companyToAdd.setName(companyName);
+                companyToAdd.setName(companyName.toUpperCase());
                 companyToAdd.setTransactions(companyTransactions.get(companyName));
 
                 if (decideCactegory.isPresent()) {

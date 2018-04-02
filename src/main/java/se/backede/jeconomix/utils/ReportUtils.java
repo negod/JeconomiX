@@ -101,7 +101,7 @@ public class ReportUtils {
 
         if (avg) {
             for (Map.Entry<String, List<TransactionReportDto>> entry : reports.entrySet()) {
-                addNewDataset(dataset, "Average " + entry.getKey(), entry.getValue(), Boolean.TRUE);
+                addNewDataset(dataset, "AVERAGE " + entry.getKey(), entry.getValue(), Boolean.TRUE);
             }
         }
         return dataset;
@@ -137,7 +137,7 @@ public class ReportUtils {
                         }
 
                         //Calculate total sum
-                        BigDecimal addedSUm = sum.add(transaction.getSum());
+                        BigDecimal addedSUm = sum.add(transaction.getSum(), MathContext.DECIMAL32);
                         sum = addedSUm;
                     }
                 }
@@ -180,18 +180,18 @@ public class ReportUtils {
             calculateSums = calculateTotalSumsPerMonth(reports);
         }
 
-        dataset.addValue(calculateSums.get(Month.JANUARY), lineTitle, "Jan");
-        dataset.addValue(calculateSums.get(Month.FEBRUARY), lineTitle, "Feb");
-        dataset.addValue(calculateSums.get(Month.MARCH), lineTitle, "Mar");
-        dataset.addValue(calculateSums.get(Month.APRIL), lineTitle, "Apr");
-        dataset.addValue(calculateSums.get(Month.MAY), lineTitle, "May");
-        dataset.addValue(calculateSums.get(Month.JUNE), lineTitle, "Jun");
-        dataset.addValue(calculateSums.get(Month.JULY), lineTitle, "Jul");
-        dataset.addValue(calculateSums.get(Month.AUGUST), lineTitle, "Aug");
-        dataset.addValue(calculateSums.get(Month.SEPTEMBER), lineTitle, "Sep");
-        dataset.addValue(calculateSums.get(Month.OCTOBER), lineTitle, "Oct");
-        dataset.addValue(calculateSums.get(Month.NOVEMBER), lineTitle, "Nov");
-        dataset.addValue(calculateSums.get(Month.DECEMBER), lineTitle, "Dec");
+        dataset.addValue(calculateSums.get(Month.JANUARY), lineTitle, "JAN");
+        dataset.addValue(calculateSums.get(Month.FEBRUARY), lineTitle, "FEB");
+        dataset.addValue(calculateSums.get(Month.MARCH), lineTitle, "MAR");
+        dataset.addValue(calculateSums.get(Month.APRIL), lineTitle, "APR");
+        dataset.addValue(calculateSums.get(Month.MAY), lineTitle, "MAY");
+        dataset.addValue(calculateSums.get(Month.JUNE), lineTitle, "JUN");
+        dataset.addValue(calculateSums.get(Month.JULY), lineTitle, "JUL");
+        dataset.addValue(calculateSums.get(Month.AUGUST), lineTitle, "AUG");
+        dataset.addValue(calculateSums.get(Month.SEPTEMBER), lineTitle, "SEP");
+        dataset.addValue(calculateSums.get(Month.OCTOBER), lineTitle, "OCT");
+        dataset.addValue(calculateSums.get(Month.NOVEMBER), lineTitle, "NOV");
+        dataset.addValue(calculateSums.get(Month.DECEMBER), lineTitle, "DEC");
     }
 
 }

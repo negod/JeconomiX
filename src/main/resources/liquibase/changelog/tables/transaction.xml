@@ -31,9 +31,6 @@
             <column name="company" type="varchar(36)" >
                 <constraints nullable="false"/>
             </column>
-            <column name="transaction_type" type="varchar(36)" >
-                <constraints nullable="true"/>
-            </column>
         </createTable>
         
         <addForeignKeyConstraint baseColumnNames="company"

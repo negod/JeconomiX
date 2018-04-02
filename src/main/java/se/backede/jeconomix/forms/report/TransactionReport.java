@@ -16,7 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.ui.TextAnchor;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
@@ -57,14 +65,53 @@ public class TransactionReport extends javax.swing.JDialog {
 
     public void addLineChart(Map<String, List<TransactionReportDto>> reports, Boolean average) {
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total",
-                "Month", "Kronor",
+                "TOTAL",
+                "MONTH", "Kr",
                 ReportUtils.createDataset(reports, average),
                 PlotOrientation.VERTICAL,
                 true, true, true);
 
         ChartPanel chartPanel = new ChartPanel(lineChart);
         chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
+
+        CategoryAxis axis = lineChart.getCategoryPlot().getDomainAxis();
+        CategoryItemRenderer renderer = lineChart.getCategoryPlot().getRenderer();
+
+        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE1, TextAnchor.HALF_ASCENT_CENTER, TextAnchor.BOTTOM_CENTER, 0);
+        renderer.setBasePositiveItemLabelPosition(position);
+
+        renderer.setBaseItemLabelGenerator(new CategoryItemLabelGenerator() {
+
+            @Override
+            public String generateLabel(CategoryDataset dataset, int series, int category) {
+                if (average) {
+                    if (series == 0) {
+                        String result = null;
+                        Number value = dataset.getValue(series, category);
+                        result = value.toString(); // could apply formatting here
+                        return result;
+                    }
+                } else {
+                    String result = null;
+                    Number value = dataset.getValue(series, category);
+                    result = value.toString(); // could apply formatting here
+                    return result;
+                }
+                return null;
+            }
+
+            @Override
+            public String generateRowLabel(CategoryDataset cd, int i) {
+                return null;
+            }
+
+            @Override
+            public String generateColumnLabel(CategoryDataset cd, int i) {
+                return null;
+            }
+        });
+
+        renderer.setBaseItemLabelsVisible(true);
         lineChartPanel.setLayout(new BorderLayout());
         lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
@@ -128,7 +175,7 @@ public class TransactionReport extends javax.swing.JDialog {
         jScrollPane1.setViewportView(reportTable);
         if (reportTable.getColumnModel().getColumnCount() > 0) {
             reportTable.getColumnModel().getColumn(0).setResizable(false);
-            reportTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+            reportTable.getColumnModel().getColumn(0).setPreferredWidth(300);
             reportTable.getColumnModel().getColumn(1).setResizable(false);
             reportTable.getColumnModel().getColumn(1).setPreferredWidth(70);
             reportTable.getColumnModel().getColumn(2).setResizable(false);
@@ -157,7 +204,7 @@ public class TransactionReport extends javax.swing.JDialog {
         );
         lineChartPanelLayout.setVerticalGroup(
             lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 221, Short.MAX_VALUE)
+            .addGap(0, 292, Short.MAX_VALUE)
         );
 
         prevYearBtn.setText("Prev year");
@@ -194,12 +241,12 @@ public class TransactionReport extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(prevYearBtn)
                     .addComponent(nextYearBtn)
                     .addComponent(yearLabel))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -220,7 +267,7 @@ public class TransactionReport extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
