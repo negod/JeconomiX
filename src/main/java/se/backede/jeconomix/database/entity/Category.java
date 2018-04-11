@@ -28,13 +28,13 @@ import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 @Entity
 @Getter
 @Setter
-@NamedQuery(name = "test", query = "select t from Category t left join t.company c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id")
+@NamedQuery(name = "test", query = "select t from Category t left join t.companies c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id")
 public class Category extends GenericEntity {
 
     private String name;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Company> company;
+    private Set<Company> companies;
 
     @ManyToOne()
     @JoinColumn(name = "category_type", referencedColumnName = "id")

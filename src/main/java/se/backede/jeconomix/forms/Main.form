@@ -27,17 +27,9 @@
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="importExpensesMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Expenses"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importExpensesMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="importBillMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Bills"/>
+                <Property name="text" type="java.lang.String" value="Transactions"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importBillMenuItemActionPerformed"/>

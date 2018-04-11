@@ -33,11 +33,16 @@ public class TransactionExtractor {
         }
 
         try {
-            if (cSVRecord.get("Saldo") != null && !cSVRecord.get("Saldo").isEmpty()) {
-                BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Saldo")));
-                transaction.setSaldo(valueOf);
+            if (cSVRecord.get("Saldo") != null) {
+                if (!cSVRecord.get("Saldo").isEmpty()) {
+                    BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Saldo")));
+                    transaction.setSaldo(valueOf);
+                }
+            } else {
+                transaction.setSaldo(BigDecimal.valueOf(0.00));
             }
         } catch (NullPointerException | IllegalArgumentException e) {
+            transaction.setSaldo(BigDecimal.valueOf(0.00));
             log.error("Failure when parsing field Saldo to BigDecimal");
         }
 

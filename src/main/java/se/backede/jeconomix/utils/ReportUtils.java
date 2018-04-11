@@ -107,50 +107,50 @@ public class ReportUtils {
         return dataset;
     }
 
-    private static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories, Integer year) {
+    public static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories, Integer year) {
         List<TransactionReportDto> transactionReports = new ArrayList<>();
 
         for (CategoryDto categoryDto : allBillCategories) {
             TransactionReportDto report = new TransactionReportDto();
-            Set<CompanyDto> company = categoryDto.getCompany();
+            Set<CompanyDto> companies = categoryDto.getCompanies();
 
-            BigDecimal sum = BigDecimal.valueOf(0);
-            for (CompanyDto companyDto : company) {
-                for (TransactionDto transaction : companyDto.getTransactions()) {
+            if (companies != null) {
 
-                    if (transaction.getBudgetYear().equals(year)) {
+                BigDecimal totalSum = BigDecimal.valueOf(0);
+                for (CompanyDto companyDto : companies) {
+                    for (TransactionDto transaction : companyDto.getTransactions()) {
 
-                        report.getTransctions().add(transaction);
+                        if (transaction.getBudgetYear().equals(year)) {
 
-                        //Add value to Month
-                        Month month = transaction.getBudgetMonth();
+                            report.getTransctions().add(transaction);
+                            Month month = transaction.getBudgetMonth();
 
-                        if (report.getMonthReport().containsKey(month)) {
+                            if (report.getMonthReport().containsKey(month)) {
 
-                            if (transaction.getSum() != null) {
-                                BigDecimal currentSum = report.getMonthReport().get(month);
-                                BigDecimal newSum = currentSum.add(transaction.getSum());
-                                report.getMonthReport().put(month, newSum);
+                                if (transaction.getSum() != null) {
+                                    BigDecimal currentSum = report.getMonthReport().get(month);
+                                    BigDecimal newSum = currentSum.add(transaction.getSum());
+                                    report.getMonthReport().put(month, newSum);
+                                }
+                            } else {
+                                report.getMonthReport().put(month, transaction.getSum());
                             }
-                        } else {
-                            report.getMonthReport().put(month, transaction.getSum());
+
+                            BigDecimal addedSUm = totalSum.add(transaction.getSum(), MathContext.DECIMAL32);
+                            totalSum = addedSUm;
                         }
-
-                        //Calculate total sum
-                        BigDecimal addedSUm = sum.add(transaction.getSum(), MathContext.DECIMAL32);
-                        sum = addedSUm;
                     }
-                }
 
+                }
+                report.setSum(totalSum);
+                report.setCategory(categoryDto.getName());
+                transactionReports.add(report);
             }
-            report.setSum(sum);
-            report.setCategory(categoryDto.getName());
-            transactionReports.add(report);
         }
         return transactionReports;
     }
 
-    private static Map<Month, BigDecimal> calculateTotalSumsPerMonth(List<TransactionReportDto> reports) {
+    public static Map<Month, BigDecimal> calculateTotalSumsPerMonth(List<TransactionReportDto> reports) {
         Map<Month, BigDecimal> sums = new HashMap<>();
 
         for (Month month : Month.values()) {
@@ -168,8 +168,8 @@ public class ReportUtils {
                 }
             }
         }
-
         return sums;
+
     }
 
     private static void addNewDataset(DefaultCategoryDataset dataset, String lineTitle, List<TransactionReportDto> reports, Boolean average) {

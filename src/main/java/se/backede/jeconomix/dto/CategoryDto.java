@@ -20,8 +20,7 @@ import lombok.Setter;
 public class CategoryDto extends GenericDto {
 
     private String name;
-    @XmlTransient
-    private Set<CompanyDto> company;
+    private Set<CompanyDto> companies;
     private CategoryTypeDto categoryType;
 
 }

@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;

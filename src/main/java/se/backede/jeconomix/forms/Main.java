@@ -62,7 +62,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         importerMenu = new javax.swing.JMenu();
-        importExpensesMenuItem = new javax.swing.JMenuItem();
         importBillMenuItem = new javax.swing.JMenuItem();
         importMenu = new javax.swing.JMenu();
         importCategoriesMenuItem = new javax.swing.JMenuItem();
@@ -105,15 +104,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         importerMenu.setText("Import");
         importerMenu.setToolTipText("");
 
-        importExpensesMenuItem.setText("Expenses");
-        importExpensesMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importExpensesMenuItemActionPerformed(evt);
-            }
-        });
-        importerMenu.add(importExpensesMenuItem);
-
-        importBillMenuItem.setText("Bills");
+        importBillMenuItem.setText("Transactions");
         importBillMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importBillMenuItemActionPerformed(evt);
@@ -273,16 +264,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void importExpensesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExpensesMenuItemActionPerformed
-        Optional<String> csvFilePath = FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES);
-        if (csvFilePath.isPresent()) {
-            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
-            progressBar.setLocationRelativeTo(this);
-            progressBar.setVisible(true);
-            TransactionImporter.getInstance().importExpensesFromCSV(csvFilePath.get(), this);
-        }
-    }//GEN-LAST:event_importExpensesMenuItemActionPerformed
-
     private void importCompanyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCompanyMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
         if (filePath.isPresent()) {
@@ -342,7 +323,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
-            TransactionImporter.getInstance().importBillsFromCSV(csvFilePath.get(), this);
+            TransactionImporter.getInstance().importNordeaTransactionsFromCsv(csvFilePath.get(), this);
         }
     }//GEN-LAST:event_importBillMenuItemActionPerformed
 
@@ -443,7 +424,6 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     private javax.swing.JMenuItem importBillMenuItem;
     private javax.swing.JMenuItem importCategoriesMenuItem;
     private javax.swing.JMenuItem importCompanyMenuItem;
-    private javax.swing.JMenuItem importExpensesMenuItem;
     private javax.swing.JMenu importMenu;
     private javax.swing.JMenu importerMenu;
     private javax.swing.JMenuItem incomeReportMenuItem;
