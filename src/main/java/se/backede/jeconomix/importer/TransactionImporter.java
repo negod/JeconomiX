@@ -61,7 +61,7 @@ public class TransactionImporter {
                         .replaceComma("Belopp")
                         .replaceComma("Saldo")
                         .removeMinus("Belopp")
-                        .extractName("Transaktion")
+                        .extractNameFromColumn("Transaktion")
                         .build(handler.getHeaderMap());
 
                 handleNormalizedImports(build, parent);
