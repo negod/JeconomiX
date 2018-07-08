@@ -10,6 +10,7 @@
     <include file="tables/category_type.xml" relativeToChangelogFile="true"/>
     <include file="tables/category.xml" relativeToChangelogFile="true"/>
     <include file="tables/company.xml" relativeToChangelogFile="true"/>
+    <include file="tables/company_accociation.xml" relativeToChangelogFile="true"/>
     <include file="tables/transaction.xml" relativeToChangelogFile="true"/>
     
     <include file="tables/budget/budget.xml" relativeToChangelogFile="true"/>

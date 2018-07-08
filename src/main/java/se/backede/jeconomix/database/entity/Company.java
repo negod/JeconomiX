@@ -64,4 +64,7 @@ public class Company extends GenericEntity {
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Transaction> transactions = new HashSet<>();
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<CompanyAccociation> accociations = new HashSet<>();
+
 }

@@ -40,5 +40,13 @@ public class CompanyDao extends GenericDao<Company> {
         cq.where(entity.get(Company_.name).in(name));
         return get(cq);
     }
+    
+    public Optional<Company> getCompanyByName(String name) throws DaoException {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
+        Root entity = cq.from(getEntityClass());
+        cq.where(entity.get(Company_.name).in(name));
+        return get(cq);
+    }
 
 }

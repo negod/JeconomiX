@@ -60,7 +60,7 @@ public class TransactionImporter {
                         .removeWord("Transaktion", "BETALNING PG")
                         .replaceComma("Belopp")
                         .replaceComma("Saldo")
-                        .removeMinus("Belopp")
+                        //.removeMinus("Belopp")
                         .extractNameFromColumn("Transaktion")
                         .build(handler.getHeaderMap());
 
