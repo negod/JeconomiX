@@ -7,9 +7,9 @@ package se.backede.jeconomix.dto;
 
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
@@ -17,6 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class CategoryDto extends GenericDto {
 
     private String name;

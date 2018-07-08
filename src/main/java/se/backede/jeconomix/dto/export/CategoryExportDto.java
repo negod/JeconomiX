@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
@@ -17,10 +18,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @XmlRootElement
+@ToString
 public class CategoryExportDto {
 
     private String id;
     private Date updatedDate;
     private String name;
+    private CategoryTypeExportDto categoryType;
 
 }

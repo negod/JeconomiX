@@ -7,20 +7,24 @@ package se.backede.jeconomix.dto.export.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.CategoryTypeDto;
 import se.backede.jeconomix.dto.export.CategoryExportDto;
+import se.backede.jeconomix.dto.export.CategoryTypeExportDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class BillCategoryMapper {
-    
+public class CategoryExportMapper {
+
     public static CategoryExportDto mapToExportDto(CategoryDto input) {
         CategoryExportDto dto = new CategoryExportDto();
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
+        dto.setCategoryType(mapToExportCategoryType(input));
         return dto;
     }
 
@@ -29,8 +33,24 @@ public class BillCategoryMapper {
         dto.setId(input.getId());
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
-        CategoryDto expDto = new CategoryDto();
+        dto.setCategoryType(mapToCategoryType(input));
         return dto;
+    }
+
+    public static CategoryTypeExportDto mapToExportCategoryType(CategoryDto dto) {
+        if (dto.getCategoryType() != null) {
+            return new CategoryTypeExportDto(dto.getCategoryType().getId(), dto.getCategoryType().getType());
+        }
+        return new CategoryTypeExportDto();
+
+    }
+
+    public static CategoryTypeDto mapToCategoryType(CategoryExportDto dto) {
+        if (dto.getCategoryType() != null) {
+            return new CategoryTypeDto(dto.getCategoryType().getId(), dto.getCategoryType().getType());
+        }
+        return new CategoryTypeDto();
+
     }
 
     public static List<CategoryExportDto> mapToExportDto(List<CategoryDto> dto) {
@@ -48,5 +68,5 @@ public class BillCategoryMapper {
         }
         return expList;
     }
-    
+
 }

@@ -75,31 +75,15 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportExpenses">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Expenses"/>
+                <Property name="text" type="java.lang.String" value="Transactions"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportExpenseTypes">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Expense categories"/>
+                <Property name="text" type="java.lang.String" value="Categories"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportExpenseTypesActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportBills">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Bills"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportBillsActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportBillTypes">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Bill categories"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportBillTypesActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportAll">

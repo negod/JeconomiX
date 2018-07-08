@@ -16,9 +16,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@XmlRootElement(name = "bill_categories")
+@XmlRootElement(name = "categories")
 public class Categories {
 
-    List<CategoryExportDto> billCategory;
+    List<CategoryExportDto> category;
 
 }

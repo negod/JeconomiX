@@ -10,7 +10,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.export.Categories;
-import se.backede.jeconomix.dto.export.mapper.BillCategoryMapper;
+import se.backede.jeconomix.dto.export.mapper.CategoryExportMapper;
 import se.backede.jeconomix.event.events.Events;
 
 /**
@@ -30,13 +30,14 @@ public class CategoryImporter {
         return INSTANCE;
     }
 
-    public void importBillCategories(String filePath) {
+    public void importCategories(String filePath) {
         new Thread(() -> {
-            Optional<Categories> importedBillCategories = READER.readXml(filePath, Categories.class);
-            Events.getInstance().fireProgressMaxValueEvent(importedBillCategories.get().getBillCategory().size());
+            Optional<Categories> importedCategories = READER.readXml(filePath, Categories.class);
+            Events.getInstance().fireProgressMaxValueEvent(importedCategories.get().getCategory().size());
 
-            if (importedBillCategories.isPresent()) {
-                importedBillCategories.get().getBillCategory().stream().map((companyExportDto) -> BillCategoryMapper.mapToDto(companyExportDto)).forEachOrdered((dto) -> {
+            if (importedCategories.isPresent()) {
+                importedCategories.get().getCategory()
+                        .stream().map((categoryDto) -> CategoryExportMapper.mapToDto(categoryDto)).forEachOrdered((dto) -> {
                     CategoryHandler.getInstance().createCategory(dto);
                     Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
                 });

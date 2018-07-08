@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto;
+package se.backede.jeconomix.dto.export;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 
 /**
@@ -17,16 +16,16 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
  */
 @Getter
 @Setter
-@ToString
-public class CategoryTypeDto extends GenericDto {
+@XmlRootElement
+public class CategoryTypeExportDto {
 
     String id;
     private CategoryTypeEnum type;
 
-    public CategoryTypeDto() {
+    public CategoryTypeExportDto() {
     }
 
-    public CategoryTypeDto(String id, CategoryTypeEnum type) {
+    public CategoryTypeExportDto(String id, CategoryTypeEnum type) {
         this.id = id;
         this.type = type;
     }

@@ -6,6 +6,7 @@
 package se.backede.jeconomix.exporter;
 
 import com.backede.fileutils.xml.writer.XmlWriter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
@@ -13,7 +14,7 @@ import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.export.Categories;
 import se.backede.jeconomix.dto.export.CategoryExportDto;
-import se.backede.jeconomix.dto.export.mapper.BillCategoryMapper;
+import se.backede.jeconomix.dto.export.mapper.CategoryExportMapper;
 import se.backede.jeconomix.event.events.Events;
 
 /**
@@ -34,12 +35,31 @@ public class CategoryExporter {
     public void exportCategories(String fileName) {
         new Thread(() -> {
             Optional<List<CategoryDto>> allBillCategories = CategoryHandler.getInstance().getFilteredCategories(CategoryTypeEnum.BILL);
+
+            List<CategoryDto> allcategories = new LinkedList<>();
+
+            CategoryHandler.getInstance()
+                    .getFilteredCategories(CategoryTypeEnum.BILL)
+                    .ifPresent(list -> allcategories.addAll(list));
+
+            CategoryHandler.getInstance()
+                    .getFilteredCategories(CategoryTypeEnum.EXPENSE)
+                    .ifPresent(list -> allcategories.addAll(list));
+
+            CategoryHandler.getInstance()
+                    .getFilteredCategories(CategoryTypeEnum.INCOME)
+                    .ifPresent(list -> allcategories.addAll(list));
+
+            CategoryHandler.getInstance()
+                    .getFilteredCategories(CategoryTypeEnum.TRANSFER)
+                    .ifPresent(list -> allcategories.addAll(list));
+
             if (allBillCategories.isPresent()) {
                 Events.getInstance().fireProgressMaxValueEvent(3);
                 Categories expenseCategories = new Categories();
                 Events.getInstance().fireProgressIncreaseValueEvent(1, "Mapping categories");
-                List<CategoryExportDto> mapToExportDto = BillCategoryMapper.mapToExportDto(allBillCategories.get());
-                expenseCategories.setBillCategory(mapToExportDto);
+                List<CategoryExportDto> mapToExportDto = CategoryExportMapper.mapToExportDto(allcategories);
+                expenseCategories.setCategory(mapToExportDto);
                 Events.getInstance().fireProgressIncreaseValueEvent(2, "Exporting file");
                 XmlWriter.writeXml(fileName, Categories.class, expenseCategories);
             } else {
