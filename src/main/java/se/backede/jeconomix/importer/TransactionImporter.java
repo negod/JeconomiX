@@ -79,13 +79,14 @@ public class TransactionImporter {
 
         Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) records).size());
 
-        for (CSVRecord record : records) {
-            System.out.println("COMPANYNAME: " + record.get("Transaktion"));
-        }
-
         for (CSVRecord cSVRecord : records) {
 
-            Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(cSVRecord.get("Transaktion").toUpperCase());
+            String companyName = cSVRecord.get("Transaktion").toUpperCase();
+            Optional<CompanyDto> company = CompanyHandler.getInstance().getCompanyByName(companyName);
+
+            if (!company.isPresent()) {
+                company = CompanyHandler.getInstance().getAccociatedCompanyByName(companyName);
+            }
 
             if (company.isPresent()) {
                 TransactionDto transaction = TransactionExtractor.createTransaction(cSVRecord);
@@ -132,8 +133,7 @@ public class TransactionImporter {
 
             for (String companyName : companyTransactions.keySet()) {
                 Optional<CategoryDto> decideCactegory = CategoryDecider.getInstance().decideCactegory(companyName);
-                CompanyDto companyToAdd = new CompanyDto();
-                companyToAdd.setName(companyName.toUpperCase());
+                CompanyDto companyToAdd = new CompanyDto(companyName.toUpperCase());
                 companyToAdd.setTransactions(companyTransactions.get(companyName));
 
                 if (decideCactegory.isPresent()) {

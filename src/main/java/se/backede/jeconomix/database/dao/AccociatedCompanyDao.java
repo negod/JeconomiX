@@ -13,17 +13,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
-import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.PersistenceHandler;
+import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.database.entity.CompanyAccociation_;
-import se.backede.jeconomix.database.entity.Company_;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CompanyDao extends GenericDao<Company> {
+public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
 
     @Override
     public EntityManager getEntityManager() {
@@ -35,20 +34,24 @@ public class CompanyDao extends GenericDao<Company> {
         return PersistenceHandler.getInstance().getHibernateSession();
     }
 
-    public Optional<Company> getCompanyByName(String name) throws DaoException {
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
-        Root entity = cq.from(getEntityClass());
-        cq.where(entity.get(Company_.name).in(name));
-        return get(cq);
-    }
-
-    public Optional<CompanyAccociation> getByAcciciatedCompany(String name) throws DaoException {
+    public Optional<CompanyAccociation> getByAccociatedCompanyByName(String name) throws DaoException {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
         Root entity = cq.from(getEntityClass());
         cq.where(entity.get(CompanyAccociation_.name).in(name));
         return get(cq);
+    }
+
+    public Optional<Company> getCompanyByAccociatedName(String name) throws DaoException {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
+        Root entity = cq.from(getEntityClass());
+        cq.where(entity.get(CompanyAccociation_.name).in(name));
+        Optional<CompanyAccociation> data = get(cq);
+        if (data.isPresent()) {
+            return Optional.of(data.get().getCompany());
+        }
+        return Optional.empty();
     }
 
 }

@@ -144,7 +144,7 @@ public class ReportUtilsIT {
     }
 
     public CompanyDto getCompany(CategoryDto category, Set<TransactionDto> transactions) {
-        CompanyDto dto = new CompanyDto();
+        CompanyDto dto = new CompanyDto("TEST");
         dto.setCategory(category);
         dto.setTransactions(transactions);
         return dto;

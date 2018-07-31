@@ -101,8 +101,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
 
     public void setCompanyComboBox() {
         LinkedList companies = new LinkedList<>();
-        CompanyDto blancCompany = new CompanyDto();
-        blancCompany.setName(ALL_COMPANIES);
+        CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companies.add(blancCompany);
 
         companies.addAll(companyList);

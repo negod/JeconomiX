@@ -216,7 +216,7 @@ public class CompanyEditor extends javax.swing.JDialog {
         CategoryComboModel expModel = (CategoryComboModel) categoryComboBox.getModel();
         CategoryDto category = (CategoryDto) expModel.getSelectedItem();
         company.setCategory(category);
-        CompanyHandler.getInstance().setBillCategory(company, category);
+        CompanyHandler.getInstance().setCategory(company, category);
 
         model.fireTableDataChanged();
     }//GEN-LAST:event_categoryComboBoxItemStateChanged

@@ -15,14 +15,15 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.dao.AccociatedCompanyDao;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.entity.Company;
+import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.CompanyAccociationDto;
 
 /**
  *
@@ -31,9 +32,12 @@ import se.backede.jeconomix.dto.CategoryDto;
 @Slf4j
 public class CompanyHandler {
 
-    CompanyDao dao = new CompanyDao();
+    CompanyDao companyDao = new CompanyDao();
+    AccociatedCompanyDao accocociatedCompanyDao = new AccociatedCompanyDao();
+
     DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
     DtoEntityBaseMapper<TransactionDto, Transaction> transactionMapper = new DtoEntityBaseMapper(TransactionDto.class, Transaction.class);
+    DtoEntityBaseMapper<CompanyAccociationDto, CompanyAccociation> accociatedCompanyMapper = new DtoEntityBaseMapper(CompanyAccociationDto.class, CompanyAccociation.class);
 
     private static final CompanyHandler companyHandler = new CompanyHandler();
 
@@ -54,20 +58,20 @@ public class CompanyHandler {
         if (entity.isPresent()) {
             try {
 
-                dao.startTransaction();
-                Optional<Company> persist = dao.persist(entity.get());
-                dao.commitTransaction();
+                companyDao.startTransaction();
+                Optional<Company> persist = companyDao.persist(entity.get());
+                companyDao.commitTransaction();
 
                 if (company.getTransactions() != null && !company.getTransactions().isEmpty()) {
                     for (TransactionDto transaction : company.getTransactions()) {
-                        dao.startTransaction();
+                        companyDao.startTransaction();
                         Transaction transactionEntity = transactionMapper.mapFromDtoToEntity(transaction).get();
-                        Optional<Company> byId = dao.getById(persist.get().getId());
+                        Optional<Company> byId = companyDao.getById(persist.get().getId());
                         TransactionHandler.getInstance().decideBudgetMonth(transactionEntity, byId.get().getCategory().getCategoryType().getType());
                         transactionEntity.setCompany(byId.get());
 
                         byId.get().getTransactions().add(transactionEntity);
-                        dao.commitTransaction();
+                        companyDao.commitTransaction();
                     }
                 }
 
@@ -86,9 +90,30 @@ public class CompanyHandler {
         Optional<Company> entity = companyMapper.mapFromDtoToEntity(company);
         if (entity.isPresent()) {
             try {
-                dao.startTransaction();
-                Optional<Company> persist = dao.update(entity.get());
-                dao.commitTransaction();
+                companyDao.startTransaction();
+                Optional<Company> persist = companyDao.update(entity.get());
+                companyDao.commitTransaction();
+
+                if (persist.isPresent()) {
+                    return companyMapper.mapFromEntityToDto(entity.get());
+                }
+
+            } catch (DaoException ex) {
+                log.error("Error when updating Company", ex);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<CompanyDto> addAccociatedCompany(CompanyDto company) {
+        Optional<Company> entity = companyMapper.mapFromDtoToEntity(company);
+        if (entity.isPresent()) {
+            try {
+                companyDao.startTransaction();
+
+                Optional<Company> persist = companyDao.update(entity.get());
+
+                companyDao.commitTransaction();
 
                 if (persist.isPresent()) {
                     return companyMapper.mapFromEntityToDto(entity.get());
@@ -103,7 +128,7 @@ public class CompanyHandler {
 
     public Optional<List<CompanyDto>> getAllCompanies() {
         try {
-            Optional<List<Company>> all = dao.getAll();
+            Optional<List<Company>> all = companyDao.getAll();
             if (all.isPresent()) {
                 return companyMapper.mapToDtoList(all.get());
             }
@@ -115,7 +140,7 @@ public class CompanyHandler {
 
     public Optional<CompanyDto> getCompanyByName(String name) {
         try {
-            Optional<Company> company = dao.getCompanyByName(name);
+            Optional<Company> company = companyDao.getCompanyByName(name);
             if (company.isPresent()) {
                 return companyMapper.mapFromEntityToDto(company.get());
             }
@@ -125,43 +150,30 @@ public class CompanyHandler {
         return Optional.empty();
     }
 
-    public Optional<CompanyDto> setExpenseCategory(CompanyDto companyDto, CategoryDto expenseCategory) {
-        if (expenseCategory != null) {
-            ObjectUpdate update = new ObjectUpdate();
-            update.setObject("expenseCategory");
-            update.setType(UpdateType.UPDATE);
-            update.setObjectId(expenseCategory.getId());
-
-            try {
-                dao.startTransaction();
-                Optional<Company> company = dao.update(companyDto.getId(), update);
-                dao.commitTransaction();
-
-                if (company.isPresent()) {
-                    return companyMapper.mapFromEntityToDto(company.get());
-                }
-
-            } catch (DaoException ex) {
-                Logger.getLogger(CompanyHandler.class.getName()).log(Level.SEVERE, null, ex);
+    public Optional<CompanyDto> getAccociatedCompanyByName(String name) {
+        try {
+            Optional<CompanyAccociation> company = companyDao.getByAcciciatedCompany(name);
+            if (company.isPresent()) {
+                return companyMapper.mapFromEntityToDto(company.get().getCompany());
             }
+        } catch (DaoException ex) {
+            log.error("Error when getting company by name", ex);
         }
-
         return Optional.empty();
-
     }
 
-    public Optional<CompanyDto> setBillCategory(CompanyDto companyDto, CategoryDto billCategory) {
+    public Optional<CompanyDto> setCategory(CompanyDto companyDto, CategoryDto category) {
 
-        if (billCategory != null) {
+        if (category != null) {
             ObjectUpdate update = new ObjectUpdate();
-            update.setObject("billCategory");
+            update.setObject("category");
             update.setType(UpdateType.UPDATE);
-            update.setObjectId(billCategory.getId());
+            update.setObjectId(category.getId());
 
             try {
-                dao.startTransaction();
-                Optional<Company> company = dao.update(companyDto.getId(), update);
-                dao.commitTransaction();
+                companyDao.startTransaction();
+                Optional<Company> company = companyDao.update(companyDto.getId(), update);
+                companyDao.commitTransaction();
 
                 if (company.isPresent()) {
                     return companyMapper.mapFromEntityToDto(company.get());
@@ -178,7 +190,7 @@ public class CompanyHandler {
 
     public Optional<CompanyDto> getCompanyById(String id) {
         try {
-            Optional<Company> byId = dao.getById(id);
+            Optional<Company> byId = companyDao.getById(id);
             if (byId.isPresent()) {
                 return companyMapper.mapFromEntityToDto(byId.get());
             }
@@ -189,7 +201,7 @@ public class CompanyHandler {
     }
 
     public void reIndex() {
-        dao.indexEntity();
+        companyDao.indexEntity();
     }
 
 }

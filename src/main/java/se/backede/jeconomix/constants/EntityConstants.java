@@ -16,5 +16,6 @@ public class EntityConstants {
     public static final String TRANSACTION = "transaction";
     public static final String CATEGORY_TYPE = "category_type";
     public static final String BUDGET = "budget";
+    public static final String COMPANY_ACCOCIATION = "company_accociation";
 
 }

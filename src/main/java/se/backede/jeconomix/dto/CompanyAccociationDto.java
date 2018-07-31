@@ -6,12 +6,6 @@
 package se.backede.jeconomix.dto;
 
 import com.negod.generics.persistence.dto.GenericDto;
-import se.backede.jeconomix.database.entity.*;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +19,12 @@ public class CompanyAccociationDto extends GenericDto {
 
     private String name;
     CompanyDto company;
+
+    public CompanyAccociationDto() {
+    }
+
+    public CompanyAccociationDto(String name) {
+        this.name = name;
+    }
+
 }

@@ -1,35 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>se.backede.persistence.jeconomix</groupId>
+    <groupId>se.backede.jeconomix</groupId>
     <artifactId>jeconomix</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>JeconomiX</name>
+
     <packaging>jar</packaging>
-    
+
     <parent>
         <groupId>se.backede.parent</groupId>
         <artifactId>webservice-parent</artifactId>
         <version>1.2-SNAPSHOT</version>
     </parent>
-    
+
     <properties>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-    
+        <maven.complier.plugin.version>2.5.1</maven.complier.plugin.version>
+
         <!-- JPA DEPENDENCIES-->
         <hibernate.core.version>5.1.10.Final</hibernate.core.version>
         <hibernate.validator.version>5.3.5.Final</hibernate.validator.version>
         <hibernate.search.version>5.5.8.Final</hibernate.search.version>
         <hibernate.search.infispan.version>5.5.2.Final</hibernate.search.infispan.version>
-        
+
         <hibernate.entitymanager.version>5.1.10.Final</hibernate.entitymanager.version>
+        <hibernate.jpaModelGen.version>4.3.4.Final</hibernate.jpaModelGen.version>
         <hibernate.ehcache.version>5.0.7.Final</hibernate.ehcache.version>
         <ehcache.core.version>2.6.11</ehcache.core.version>
-        
+
+        <!-- BACKEDE DEPENDENCIES -->
+        <backede.persistence.version>1.5-SNAPSHOT</backede.persistence.version>
+        <backede.fileUtils.version>1.0-SNAPSHOT</backede.fileUtils.version>
+
+        <!-- OTHER DEPENDENCIES -->
+        <jfreeChart.version>1.0.13</jfreeChart.version>
+        <dozerMapper.version>5.5.1</dozerMapper.version>
+        <jackson.version>2.9.0</jackson.version>
+        <liquibase.mavenPlugin.version>3.5.0</liquibase.mavenPlugin.version>
+
+        <!-- VARIABLES -->
+        <resource.directory>src/main/resources</resource.directory>
+        <liquibase.propertyFile>/liquibase/liquibase.properties</liquibase.propertyFile>
+        <liquibase.masterFile>/liquibase/master.xml</liquibase.masterFile>
+
     </properties>
-    
-    
+
+
     <dependencies>
         <!-- JPA provider -->
         <dependency>
@@ -53,7 +73,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
             <version>${hibernate.search.version}</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
@@ -62,32 +82,32 @@
         <dependency>
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
+            <version>${jfreeChart.version}</version>
         </dependency>
-        
+
         <!-- MAPPING -->
         <dependency>
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
-            <version>5.5.1</version>
+            <version>${dozerMapper.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.9.0</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>se.backede.generics</groupId>
             <artifactId>persistence</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>${backede.persistence.version}</version>
         </dependency>
         <dependency>
             <groupId>com.negod.fileutils</groupId>
             <artifactId>fileparser</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>        
-        
+            <version>${backede.fileUtils.version}</version>
+        </dependency>
+
         <!-- DB specific -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -98,7 +118,7 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
             <version>3.5.0</version>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
@@ -129,16 +149,16 @@
             <version>4.11</version>
         </dependency>
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${resource.directory}</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
-    
-        <finalName>Jeconomix ${project.version}</finalName>
+
+        <finalName>${project.name} ${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
@@ -159,20 +179,20 @@
                     </execution>
                 </executions>
                 <dependencies>
-                    <dependency>        
+                    <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>4.3.4.Final</version>
+                        <version>${hibernate.jpaModelGen.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version> <!-- this is critical -->
+                <version>${maven.complier.plugin.version}</version> <!-- this is critical -->
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -188,7 +208,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>se.backede.jeconomix.forms.Main</mainClass>
+                            <mainClass>${project.groupId}.forms.Main</mainClass>
                         </manifest>
                     </archive>
                     <finalName>${project.build.finalName}</finalName>
@@ -201,12 +221,12 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.5.0</version>
-                <configuration>                  
-                    <propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>
-                    <changeLogFile>src/main/resources/liquibase/master.xml</changeLogFile>
-                </configuration>                
-            </plugin> 
+                <version>${liquibase.mavenPlugin.version}</version>
+                <configuration>
+                    <propertyFile>${resource.directory}${liquibase.propertyFile}</propertyFile>
+                    <changeLogFile>${resource.directory}${liquibase.masterFile}</changeLogFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

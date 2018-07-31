@@ -27,9 +27,8 @@ public class CompanyMapper {
     }
 
     public static CompanyDto mapToDto(CompanyExportDto input) {
-        CompanyDto dto = new CompanyDto();
+        CompanyDto dto = new CompanyDto(input.getName());
         dto.setId(input.getId());
-        dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
         CategoryDto expDto = new CategoryDto();
         expDto.setId(input.getCategory());
