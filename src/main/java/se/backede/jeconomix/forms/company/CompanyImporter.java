@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.importer;
+package se.backede.jeconomix.forms.company;
 
 import com.backede.fileutils.xml.reader.XmlReader;
 import java.util.Optional;

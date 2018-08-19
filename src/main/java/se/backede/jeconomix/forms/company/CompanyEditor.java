@@ -3,28 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.editor;
+package se.backede.jeconomix.forms.company;
 
 import java.util.List;
 import java.util.Optional;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.models.combobox.CategoryComboModel;
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodDialog;
+import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.CompanyModel;
 import se.backede.jeconomix.models.table.TransactionModel;
-import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
+import se.backede.jeconomix.renderer.combobox.CompanyItemRenderer;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CompanyEditor extends javax.swing.JDialog {
+public class CompanyEditor extends NegodDialog {
 
     /**
      * Creates new form CompanyHandler
@@ -37,8 +37,8 @@ public class CompanyEditor extends javax.swing.JDialog {
     }
 
     public void setCategoryCBData() {
-        categoryComboBox.setModel(new CategoryComboModel());
-        categoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
+        categoryComboBox.setModel(new CategoryComboBoxModel());
+        categoryComboBox.setRenderer(new CompanyItemRenderer(ComboBoxRenderer.SINGLE));
     }
 
     public void setTableData() {
@@ -51,7 +51,7 @@ public class CompanyEditor extends javax.swing.JDialog {
                 CompanyDto selectedCompany = companyModel.getCompanyAt(0);
 
                 //Set bill combobox
-                CategoryComboModel billComboBoxModel = (CategoryComboModel) categoryComboBox.getModel();
+                CategoryComboBoxModel billComboBoxModel = (CategoryComboBoxModel) categoryComboBox.getModel();
                 billComboBoxModel.setSelectedItem(selectedCompany.getCategory());
 
                 //Align columns to right
@@ -213,7 +213,7 @@ public class CompanyEditor extends javax.swing.JDialog {
         CompanyModel model = (CompanyModel) companyTable.getModel();
         CompanyDto company = model.getCompanyAt(selectedRow);
 
-        CategoryComboModel expModel = (CategoryComboModel) categoryComboBox.getModel();
+        CategoryComboBoxModel expModel = (CategoryComboBoxModel) categoryComboBox.getModel();
         CategoryDto category = (CategoryDto) expModel.getSelectedItem();
         company.setCategory(category);
         CompanyHandler.getInstance().setCategory(company, category);
@@ -228,7 +228,7 @@ public class CompanyEditor extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -283,4 +283,9 @@ public class CompanyEditor extends javax.swing.JDialog {
     private javax.swing.JLabel transactionSumLabel;
     private javax.swing.JTable transactionTable;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

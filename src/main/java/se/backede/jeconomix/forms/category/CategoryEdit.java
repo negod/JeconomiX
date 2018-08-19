@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.editor;
+package se.backede.jeconomix.forms.category;
 
-import java.util.List;
 import java.util.Optional;
-import javax.swing.JDialog;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CategoryTypeDto;
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.combobox.CategoryTypeComboBoxModel;
 import se.backede.jeconomix.models.table.CategoryModel;
 import se.backede.jeconomix.renderer.combobox.CategoryTypeComboBoxRenderer;
@@ -20,7 +20,7 @@ import se.backede.jeconomix.renderer.combobox.CategoryTypeComboBoxRenderer;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CategoryEdit extends javax.swing.JPanel {
+public class CategoryEdit extends NegodPanel {
 
     /**
      * Creates new form CategoryEdit
@@ -160,7 +160,6 @@ public class CategoryEdit extends javax.swing.JPanel {
         new AddCategory(null, false).setVisible(true);
     }//GEN-LAST:event_expenseCategoryAddActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable categoryTable;
     private javax.swing.JComboBox<String> categoryTypeCB;
@@ -170,4 +169,14 @@ public class CategoryEdit extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

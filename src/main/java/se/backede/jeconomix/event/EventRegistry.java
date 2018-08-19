@@ -13,4 +13,6 @@ public interface EventRegistry {
 
     public void registerAsObserver();
 
+    public void removeAsObserver();
+
 }

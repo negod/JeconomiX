@@ -40,9 +40,9 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Component class="se.backede.jeconomix.forms.editor.CategoryEdit" name="categoryEdit1">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit1">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.INCOME)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.INCOME)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
@@ -52,9 +52,9 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.editor.CategoryEdit" name="categoryEdit2">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit2">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.EXPENSE)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.EXPENSE)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
@@ -64,9 +64,9 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.editor.CategoryEdit" name="categoryEdit3">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit3">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.BILL)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.BILL)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
@@ -76,9 +76,9 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.editor.CategoryEdit" name="categoryEdit4">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit4">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.TRANSFER)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.TRANSFER)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">

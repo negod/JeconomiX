@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms;
 
+import se.backede.jeconomix.forms.importexport.ImportSummaryDialog;
 import com.backede.fileutils.xml.reader.XmlReader;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,6 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
      */
     public ProgressDialog(java.awt.Frame parent, boolean modal, Integer importExport) {
         super(parent, modal);
-        registerAsObserver();
         initComponents();
 
         switch (importExport) {
@@ -147,7 +147,7 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void update(NegodEvent event) {
+    public void onEvent(NegodEvent event) {
         if (event.equalsEvent(ProgressEvent.SET_MAX_VALUE)) {
             Optional<Integer> integer = event.getValues().get(ProgressEventValues.MAX_VALUE).getInteger();
             if (integer.isPresent()) {

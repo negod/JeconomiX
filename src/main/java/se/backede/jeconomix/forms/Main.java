@@ -7,22 +7,21 @@ package se.backede.jeconomix.forms;
 
 import se.backede.jeconomix.forms.report.TransactionReport;
 import se.backede.jeconomix.forms.importexport.FileChooser;
-import se.backede.jeconomix.forms.editor.CompanyEditor;
-import se.backede.jeconomix.forms.editor.CategoryEditor;
+import se.backede.jeconomix.forms.company.CompanyEditor;
+import se.backede.jeconomix.forms.category.CategoryEditor;
 import java.util.Optional;
 import javax.swing.JFileChooser;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
+import se.backede.jeconomix.forms.basic.NegodJFrame;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
-import se.backede.jeconomix.importer.CompanyImporter;
+import se.backede.jeconomix.forms.company.CompanyImporter;
 import se.backede.jeconomix.importer.TransactionImporter;
 import se.backede.jeconomix.utils.TimeDecider;
 
@@ -31,7 +30,7 @@ import se.backede.jeconomix.utils.TimeDecider;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class Main extends javax.swing.JFrame implements EventObserver {
+public class Main extends NegodJFrame {
 
     private CacheInitializer cache = new CacheInitializer();
 
@@ -39,8 +38,8 @@ public class Main extends javax.swing.JFrame implements EventObserver {
      * Creates new form NewApplication
      */
     public Main() {
+        super();
         initComponents();
-        registerAsObserver();
         budgetQuarter1.setData(TimeDecider.getCurrenQuarter(), TimeDecider.getCurrentYear());
     }
 
@@ -53,7 +52,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        budgetQuarter1 = new se.backede.jeconomix.forms.BudgetQuarter();
+        budgetQuarter1 = new se.backede.jeconomix.forms.budget.BudgetQuarter();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -334,7 +333,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -371,7 +370,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem billReportMenuItem;
-    private se.backede.jeconomix.forms.BudgetQuarter budgetQuarter1;
+    private se.backede.jeconomix.forms.budget.BudgetQuarter budgetQuarter1;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
@@ -397,12 +396,7 @@ public class Main extends javax.swing.JFrame implements EventObserver {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void update(NegodEvent event) {
-    }
-
-    @Override
-    public void registerAsObserver() {
-        EventController.getInstance().addObserver(this);
+    public void onEvent(NegodEvent event) {
     }
 
 }

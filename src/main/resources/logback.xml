@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="60 seconds" debug="false">
-    
+
     <property resource="logging.properties" />
-    
+
     <contextName>${application.name}</contextName>
-    
+
     <jmxConfigurator />
 
     <!-- FILE LOGGER -->
@@ -54,7 +54,7 @@
         </filter>
     </appender>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="ERROR"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>

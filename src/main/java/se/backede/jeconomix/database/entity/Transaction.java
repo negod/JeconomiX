@@ -49,6 +49,10 @@ public class Transaction extends GenericEntity {
     @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
     private Company company;
 
+    @ManyToOne
+    @JoinColumn(name = "ascociatedCompany", referencedColumnName = "id", insertable = true)
+    private CompanyAccociation ascociatedCompany;
+
     @Override
     public int hashCode() {
         int hash = 5;

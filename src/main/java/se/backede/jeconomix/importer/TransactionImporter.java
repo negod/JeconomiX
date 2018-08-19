@@ -26,7 +26,7 @@ import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.events.Events;
-import se.backede.jeconomix.forms.importexport.Importer;
+import se.backede.jeconomix.forms.Importer;
 import se.backede.jeconomix.importer.CategoryDecider.CategoryDecider;
 
 /**

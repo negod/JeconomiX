@@ -11,10 +11,15 @@ package se.backede.jeconomix.event;
  */
 public interface EventObserver extends EventRegistry {
 
-    public void update(NegodEvent event);
+    public void onEvent(NegodEvent event) throws EventNotImplementedException;
 
     @Override
     public default void registerAsObserver() {
         EventController.getInstance().addObserver(this);
+    }
+
+    @Override
+    default void removeAsObserver() {
+        EventController.getInstance().removeObserver(this);
     }
 }

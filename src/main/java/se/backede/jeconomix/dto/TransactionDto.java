@@ -14,6 +14,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
+import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.database.entity.Transaction;
 
 /**
@@ -35,6 +36,8 @@ public class TransactionDto extends GenericDto {
     private Month budgetMonth;
 
     private Integer budgetYear;
+
+    private CompanyAccociationDto ascociatedCompany;
 
     @Override
     public int hashCode() {

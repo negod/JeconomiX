@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms;
+package se.backede.jeconomix.forms.budget;
 
 import java.time.Month;
-import java.time.Year;
 import java.time.YearMonth;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.utils.TimeDecider;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class BudgetQuarter extends javax.swing.JPanel {
+public class BudgetQuarter extends NegodPanel {
 
     BudgetQuarterEnum currentQuarter = TimeDecider.getCurrenQuarter();
     Integer currentYear = TimeDecider.getCurrentYear();
@@ -68,9 +69,9 @@ public class BudgetQuarter extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        budgetMonth1 = new se.backede.jeconomix.forms.BudgetMonth();
-        budgetMonth2 = new se.backede.jeconomix.forms.BudgetMonth();
-        budgetMonth3 = new se.backede.jeconomix.forms.BudgetMonth();
+        budgetMonth1 = new se.backede.jeconomix.forms.budget.BudgetMonth();
+        budgetMonth2 = new se.backede.jeconomix.forms.budget.BudgetMonth();
+        budgetMonth3 = new se.backede.jeconomix.forms.budget.BudgetMonth();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         quarterFwrdBtn = new javax.swing.JButton();
@@ -216,11 +217,10 @@ public class BudgetQuarter extends javax.swing.JPanel {
         setData(currentQuarter, currentYear);
     }//GEN-LAST:event_quarterFwrdBtnActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private se.backede.jeconomix.forms.BudgetMonth budgetMonth1;
-    private se.backede.jeconomix.forms.BudgetMonth budgetMonth2;
-    private se.backede.jeconomix.forms.BudgetMonth budgetMonth3;
+    private se.backede.jeconomix.forms.budget.BudgetMonth budgetMonth1;
+    private se.backede.jeconomix.forms.budget.BudgetMonth budgetMonth2;
+    private se.backede.jeconomix.forms.budget.BudgetMonth budgetMonth3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton quarterBackBtn;
@@ -228,4 +228,14 @@ public class BudgetQuarter extends javax.swing.JPanel {
     private javax.swing.JLabel quarterLabel;
     private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

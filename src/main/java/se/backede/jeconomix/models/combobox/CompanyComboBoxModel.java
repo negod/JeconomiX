@@ -5,49 +5,45 @@
  */
 package se.backede.jeconomix.models.combobox;
 
-import java.util.List;
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxModel;
+import java.util.ArrayList;
+import java.util.Collections;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.CategoryHandler;
+import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
+import se.backede.jeconomix.forms.basic.component.GenericComboBoxModel;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CompanyComboBoxModel extends AbstractListModel implements ComboBoxModel {
+public class CompanyComboBoxModel extends GenericComboBoxModel<CompanyDto, CategoryTypeEnum> {
 
-    List<CompanyDto> companies;
-    CompanyDto selection = null;
+    public CompanyComboBoxModel() {
+        super();
+    }
 
-    public CompanyComboBoxModel(List<CompanyDto> categories) {
-        this.companies = categories;
+    public CompanyComboBoxModel(CategoryTypeEnum filter) {
+        super(filter);
     }
 
     @Override
-    public Object getElementAt(int index) {
-        return companies.get(index);
+    public void getAllData(CategoryTypeEnum type) {
+        CategoryHandler.getInstance().getFilteredCategories(type).ifPresent(cat -> {
+            for (CategoryDto categoryDto : cat) {
+                addElements(new ArrayList<>(categoryDto.getCompanies()));
+            }
+            Collections.sort(getItems());
+        });
     }
 
     @Override
-    public int getSize() {
-        return companies.size();
-    }
-
-    @Override
-    public void setSelectedItem(Object anItem) {
-        selection = (CompanyDto) anItem;
-        fireContentsChanged(this, -1, -1);
-    } // item from the pull-down list
-
-    // Methods implemented from the interface ComboBoxModel
-    @Override
-    public Object getSelectedItem() {
-        return selection; // to add the selection to the combo box
-    }
-
-    public void addElement(CompanyDto company) {
-        companies.add(company);
-        fireContentsChanged(this, companies.size(), companies.size());
+    public void getAllData() {
+        CompanyHandler.getInstance().getAllCompanies().ifPresent(comp -> {
+            addElements(comp);
+            Collections.sort(getItems());
+        });
     }
 
 }

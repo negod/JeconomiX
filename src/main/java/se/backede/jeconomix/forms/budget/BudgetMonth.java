@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms;
+package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
 import java.time.Month;
@@ -18,20 +18,19 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.EventObserver;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.fields.BudgetValues;
-import se.backede.jeconomix.models.combobox.CategoryComboModel;
+import se.backede.jeconomix.forms.basic.NegodPanel;
+import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.BudgetModel;
-import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
+import se.backede.jeconomix.renderer.combobox.CompanyItemRenderer;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
+public class BudgetMonth extends NegodPanel {
 
     private YearMonth currentYearMonth;
 
@@ -40,7 +39,6 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
      */
     public BudgetMonth() {
         initComponents();
-        registerAsObserver();
     }
 
     public void setMonth(YearMonth yearMonth) {
@@ -59,16 +57,16 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
     }
 
     public void setUpDropDownColumn(JTable table, TableColumn column, CategoryTypeEnum type) {
-        //Set up the editor for the sport cells.
-        JComboBox comboBox = new JComboBox();
-        comboBox.setModel(new CategoryComboModel(type));
-        comboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
-        column.setCellEditor(new DefaultCellEditor(comboBox));
-
-        //Set up tool tips for the sport cells.
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText("Click for combo box");
-        column.setCellRenderer(renderer);
+//        //Set up the editor for the sport cells.
+//        JComboBox comboBox = new JComboBox();
+//        comboBox.setModel(new CategoryComboBoxModel(type));
+//        comboBox.setRenderer(new CompanyItemRenderer(ComboBoxRenderer.SINGLE));
+//        column.setCellEditor(new DefaultCellEditor(comboBox));
+//
+//        //Set up tool tips for the sport cells.
+//        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+//        renderer.setToolTipText("Click for combo box");
+//        column.setCellRenderer(renderer);
     }
 
     /**
@@ -121,7 +119,6 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
             }
         });
         incomeTable.setFocusCycleRoot(true);
-        incomeTable.setRowSorter(null);
         jScrollPane1.setViewportView(incomeTable);
         if (incomeTable.getColumnModel().getColumnCount() > 0) {
             incomeTable.getColumnModel().getColumn(0).setResizable(false);
@@ -379,7 +376,6 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
         new BudgetSuggestion(null, true, currentYearMonth).setVisible(true);
     }//GEN-LAST:event_budgetSuggestionBtnActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBillBtn;
     private javax.swing.JButton addExpenseBtn;
@@ -404,7 +400,7 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void update(NegodEvent event) {
+    public void onEvent(NegodEvent event) {
         if (event.equalsEvent(CategoryTypeEnum.BILL)) {
             setValues(event.getValues(), CategoryTypeEnum.BILL);
         } else if (event.equalsEvent(CategoryTypeEnum.EXPENSE)) {
@@ -454,6 +450,11 @@ public class BudgetMonth extends javax.swing.JPanel implements EventObserver {
             }
         }
 
+    }
+
+    @Override
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

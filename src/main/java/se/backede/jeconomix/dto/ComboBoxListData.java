@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.event.events;
+package se.backede.jeconomix.dto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public enum CompanyEvent {
-    CREATE, UPDATE, DELETE, SELECTED, SET_SELECTED;
+public interface ComboBoxListData {
+
+    public String getComboBoxListValue();
+
 }

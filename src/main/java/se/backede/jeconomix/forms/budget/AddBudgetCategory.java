@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.editor;
+package se.backede.jeconomix.forms.budget;
+
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class AddBudgetCategory extends javax.swing.JDialog {
+public class AddBudgetCategory extends NegodDialog {
 
     /**
      * Creates new form AddBudgetCategory
+     *
+     * @param parent
+     * @param modal
      */
     public AddBudgetCategory(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -139,7 +145,7 @@ public class AddBudgetCategory extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -186,4 +192,9 @@ public class AddBudgetCategory extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

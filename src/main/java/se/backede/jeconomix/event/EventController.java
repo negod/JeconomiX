@@ -8,14 +8,14 @@ package se.backede.jeconomix.event;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.event.dto.Dto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
+@Slf4j
 public class EventController implements EventSubscriber {
 
     private final ArrayList<EventObserver> observers = new ArrayList<>();
@@ -41,7 +41,7 @@ public class EventController implements EventSubscriber {
     @Override
     public void addObserver(EventObserver observer) {
         observers.add(observer);
-        Logger.getLogger(EventController.class.getName()).log(Level.INFO, "Observer added " + observer.getClass().getName());
+        log.info("Observer added {}", observer.getClass().getName());
     }
 
     /**
@@ -55,7 +55,7 @@ public class EventController implements EventSubscriber {
             for (int i = 0; i < syncedList.size(); i++) {
                 if (syncedList.get(i).equals(observer)) {
                     syncedList.remove(i);
-                    Logger.getLogger(EventController.class.getName()).log(Level.INFO, "Observer removed " + observer.getClass().getName());
+                    log.info("Observer {} removed ", observer.getClass().getSimpleName());
                     break;
                 }
             }
@@ -75,9 +75,11 @@ public class EventController implements EventSubscriber {
         synchronized (syncedList) {
             for (int i = 0; i < syncedList.size(); i++) {
                 try {
-                    syncedList.get(i).update(new NegodEvent(event, data));
+                    syncedList.get(i).onEvent(new NegodEvent(event, data));
+                } catch (EventNotImplementedException e) {
+                    log.info("Event {} not implemeted for class {}", event.name(), syncedList.get(i).getClass().getSimpleName());
                 } catch (Exception e) {
-                    Logger.getLogger(EventController.class.getName()).log(Level.WARNING, "Failed to notify: " + event.name());
+                    log.error("Failed to notify: {} with event: {}.{} due to error {} ", syncedList.get(i).getClass().getSimpleName(), event.getClass().getSimpleName(), event.name(), e.getMessage());
                 }
             }
         }

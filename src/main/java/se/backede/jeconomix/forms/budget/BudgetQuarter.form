@@ -50,11 +50,11 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="se.backede.jeconomix.forms.BudgetMonth" name="budgetMonth1">
+    <Component class="se.backede.jeconomix.forms.budget.BudgetMonth" name="budgetMonth1">
     </Component>
-    <Component class="se.backede.jeconomix.forms.BudgetMonth" name="budgetMonth2">
+    <Component class="se.backede.jeconomix.forms.budget.BudgetMonth" name="budgetMonth2">
     </Component>
-    <Component class="se.backede.jeconomix.forms.BudgetMonth" name="budgetMonth3">
+    <Component class="se.backede.jeconomix.forms.budget.BudgetMonth" name="budgetMonth3">
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel2">
       <Properties>

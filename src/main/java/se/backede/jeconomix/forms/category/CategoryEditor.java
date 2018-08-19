@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.editor;
+package se.backede.jeconomix.forms.category;
 
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CategoryEditor extends javax.swing.JDialog {
+public class CategoryEditor extends NegodDialog {
 
     /**
      * Creates new form CategoryHandler
@@ -31,10 +33,10 @@ public class CategoryEditor extends javax.swing.JDialog {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        categoryEdit1 = new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.INCOME);
-        categoryEdit2 = new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.EXPENSE);
-        categoryEdit3 = new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.BILL);
-        categoryEdit4 = new se.backede.jeconomix.forms.editor.CategoryEdit(CategoryTypeEnum.TRANSFER);
+        categoryEdit1 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.INCOME);
+        categoryEdit2 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.EXPENSE);
+        categoryEdit3 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.BILL);
+        categoryEdit4 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.TRANSFER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -66,7 +68,7 @@ public class CategoryEditor extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -103,10 +105,15 @@ public class CategoryEditor extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private se.backede.jeconomix.forms.editor.CategoryEdit categoryEdit1;
-    private se.backede.jeconomix.forms.editor.CategoryEdit categoryEdit2;
-    private se.backede.jeconomix.forms.editor.CategoryEdit categoryEdit3;
-    private se.backede.jeconomix.forms.editor.CategoryEdit categoryEdit4;
+    private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit1;
+    private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit2;
+    private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit3;
+    private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit4;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -7,9 +7,11 @@ package se.backede.jeconomix.dto;
 
 import com.negod.generics.persistence.dto.GenericDto;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import se.backede.jeconomix.annotations.ComboBoxField;
 
 /**
  *
@@ -18,10 +20,17 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CategoryDto extends GenericDto {
+@EqualsAndHashCode(exclude = "companies")
+public class CategoryDto extends GenericDto implements Comparable<CategoryDto> {
 
+    @ComboBoxField
     private String name;
     private Set<CompanyDto> companies;
     private CategoryTypeDto categoryType;
+
+    @Override
+    public int compareTo(CategoryDto company) {
+        return name.compareTo(company.name);
+    }
 
 }

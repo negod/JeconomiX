@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms;
+package se.backede.jeconomix.forms.budget;
 
 import java.time.YearMonth;
+import se.backede.jeconomix.event.NegodEvent;
+import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class BudgetSuggestion extends javax.swing.JDialog {
+public class BudgetSuggestion extends NegodDialog {
 
     /**
      * Creates new form BudgetSuggestion
@@ -203,7 +205,7 @@ public class BudgetSuggestion extends javax.swing.JDialog {
 //        /* Set the Nimbus look and feel */
 //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 //        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
 //         */
 //        try {
 //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -255,4 +257,9 @@ public class BudgetSuggestion extends javax.swing.JDialog {
     private javax.swing.JLabel monthLabel;
     private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEvent(NegodEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

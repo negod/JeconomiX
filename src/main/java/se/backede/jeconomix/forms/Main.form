@@ -207,7 +207,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="se.backede.jeconomix.forms.BudgetQuarter" name="budgetQuarter1">
+    <Component class="se.backede.jeconomix.forms.budget.BudgetQuarter" name="budgetQuarter1">
     </Component>
   </SubComponents>
 </Form>

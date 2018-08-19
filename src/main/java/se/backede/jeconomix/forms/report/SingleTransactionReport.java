@@ -29,6 +29,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
 import se.backede.jeconomix.renderer.combobox.CompanyComboBoxRenderer;
@@ -50,6 +51,8 @@ public class SingleTransactionReport extends javax.swing.JDialog {
     private final String ALL_MONTHS = "All months";
     private final String ALL_YEARS = "All years";
     private final String ALL_COMPANIES = "All companies";
+
+    private ComboBoxWrapper<CompanyDto, CompanyComboBoxModel> companyCB;
 
     public SingleTransactionReport(java.awt.Frame parent, boolean modal, TransactionReportDto reports) {
         super(parent, modal);
@@ -100,15 +103,10 @@ public class SingleTransactionReport extends javax.swing.JDialog {
     }
 
     public void setCompanyComboBox() {
-        LinkedList companies = new LinkedList<>();
+        companyCB = new ComboBoxWrapper<>(companyComboBox);
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
-        companies.add(blancCompany);
-
-        companies.addAll(companyList);
-        CompanyComboBoxModel model = new CompanyComboBoxModel(new LinkedList<CompanyDto>(companies));
-        model.setSelectedItem(companies.getFirst());
-        companyComboBox.setModel(model);
-        companyComboBox.setRenderer(new CompanyComboBoxRenderer());
+        companyCB.getComboBoxModel().addElement(blancCompany);
+        companyCB.setSelectedItem(blancCompany);
     }
 
     public void addLineChart(TransactionReportDto reports) {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms;
+package se.backede.jeconomix.forms.importexport;
 
 import se.backede.jeconomix.event.EventController;
 
