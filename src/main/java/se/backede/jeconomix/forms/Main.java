@@ -5,14 +5,17 @@
  */
 package se.backede.jeconomix.forms;
 
+import com.backede.fileutils.csv.parser.CsvExtractor;
 import se.backede.jeconomix.forms.report.TransactionReport;
 import se.backede.jeconomix.forms.importexport.FileChooser;
 import se.backede.jeconomix.forms.company.CompanyEditor;
 import se.backede.jeconomix.forms.category.CategoryEditor;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javax.swing.JFileChooser;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.NordeaCsvFields;
 import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
@@ -22,7 +25,8 @@ import se.backede.jeconomix.forms.basic.NegodJFrame;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.forms.company.CompanyImporter;
-import se.backede.jeconomix.importer.TransactionImporter;
+import se.backede.jeconomix.importer.NordeaTransactionImporter;
+import se.backede.jeconomix.importer.Transactions;
 import se.backede.jeconomix.utils.TimeDecider;
 
 /**
@@ -57,7 +61,7 @@ public class Main extends NegodJFrame {
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         importerMenu = new javax.swing.JMenu();
-        importBillMenuItem = new javax.swing.JMenuItem();
+        importTransactionMenuItem = new javax.swing.JMenuItem();
         importMenu = new javax.swing.JMenu();
         importCategoriesMenuItem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
@@ -97,13 +101,13 @@ public class Main extends NegodJFrame {
         importerMenu.setText("Import");
         importerMenu.setToolTipText("");
 
-        importBillMenuItem.setText("Transactions");
-        importBillMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        importTransactionMenuItem.setText("Transactions");
+        importTransactionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importBillMenuItemActionPerformed(evt);
+                importTransactionMenuItemActionPerformed(evt);
             }
         });
-        importerMenu.add(importBillMenuItem);
+        importerMenu.add(importTransactionMenuItem);
 
         importMenu.setText("Listdata");
 
@@ -294,15 +298,23 @@ public class Main extends NegodJFrame {
         }
     }//GEN-LAST:event_exportExpenseTypesActionPerformed
 
-    private void importBillMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importBillMenuItemActionPerformed
-        Optional<String> csvFilePath = FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES);
-        if (csvFilePath.isPresent()) {
+    private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
+        FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent(filePath -> {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
-            TransactionImporter.getInstance().importNordeaTransactionsFromCsv(csvFilePath.get(), this);
-        }
-    }//GEN-LAST:event_importBillMenuItemActionPerformed
+
+            Consumer<Transactions> test = t -> {
+                Importer importer = new Importer(this, true, t, NordeaCsvFields.TRANSACTION);
+                importer.setVisible(true);
+            };
+
+            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaTransactionImporter(), filePath, CsvExtractor.CsvFileHasHeaders);
+            extractor.executeLogic(test);
+
+        });
+
+    }//GEN-LAST:event_importTransactionMenuItemActionPerformed
 
     private void importCategoriesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCategoriesMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
@@ -381,10 +393,10 @@ public class Main extends NegodJFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem handleCompaniesMenuItem;
     private javax.swing.JMenu handleListMenu;
-    private javax.swing.JMenuItem importBillMenuItem;
     private javax.swing.JMenuItem importCategoriesMenuItem;
     private javax.swing.JMenuItem importCompanyMenuItem;
     private javax.swing.JMenu importMenu;
+    private javax.swing.JMenuItem importTransactionMenuItem;
     private javax.swing.JMenu importerMenu;
     private javax.swing.JMenuItem incomeReportMenuItem;
     private javax.swing.JMenu jMenu1;

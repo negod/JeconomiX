@@ -46,19 +46,22 @@ public class TransactionHandler {
 
     public boolean transactionExists(TransactionDto transaction) {
         try {
-            Optional<Company> companyEntity = companyMapper.mapFromDtoToEntity(transaction.getCompany());
-            dao.startTransaction();
-            Query query = dao.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
-            query.setParameter("company", companyEntity.get());
-            query.setParameter("date", transaction.getTransDate());
-            query.setParameter("saldo", transaction.getSaldo());
-            query.setParameter("sum", transaction.getSum());
-            Transaction transactionEntity = (Transaction) query.getSingleResult();
+            if (transaction.getCompany() != null) {
+                Optional<Company> companyEntity = companyMapper.mapFromDtoToEntity(transaction.getCompany());
+                dao.startTransaction();
+                Query query = dao.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
+                query.setParameter("company", companyEntity.get());
+                query.setParameter("date", transaction.getTransDate());
+                query.setParameter("saldo", transaction.getSaldo());
+                query.setParameter("sum", transaction.getSum());
+                Transaction transactionEntity = (Transaction) query.getSingleResult();
+                dao.commitTransaction();
+            } else {
+                throw new NoResultException("Company not present in transaction");
+            }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Transaction");
             return false;
-        } finally {
-            dao.commitTransaction();
         }
         return true;
     }

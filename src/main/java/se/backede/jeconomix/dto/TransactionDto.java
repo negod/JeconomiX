@@ -37,6 +37,8 @@ public class TransactionDto extends GenericDto {
 
     private Integer budgetYear;
 
+    private String originalValue;
+
     private CompanyAccociationDto ascociatedCompany;
 
     @Override

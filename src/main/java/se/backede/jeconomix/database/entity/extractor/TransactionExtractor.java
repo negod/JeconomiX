@@ -5,57 +5,95 @@
  */
 package se.backede.jeconomix.database.entity.extractor;
 
+import com.backede.fileutils.csv.parser.CsvColumn;
+import com.backede.fileutils.csv.parser.CsvRecordWrapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVRecord;
-import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.importer.TransactionWrapper;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class TransactionExtractor {
+public abstract class TransactionExtractor {
 
-    public static TransactionDto createTransaction(CSVRecord cSVRecord) {
-        TransactionDto transaction = new TransactionDto();
-
-        try {
-            if (cSVRecord.get("Belopp") != null && !cSVRecord.get("Belopp").isEmpty()) {
-                BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Belopp")));
-                valueOf.setScale(2, RoundingMode.HALF_UP);
-                transaction.setSum(valueOf);
-            }
-        } catch (NumberFormatException | NullPointerException e) {
-            log.error("Failure when parsing field Belopp to BigDecimal");
+    public List<TransactionWrapper> createTransactions(List<CsvRecordWrapper> csvRecords) {
+        List<TransactionWrapper> transactions = new ArrayList<>();
+        for (CsvRecordWrapper csvRecord : csvRecords) {
+            transactions.add(createTransaction(csvRecord));
         }
-
-        try {
-            if (cSVRecord.get("Saldo") != null) {
-                if (!cSVRecord.get("Saldo").isEmpty()) {
-                    BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(cSVRecord.get("Saldo")));
-                    transaction.setSaldo(valueOf);
-                }
-            } else {
-                transaction.setSaldo(BigDecimal.valueOf(0.00));
-            }
-        } catch (NullPointerException | IllegalArgumentException e) {
-            transaction.setSaldo(BigDecimal.valueOf(0.00));
-            log.error("Failure when parsing field Saldo to BigDecimal");
-        }
-
-        try {
-            if (cSVRecord.get("Datum") != null && !cSVRecord.get("Datum").isEmpty()) {
-                Date valueOf = Date.valueOf(cSVRecord.get("Datum"));
-                transaction.setTransDate(valueOf);
-            }
-        } catch (Exception e) {
-            log.error("Failure when parsing field Date to BigDecimal");
-        }
-
-        return transaction;
+        return transactions;
     }
+
+    public void setTransactionOriginalValue(TransactionWrapper transaction, CsvColumn column) {
+        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+            try {
+                transaction.getTransactionDto().setOriginalValue(value);
+            } catch (NumberFormatException e) {
+                log.error("Error when getting origianlValue from CSVField {}", column.getColumnName());
+            }
+        });
+    }
+
+    public void setTransactionSum(TransactionWrapper transaction, CsvColumn column) {
+        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+            try {
+                BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(value));
+                BigDecimal bigDecimalValue = valueOf.setScale(2, RoundingMode.HALF_UP);
+                transaction.getTransactionDto().setSum(bigDecimalValue);
+            } catch (NumberFormatException e) {
+                log.error("Error when parsing transaction sum from CSVField {}", column.getColumnName());
+            }
+        });
+    }
+
+    public static void setTransactionSaldo(TransactionWrapper transaction, CsvColumn column) {
+        transaction.getTransactionDto().setSaldo(BigDecimal.valueOf(0.00));
+
+        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+            try {
+                BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(value));
+                transaction.getTransactionDto().setSaldo(valueOf);
+            } catch (NumberFormatException e) {
+                log.error("Error when parsing transaction saldo from CSVField {}", column.getColumnName());
+            }
+        });
+    }
+
+    public static void setTransactionDate(TransactionWrapper transaction, CsvColumn column) {
+        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+            try {
+                Date valueOf = Date.valueOf(value);
+                transaction.getTransactionDto().setTransDate(valueOf);
+            } catch (NumberFormatException e) {
+                log.error("Error when parsing transaction date from CSVField {}", column.getColumnName());
+            }
+        });
+    }
+
+    public static void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
+        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+
+            CompanyHandler.getInstance().getAccociatedCompanyByName(value.toUpperCase()).ifPresent(accComp -> {
+                transaction.getTransactionDto().setAscociatedCompany(accComp);
+                transaction.getTransactionDto().setCompany(accComp.getCompany());
+            });
+
+            if (transaction.getTransactionDto().getCompany() == null) {
+                CompanyHandler.getInstance().getCompanyByName(value.toUpperCase()).ifPresent(company -> {
+                    transaction.getTransactionDto().setCompany(company);
+                });
+            }
+
+        });
+    }
+
+    public abstract TransactionWrapper createTransaction(CsvRecordWrapper csvRecord);
 
 }

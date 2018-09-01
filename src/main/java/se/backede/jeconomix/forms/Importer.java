@@ -5,9 +5,13 @@
  */
 package se.backede.jeconomix.forms;
 
+import com.backede.fileutils.csv.parser.CsvColumn;
 import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import lombok.Getter;
@@ -29,6 +33,8 @@ import se.backede.jeconomix.event.events.CompanyEvent;
 import se.backede.jeconomix.event.events.fields.CategoryValues;
 import se.backede.jeconomix.event.events.fields.CompanyValues;
 import se.backede.jeconomix.forms.basic.NegodDialog;
+import se.backede.jeconomix.importer.TransactionWrapper;
+import se.backede.jeconomix.importer.Transactions;
 
 @Getter
 @Setter
@@ -49,13 +55,30 @@ public class Importer extends NegodDialog implements EventObserver {
     private final GenericIterator<CompanyDto> companyIterator;
     HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
 
-    public Importer(java.awt.Frame parent, boolean modal, LinkedList<CompanyDto> companies) {
+    public Importer(java.awt.Frame parent, boolean modal, Transactions transactions, CsvColumn companyNameColumn) {
         super(parent, modal);
-        companyIterator = new GenericIterator(companies);
 
-        for (CompanyDto company : companies) {
-            companyState.put(company, new CompanyIteratorState());
+        HashMap<String, List<TransactionDto>> companies = new HashMap<>();
+
+        for (TransactionWrapper transactionWrapper : transactions.getNewTransactionsToEdit()) {
+            transactionWrapper.getCsvRecord().getColumn(companyNameColumn).ifPresent(companyName -> {
+                if (companies.containsKey(companyName)) {
+                    companies.get(companyName).add(transactionWrapper.getTransactionDto());
+                } else {
+                    companies.put(companyName, Arrays.asList(transactionWrapper.getTransactionDto()));
+                }
+            });
         }
+
+        List<CompanyDto> companyList = new ArrayList<>();
+        for (String companyName : companies.keySet()) {
+            CompanyDto company = new CompanyDto(companyName);
+            company.getTransactions().addAll(companies.get(companyName));
+            companyState.put(company, new CompanyIteratorState());
+            companyList.add(company);
+        }
+
+        companyIterator = new GenericIterator(new LinkedList<>(companyList));
 
         initComponents();
 
@@ -83,7 +106,7 @@ public class Importer extends NegodDialog implements EventObserver {
 
     }
 
-    public final void setValues(CompanyDto company) {
+    private final void setValues(CompanyDto company) {
         counterLabel.setText((progressBar.getValue() + 1) + " of " + progressBar.getMaximum());
 
         companyName.setText(company.getName());

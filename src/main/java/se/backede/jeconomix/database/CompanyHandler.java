@@ -150,11 +150,11 @@ public class CompanyHandler {
         return Optional.empty();
     }
 
-    public Optional<CompanyDto> getAccociatedCompanyByName(String name) {
+    public Optional<CompanyAccociationDto> getAccociatedCompanyByName(String name) {
         try {
             Optional<CompanyAccociation> company = companyDao.getByAcciciatedCompany(name);
             if (company.isPresent()) {
-                return companyMapper.mapFromEntityToDto(company.get().getCompany());
+                return accociatedCompanyMapper.mapFromEntityToDto(company.get());
             }
         } catch (DaoException ex) {
             log.error("Error when getting company by name", ex);

@@ -56,6 +56,11 @@ public class CompanyAccociation extends GenericEntity {
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
     private String name;
 
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "originalValue")
+    private String originalValue;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "company", referencedColumnName = "id")
     Company company;

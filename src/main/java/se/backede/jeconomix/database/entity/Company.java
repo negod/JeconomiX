@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
@@ -56,6 +57,10 @@ public class Company extends GenericEntity {
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
     @Column(name = "name", insertable = true, unique = true)
     private String name;
+
+    @Size(min = 1, max = 255)
+    @Column(name = "originalValue", insertable = true, unique = true)
+    private String originalValue;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category", referencedColumnName = "id")
