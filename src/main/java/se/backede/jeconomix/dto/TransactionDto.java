@@ -10,11 +10,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Month;
 import java.util.Objects;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.database.entity.Transaction;
 
 /**

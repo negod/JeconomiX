@@ -58,10 +58,6 @@ public class Company extends GenericEntity {
     @Column(name = "name", insertable = true, unique = true)
     private String name;
 
-    @Size(min = 1, max = 255)
-    @Column(name = "originalValue", insertable = true, unique = true)
-    private String originalValue;
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
