@@ -6,25 +6,28 @@
 package se.backede.jeconomix.importer;
 
 import com.backede.fileutils.csv.parser.CsvRecordWrapper;
+import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.NordeaCsvFields;
 import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
-import se.backede.jeconomix.dto.TransactionDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
+@Slf4j
 public class NordeaTransactionExtractor extends TransactionExtractor {
 
     @Override
     public TransactionWrapper createTransaction(CsvRecordWrapper csvRecord) {
-        TransactionWrapper wrapper = new TransactionWrapper(csvRecord, new TransactionDto());
+        TransactionWrapper wrapper = new TransactionWrapper(csvRecord);
 
-        setTransactionSum(wrapper, NordeaCsvFields.BELOPP);
-        setTransactionSaldo(wrapper, NordeaCsvFields.SALDO);
-        setTransactionDate(wrapper, NordeaCsvFields.DATE);
-        setTransactionCompany(wrapper, NordeaCsvFields.TRANSACTION);
-        setTransactionOriginalValue(wrapper, NordeaCsvFields.TRANSACTION);
+        super.setTransactionSum(wrapper, NordeaCsvFields.BELOPP);
+        super.setTransactionSaldo(wrapper, NordeaCsvFields.SALDO);
+        super.setTransactionDate(wrapper, NordeaCsvFields.DATE);
+        super.setTransactionCompany(wrapper, NordeaCsvFields.TRANSACTION);
+        super.setTransactionOriginalValue(wrapper, NordeaCsvFields.ORIGINAL_VALUE);
+
+        log.info("Transaction created {}", wrapper.getTransactionDto().toString());
 
         return wrapper;
     }

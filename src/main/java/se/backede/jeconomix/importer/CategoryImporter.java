@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.export.Categories;
 import se.backede.jeconomix.dto.export.mapper.CategoryExportMapper;
-import se.backede.jeconomix.event.events.Events;
 
 /**
  *
@@ -33,17 +32,12 @@ public class CategoryImporter {
     public void importCategories(String filePath) {
         new Thread(() -> {
             Optional<Categories> importedCategories = READER.readXml(filePath, Categories.class);
-            Events.getInstance().fireProgressMaxValueEvent(importedCategories.get().getCategory().size());
 
             if (importedCategories.isPresent()) {
                 importedCategories.get().getCategory()
                         .stream().map((categoryDto) -> CategoryExportMapper.mapToDto(categoryDto)).forEachOrdered((dto) -> {
                     CategoryHandler.getInstance().createCategory(dto);
-                    Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
                 });
-                Events.getInstance().fireProgressDoneEvent();
-            } else {
-                Events.getInstance().fireErrorEvent();
             }
         }).start();
     }

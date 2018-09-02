@@ -16,7 +16,6 @@ import javax.swing.JFileChooser;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.NordeaCsvFields;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.exporter.CategoryExporter;
@@ -25,7 +24,7 @@ import se.backede.jeconomix.forms.basic.NegodJFrame;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.forms.company.CompanyImporter;
-import se.backede.jeconomix.importer.NordeaTransactionImporter;
+import se.backede.jeconomix.importer.NordeaCsvTransactionImporter;
 import se.backede.jeconomix.importer.Transactions;
 import se.backede.jeconomix.utils.TimeDecider;
 
@@ -304,13 +303,13 @@ public class Main extends NegodJFrame {
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
 
-            Consumer<Transactions> test = t -> {
-                Importer importer = new Importer(this, true, t, NordeaCsvFields.TRANSACTION);
+            Consumer<Transactions> startImporterDialog = transactions -> {
+                Importer importer = new Importer(this, true, transactions, NordeaCsvFields.TRANSACTION);
                 importer.setVisible(true);
             };
 
-            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaTransactionImporter(), filePath, CsvExtractor.CsvFileHasHeaders);
-            extractor.executeLogic(test);
+            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CsvFileHasHeaders);
+            extractor.executeLogic(startImporterDialog);
 
         });
 
@@ -406,9 +405,5 @@ public class Main extends NegodJFrame {
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-    }
 
 }

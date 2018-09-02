@@ -6,7 +6,6 @@
 package se.backede.jeconomix.forms.category;
 
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**
@@ -112,8 +111,4 @@ public class CategoryEditor extends NegodDialog {
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

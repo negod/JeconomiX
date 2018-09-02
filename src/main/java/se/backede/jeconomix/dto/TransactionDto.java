@@ -9,10 +9,10 @@ import com.negod.generics.persistence.dto.GenericDto;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Month;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.database.entity.Transaction;
+import lombok.ToString;
 
 /**
  *
@@ -20,6 +20,8 @@ import se.backede.jeconomix.database.entity.Transaction;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {"company", "ascociatedCompany"})
+@ToString(exclude = {"company", "ascociatedCompany"})
 public class TransactionDto extends GenericDto {
 
     private Date transDate;
@@ -37,31 +39,5 @@ public class TransactionDto extends GenericDto {
     private String originalValue;
 
     private CompanyAccociationDto ascociatedCompany;
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.transDate);
-        hash = 71 * hash + Objects.hashCode(this.sum);
-        hash = 71 * hash + Objects.hashCode(this.saldo);
-        return hash;
-    }
-
-    public boolean equals(Transaction obj) {
-        if (obj == null) {
-            return false;
-        }
-        final Transaction other = (Transaction) obj;
-        if (!Objects.equals(this.transDate, other.getTransDate())) {
-            return false;
-        }
-        if (!Objects.equals(this.sum, other.getSum())) {
-            return false;
-        }
-        if (!Objects.equals(this.saldo, other.getSaldo())) {
-            return false;
-        }
-        return true;
-    }
 
 }

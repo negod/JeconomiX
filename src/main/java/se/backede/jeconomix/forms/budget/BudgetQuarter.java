@@ -8,7 +8,6 @@ package se.backede.jeconomix.forms.budget;
 import java.time.Month;
 import java.time.YearMonth;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.utils.TimeDecider;
 
@@ -228,11 +227,6 @@ public class BudgetQuarter extends NegodPanel {
     private javax.swing.JLabel quarterLabel;
     private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void init() {

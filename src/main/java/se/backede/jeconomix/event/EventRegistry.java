@@ -5,13 +5,15 @@
  */
 package se.backede.jeconomix.event;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public interface EventRegistry {
+public interface EventRegistry<T> {
 
-    public void registerAsObserver();
+    public void registerAsObserver(Enum event, Consumer<T> action);
 
     public void removeAsObserver();
 

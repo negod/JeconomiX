@@ -21,7 +21,6 @@ import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.fields.BudgetValues;
 
 /**
@@ -171,19 +170,19 @@ public class BudgetModel extends AbstractTableModel {
     }
 
     public void calculateTotalSumAndSendEvent() {
-        Dto dto = new Dto(BudgetValues.class);
-
-        Double total = BigDecimal.ZERO.doubleValue();
-
-        for (BudgetExpenseDto filteredCategory : filteredCategories) {
-            total += filteredCategory.getEstimatedsum().doubleValue();
-        }
-
-        dto.set(BudgetValues.TOTAL, total);
-        dto.set(BudgetValues.MONTH, yearMonth.getMonth().name());
-        dto.set(BudgetValues.YEAR, yearMonth.getYear());
-
-        EventController.getInstance().notifyObservers(CATEGORY_TYPE, dto);
+//        Dto dto = new Dto(BudgetValues.class);
+//
+//        Double total = BigDecimal.ZERO.doubleValue();
+//
+//        for (BudgetExpenseDto filteredCategory : filteredCategories) {
+//            total += filteredCategory.getEstimatedsum().doubleValue();
+//        }
+//
+//        dto.set(BudgetValues.TOTAL, total);
+//        dto.set(BudgetValues.MONTH, yearMonth.getMonth().name());
+//        dto.set(BudgetValues.YEAR, yearMonth.getYear());
+//
+//        EventController.getInstance().notifyObservers(CATEGORY_TYPE, dto);
     }
 
     /**

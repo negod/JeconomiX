@@ -11,4 +11,5 @@ package se.backede.jeconomix.event.events;
  */
 public enum BudgetEvent {
     YEAR, MONTH, TOTAL;
+
 }

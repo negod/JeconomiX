@@ -5,17 +5,10 @@
  */
 package se.backede.jeconomix.event;
 
-import se.backede.jeconomix.event.dto.Dto;
-
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public interface EventSubscriber {
-
-    public void addObserver(EventObserver observer);
-
-    public void removeObserver(EventObserver observer);
-
-    public void notifyObservers(Enum event, Dto data);
+public enum EventEnum {
+    TEST_EVENT;
 }

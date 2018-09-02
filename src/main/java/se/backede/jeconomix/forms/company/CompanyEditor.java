@@ -13,7 +13,6 @@ import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.CompanyModel;
@@ -284,8 +283,4 @@ public class CompanyEditor extends NegodDialog {
     private javax.swing.JTable transactionTable;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

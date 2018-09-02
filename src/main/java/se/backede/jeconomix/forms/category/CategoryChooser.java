@@ -5,13 +5,12 @@
  */
 package se.backede.jeconomix.forms.category;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CategoryEvent;
-import se.backede.jeconomix.event.events.fields.CategoryValues;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
@@ -30,6 +29,19 @@ public class CategoryChooser extends NegodPanel {
     public CategoryChooser() {
         super();
         initComponents();
+
+        Consumer<CategoryDto> setSelectedCompany = category -> {
+            setRadioButton(category.getCategoryType().getType());
+            categoryCB.setComboBoxModel(new CategoryComboBoxModel(category.getCategoryType().getType()));
+            categoryCB.setSelectedItem(category);
+        };
+        EventController.getInstance().addObserver(CategoryEvent.SET_SELECTED, setSelectedCompany);
+
+        Consumer<CategoryDto> createCategory = category -> {
+            categoryCB.getComboBoxModel().addElement(category);
+            categoryCB.setSelectedItem(category);
+        };
+        EventController.getInstance().addObserver(CategoryEvent.CREATE, createCategory);
     }
 
     /**
@@ -185,9 +197,8 @@ public class CategoryChooser extends NegodPanel {
 
     private void categoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_categoryComboBoxItemStateChanged
         if (evt.getItem() != null) {
-            Dto dto = new Dto(CategoryValues.class);
-            dto.set(CategoryValues.CATEGORY_DTO, (CategoryDto) evt.getItem());
-            EventController.getInstance().notifyObservers(CategoryEvent.SELECTED, dto);
+            Supplier<CategoryDto> getCategory = () -> (CategoryDto) evt.getItem();
+            EventController.getInstance().notifyObservers(CategoryEvent.SELECTED, getCategory);
         }
     }//GEN-LAST:event_categoryComboBoxItemStateChanged
 
@@ -223,27 +234,6 @@ public class CategoryChooser extends NegodPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton transferRadionButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-
-        if (event.equalsEvent(CategoryEvent.CREATE)) {
-            event.getValues().get(CategoryValues.CATEGORY_DTO).getObject().ifPresent(category -> {
-                categoryCB.getComboBoxModel().addElement((CategoryDto) category);
-                categoryCB.setSelectedItem((CategoryDto) category);
-            });
-        }
-
-        if (event.equalsEvent(CategoryEvent.SET_SELECTED)) {
-            event.getValues().get(CategoryValues.CATEGORY_DTO).getObject().ifPresent(category -> {
-                CategoryDto selectedCategory = (CategoryDto) category;
-                setRadioButton(selectedCategory.getCategoryType().getType());
-                categoryCB.setComboBoxModel(new CategoryComboBoxModel(selectedCategory.getCategoryType().getType()));
-                categoryCB.setSelectedItem(selectedCategory);
-            });
-        }
-
-    }
 
     private void setRadioButton(CategoryTypeEnum type) {
         switch (type) {

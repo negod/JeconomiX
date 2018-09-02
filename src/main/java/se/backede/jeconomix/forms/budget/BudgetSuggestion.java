@@ -6,7 +6,6 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.time.YearMonth;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**
@@ -258,8 +257,4 @@ public class BudgetSuggestion extends NegodDialog {
     private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(NegodEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

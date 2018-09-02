@@ -7,7 +7,7 @@ package se.backede.jeconomix.importer;
 
 import com.backede.fileutils.csv.parser.CsvRecordWrapper;
 import lombok.Getter;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.EqualsAndHashCode;
 import se.backede.jeconomix.dto.TransactionDto;
 
@@ -16,11 +16,11 @@ import se.backede.jeconomix.dto.TransactionDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor()
 @EqualsAndHashCode
 public class TransactionWrapper {
 
-    private CsvRecordWrapper csvRecord;
+    private final CsvRecordWrapper csvRecord;
     private TransactionDto transactionDto = new TransactionDto();
 
 }

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,18 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.EventObserver;
-import se.backede.jeconomix.event.NegodEvent;
 import se.backede.jeconomix.event.events.TransactionEvent;
 import se.backede.jeconomix.models.table.TransactionModel;
 import se.backede.jeconomix.utils.GenericIterator;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
-import se.backede.jeconomix.event.events.fields.CategoryValues;
-import se.backede.jeconomix.event.events.fields.CompanyValues;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.importer.TransactionWrapper;
 import se.backede.jeconomix.importer.Transactions;
@@ -41,6 +38,7 @@ import se.backede.jeconomix.importer.Transactions;
 class CompanyIteratorState {
 
     Boolean newCompany = Boolean.FALSE;
+    Boolean hasParent = Boolean.FALSE;
     CompanyDto parentCompany;
 
 }
@@ -50,7 +48,7 @@ class CompanyIteratorState {
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class Importer extends NegodDialog implements EventObserver {
+public class Importer extends NegodDialog {
 
     private final GenericIterator<CompanyDto> companyIterator;
     HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
@@ -59,6 +57,8 @@ public class Importer extends NegodDialog implements EventObserver {
         super(parent, modal);
 
         HashMap<String, List<TransactionDto>> companies = new HashMap<>();
+
+        transactions.getNewTransactionsToEdit().stream().forEach(transaction -> log.info("Starting import of {}", transaction.getTransactionDto().toString()));
 
         for (TransactionWrapper transactionWrapper : transactions.getNewTransactionsToEdit()) {
             transactionWrapper.getCsvRecord().getColumn(companyNameColumn).ifPresent(companyName -> {
@@ -90,6 +90,21 @@ public class Importer extends NegodDialog implements EventObserver {
         companyChooser1.init();
 
         setToggleButtonData();
+
+        //EVENTS
+        Consumer<CategoryDto> setSelectedCategory = category -> {
+            companyIterator.getAtCurrentIndex().setCategory(category);
+        };
+        EventController.getInstance().addObserver(CategoryEvent.SELECTED, setSelectedCategory);
+
+        Consumer<CompanyDto> setSelectedCompany = company -> {
+            CompanyIteratorState state = new CompanyIteratorState();
+            state.newCompany = Boolean.TRUE;
+            state.hasParent = Boolean.TRUE;
+            state.parentCompany = company;
+            companyState.put(companyIterator.getAtCurrentIndex(), state);
+        };
+        EventController.getInstance().addObserver(CompanyEvent.SELECTED, setSelectedCompany);
     }
 
     @SuppressWarnings("unchecked")
@@ -115,18 +130,16 @@ public class Importer extends NegodDialog implements EventObserver {
         transactionsTable.setModel(transactionModel);
 
         if (company.getCategory() != null) {
-            Dto dto = new Dto(CategoryValues.class);
-            dto.set(CategoryValues.CATEGORY_DTO, company.getCategory());
-            EventController.getInstance().notifyObservers(CategoryEvent.SET_SELECTED, dto);
+            Supplier<CategoryDto> getCategory = () -> company.getCategory();
+            EventController.getInstance().notifyObservers(CategoryEvent.SET_SELECTED, getCategory);
         }
 
         categoryToggleBtn.setSelected(companyState.get(company).newCompany);
         setToggleButtonData();
 
         if (categoryToggleBtn.isSelected()) {
-            Dto dto = new Dto(CompanyValues.class);
-            dto.set(CompanyValues.COMPANY_DTO, companyState.get(company).parentCompany);
-            EventController.getInstance().notifyObservers(CompanyEvent.SET_SELECTED, dto);
+            Supplier<CompanyDto> getCompany = () -> companyState.get(company).getParentCompany();
+            EventController.getInstance().notifyObservers(CompanyEvent.SET_SELECTED, getCompany);
         }
 
         if (!companyIterator.hasNext()) {
@@ -375,24 +388,5 @@ public class Importer extends NegodDialog implements EventObserver {
     private javax.swing.JScrollPane transactionsScrollPane;
     private javax.swing.JTable transactionsTable;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-        if (event.equalsEvent(CategoryEvent.SELECTED)) {
-            event.getValues().get(CategoryValues.CATEGORY_DTO).getObject().ifPresent(category -> {
-                companyIterator.getAtCurrentIndex().setCategory((CategoryDto) category);
-            });
-        }
-
-        if (event.equalsEvent(CompanyEvent.SELECTED)) {
-            event.getValues().get(CompanyValues.COMPANY_DTO).getObject().ifPresent(company -> {
-                CompanyIteratorState state = new CompanyIteratorState();
-                state.newCompany = Boolean.TRUE;
-                state.parentCompany = (CompanyDto) company;
-                companyState.put(companyIterator.getAtCurrentIndex(), state);
-            });
-        }
-
-    }
 
 }

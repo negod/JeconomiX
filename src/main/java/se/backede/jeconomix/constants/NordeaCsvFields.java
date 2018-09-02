@@ -22,7 +22,7 @@ public enum NordeaCsvFields implements CsvColumn {
     SALDO("Saldo"),
     DATE("Datum"),
     CATEGORY("Kategori"),
-    ORIGINAL_VALUE("origanalValue");
+    ORIGINAL_VALUE("originalValue");
 
     private final String columnName;
 

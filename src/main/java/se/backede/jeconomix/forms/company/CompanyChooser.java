@@ -5,14 +5,12 @@
  */
 package se.backede.jeconomix.forms.company;
 
-import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CompanyEvent;
-import se.backede.jeconomix.event.events.fields.CompanyValues;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
@@ -31,6 +29,16 @@ public class CompanyChooser extends NegodPanel {
     public CompanyChooser() {
         super();
         initComponents();
+
+        Consumer<CompanyDto> setSelectedCompany = company -> {
+            companyCB.setSelectedItem(company);
+        };
+        EventController.getInstance().addObserver(CompanyEvent.SET_SELECTED, setSelectedCompany);
+
+        Consumer<CompanyDto> createCompany = company -> {
+            companyCB.getComboBoxModel().addElement(company);
+        };
+        EventController.getInstance().addObserver(CompanyEvent.CREATE, createCompany);
     }
 
     /**
@@ -185,10 +193,8 @@ public class CompanyChooser extends NegodPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void companyComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyComboBoxItemStateChanged
-        CompanyDto company = (CompanyDto) evt.getItem();
-        Dto dto = new Dto(CompanyValues.class);
-        dto.set(CompanyValues.COMPANY_DTO, company);
-        EventController.getInstance().notifyObservers(CompanyEvent.SELECTED, dto);
+        Supplier<CompanyDto> getCompany = () -> (CompanyDto) evt.getItem();
+        EventController.getInstance().notifyObservers(CompanyEvent.CREATE, getCompany);
     }//GEN-LAST:event_companyComboBoxItemStateChanged
 
     private void addCompanyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCompanyBtnActionPerformed
@@ -225,20 +231,6 @@ public class CompanyChooser extends NegodPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton transferRadionButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-        if (event.equalsEvent(CompanyEvent.CREATE)) {
-            event.getValues().get(CompanyValues.COMPANY_DTO).getObject().ifPresent(company -> {
-                companyCB.getComboBoxModel().addElement((CompanyDto) company);
-            });
-        }
-        if (event.equalsEvent(CompanyEvent.SET_SELECTED)) {
-            event.getValues().get(CompanyValues.COMPANY_DTO).getObject().ifPresent(company -> {
-                companyCB.setSelectedItem((CompanyDto) company);
-            });
-        }
-    }
 
     @Override
     public void init() {

@@ -10,20 +10,14 @@ import com.backede.fileutils.xml.reader.XmlReader;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.dto.export.Companies;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.EventObserver;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
-import se.backede.jeconomix.event.events.ProgressEvent;
 import se.backede.jeconomix.event.events.fields.ImportSummaryValues;
-import se.backede.jeconomix.event.events.fields.ProgressEventValues;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-class ProgressDialog extends javax.swing.JDialog implements EventObserver {
+class ProgressDialog extends javax.swing.JDialog {
 
     private final XmlReader<Companies> READER = new XmlReader<>();
 
@@ -134,7 +128,6 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        EventController.getInstance().removeObserver(this);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -146,58 +139,57 @@ class ProgressDialog extends javax.swing.JDialog implements EventObserver {
     private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(NegodEvent event) {
-        if (event.equalsEvent(ProgressEvent.SET_MAX_VALUE)) {
-            Optional<Integer> integer = event.getValues().get(ProgressEventValues.MAX_VALUE).getInteger();
-            if (integer.isPresent()) {
-                progressBar.setMaximum(integer.get());
-            }
-        }
-        if (event.equalsEvent(ProgressEvent.INCREASE)) {
-            Optional<Integer> integer = event.getValues().get(ProgressEventValues.INCREASE_VALUE).getInteger();
-            if (integer.isPresent()) {
-                int currentValue = progressBar.getValue();
-                progressBar.setValue(currentValue + integer.get());
-            }
-            Optional<String> itemName = event.getValues().get(ProgressEventValues.ITEM_NAME).getString();
-            if (itemName.isPresent()) {
-                nameLabel.setText(itemName.get());
-            }
-        }
-        if (event.equalsEvent(ProgressEvent.DONE)) {
-            progressBar.setValue(progressBar.getMaximum());
-            nameLabel.setText("");
-            importLabel.setText("Processing Done!");
-            okButton.setEnabled(true);
-            setDoneLabelText(event.getValues());
-        }
-        if (event.equalsEvent(ProgressEvent.ERROR)) {
-            progressBar.setValue(progressBar.getMaximum());
-            nameLabel.setText("");
-            importLabel.setText("Error when processing data");
-            okButton.setEnabled(true);
-        }
+    public void onEvent() {
+//        if (event.equalsEvent(ProgressEvent.SET_MAX_VALUE)) {
+//            Optional<Integer> integer = event.getValues().get(ProgressEventValues.MAX_VALUE).getInteger();
+//            if (integer.isPresent()) {
+//                progressBar.setMaximum(integer.get());
+//            }
+//        }
+//        if (event.equalsEvent(ProgressEvent.INCREASE)) {
+//            Optional<Integer> integer = event.getValues().get(ProgressEventValues.INCREASE_VALUE).getInteger();
+//            if (integer.isPresent()) {
+//                int currentValue = progressBar.getValue();
+//                progressBar.setValue(currentValue + integer.get());
+//            }
+//            Optional<String> itemName = event.getValues().get(ProgressEventValues.ITEM_NAME).getString();
+//            if (itemName.isPresent()) {
+//                nameLabel.setText(itemName.get());
+//            }
+//        }
+//        if (event.equalsEvent(ProgressEvent.DONE)) {
+//            progressBar.setValue(progressBar.getMaximum());
+//            nameLabel.setText("");
+//            importLabel.setText("Processing Done!");
+//            okButton.setEnabled(true);
+//            setDoneLabelText(event.getValues());
+//        }
+//        if (event.equalsEvent(ProgressEvent.ERROR)) {
+//            progressBar.setValue(progressBar.getMaximum());
+//            nameLabel.setText("");
+//            importLabel.setText("Error when processing data");
+//            okButton.setEnabled(true);
+//        }
     }
 
-    public void setDoneLabelText(Dto dto) {
-        if (dto != null) {
-
-            Optional integer = dto.getValue(ImportSummaryValues.DUPLICATE_RECORDS).getValue().getInteger();
-            Optional integer1 = dto.getValue(ImportSummaryValues.INVALID_RECORDS).getValue().getInteger();
-            Optional integer2 = dto.getValue(ImportSummaryValues.TOTAL_RECORDS).getValue().getInteger();
-
-            String data = "Total records processed: ".concat(integer2.get().toString()).concat("\n");
-            String concat = data.concat("Total invalid records discarded: ").concat(integer1.get().toString()).concat("\n");
-            String concat1 = concat.concat("Total duplicate records discarded: ").concat(integer.get().toString());
-
-            new ImportSummaryDialog(this, true, concat1).setVisible(true);
-
-        }
+    public void setDoneLabelText() {
+//        if (dto != null) {
+//
+//            Optional integer = dto.getValue(ImportSummaryValues.DUPLICATE_RECORDS).getValue().getInteger();
+//            Optional integer1 = dto.getValue(ImportSummaryValues.INVALID_RECORDS).getValue().getInteger();
+//            Optional integer2 = dto.getValue(ImportSummaryValues.TOTAL_RECORDS).getValue().getInteger();
+//
+//            String data = "Total records processed: ".concat(integer2.get().toString()).concat("\n");
+//            String concat = data.concat("Total invalid records discarded: ").concat(integer1.get().toString()).concat("\n");
+//            String concat1 = concat.concat("Total duplicate records discarded: ").concat(integer.get().toString());
+//
+//            new ImportSummaryDialog(this, true, concat1).setVisible(true);
+//
+//        }
     }
 
-    @Override
-    public void registerAsObserver() {
-        EventController.getInstance().addObserver(this);
-    }
+//    @Override
+//    public void registerAsObserver() {
+//        EventController.getInstance().addObserver(this);
+//    }
 }

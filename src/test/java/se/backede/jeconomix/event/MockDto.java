@@ -5,14 +5,25 @@
  */
 package se.backede.jeconomix.event;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class EventNotImplementedException extends Exception {
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+public class MockDto {
 
-    public EventNotImplementedException(String message) {
-        super("Event not implemented");
+    private String value;
+
+    public MockDto(String value) {
+        this.value = value;
     }
 
 }

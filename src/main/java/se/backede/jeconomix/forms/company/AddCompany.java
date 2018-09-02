@@ -6,16 +6,15 @@
 package se.backede.jeconomix.forms.company;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.swing.JOptionPane;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
-import se.backede.jeconomix.event.events.fields.CategoryValues;
 import se.backede.jeconomix.event.events.fields.CompanyValues;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 
@@ -34,6 +33,12 @@ public class AddCompany extends NegodDialog {
         super(parent, modal);
         initComponents();
         categoryChooser2.init();
+
+        Consumer<CategoryDto> setSelectedCategory = category -> {
+            newCategory = Optional.ofNullable(category);
+        };
+        EventController.getInstance().addObserver(CategoryEvent.SELECTED, setSelectedCategory);
+
     }
 
     /**
@@ -131,16 +136,14 @@ public class AddCompany extends NegodDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        Dto data = new Dto(CompanyValues.class);
-
         CompanyDto company = new CompanyDto(companyInputText.getText());
 
         if (newCategory.isPresent()) {
             company.setCategory(newCategory.get());
             Optional<CompanyDto> createCompany = CompanyHandler.getInstance().createCompany(company);
             if (createCompany.isPresent()) {
-                data.set(CompanyValues.COMPANY_DTO, createCompany.get());
-                EventController.getInstance().notifyObservers(CompanyEvent.CREATE, data);
+                Supplier<CompanyDto> getCompany = () -> createCompany.get();
+                EventController.getInstance().notifyObservers(CompanyEvent.CREATE, getCompany);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Error when creating Company", "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,13 +167,5 @@ public class AddCompany extends NegodDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-        if (event.equalsEvent(CategoryEvent.SELECTED)) {
-            event.getValues().get(CategoryValues.CATEGORY_DTO).getObject()
-                    .ifPresent(category -> newCategory = Optional.ofNullable((CategoryDto) category));
-        }
-    }
 
 }

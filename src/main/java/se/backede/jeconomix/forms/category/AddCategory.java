@@ -6,16 +6,13 @@
 package se.backede.jeconomix.forms.category;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.swing.JOptionPane;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CategoryTypeDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.EventObserver;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.CategoryEvent;
-import se.backede.jeconomix.event.events.fields.CategoryValues;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.models.combobox.CategoryTypeComboBoxModel;
 import se.backede.jeconomix.renderer.combobox.CategoryTypeComboBoxRenderer;
@@ -151,7 +148,6 @@ public class AddCategory extends NegodDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        Dto data = new Dto(CategoryValues.class);
         CategoryDto dto = new CategoryDto();
         dto.setName(categoryInputText.getText());
 
@@ -160,8 +156,8 @@ public class AddCategory extends NegodDialog {
 
         Optional<CategoryDto> createCategory = CategoryHandler.getInstance().createCategory(dto);
         if (createCategory.isPresent()) {
-            data.set(CategoryValues.CATEGORY_DTO, createCategory.get());
-            EventController.getInstance().notifyObservers(CategoryEvent.CREATE, data);
+            Supplier<CategoryDto> getCategory = () -> createCategory.get();
+            EventController.getInstance().notifyObservers(CategoryEvent.CREATE, getCategory);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error when creating Bill category!");
@@ -186,9 +182,5 @@ public class AddCategory extends NegodDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void onEvent(NegodEvent event) {
-    }
 
 }

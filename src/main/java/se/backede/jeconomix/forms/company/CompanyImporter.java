@@ -15,7 +15,6 @@ import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
-import se.backede.jeconomix.event.events.Events;
 
 /**
  *
@@ -38,7 +37,7 @@ public class CompanyImporter {
         new Thread(() -> {
             Optional<Companies> importedCompanies = READER.readXml(filePath, Companies.class);
             if (importedCompanies.isPresent()) {
-                Events.getInstance().fireProgressMaxValueEvent(importedCompanies.get().getCompany().size());
+//                Events.getInstance().fireProgressMaxValueEvent(importedCompanies.get().getCompany().size());
 
                 for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
                     CompanyDto dto = CompanyMapper.mapToDto(companyExportDto);
@@ -47,14 +46,14 @@ public class CompanyImporter {
                         dto.setCategory(expCat.get());
                         CompanyHandler.getInstance().createCompany(dto);
 
-                        Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
+//                        Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
                     } else {
                         log.error("Could not get Expense category for company {} aborting insert if this company", dto.getName());
                     }
                 }
-                Events.getInstance().fireProgressDoneEvent();
+//                Events.getInstance().fireProgressDoneEvent();
             } else {
-                Events.getInstance().fireErrorEvent();
+//                Events.getInstance().fireErrorEvent();
                 return;
             }
         }).start();

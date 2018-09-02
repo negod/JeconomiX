@@ -9,22 +9,14 @@ import java.math.BigDecimal;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Optional;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
-import se.backede.jeconomix.event.NegodEvent;
-import se.backede.jeconomix.event.dto.Dto;
 import se.backede.jeconomix.event.events.fields.BudgetValues;
 import se.backede.jeconomix.forms.basic.NegodPanel;
-import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.BudgetModel;
-import se.backede.jeconomix.renderer.combobox.CompanyItemRenderer;
 
 /**
  *
@@ -399,57 +391,53 @@ public class BudgetMonth extends NegodPanel {
     private javax.swing.JLabel totalIncomeLbl;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(NegodEvent event) {
-        if (event.equalsEvent(CategoryTypeEnum.BILL)) {
-            setValues(event.getValues(), CategoryTypeEnum.BILL);
-        } else if (event.equalsEvent(CategoryTypeEnum.EXPENSE)) {
-            setValues(event.getValues(), CategoryTypeEnum.EXPENSE);
-        } else if (event.equalsEvent(CategoryTypeEnum.INCOME)) {
-            setValues(event.getValues(), CategoryTypeEnum.INCOME);
-        }
+    public void onEvent() {
+//        if (event.equalsEvent(CategoryTypeEnum.BILL)) {
+//            setValues(event.getValues(), CategoryTypeEnum.BILL);
+//        } else if (event.equalsEvent(CategoryTypeEnum.EXPENSE)) {
+//            setValues(event.getValues(), CategoryTypeEnum.EXPENSE);
+//        } else if (event.equalsEvent(CategoryTypeEnum.INCOME)) {
+//            setValues(event.getValues(), CategoryTypeEnum.INCOME);
+//        }
     }
 
-    public void setValues(Dto dto, CategoryTypeEnum category) {
-        Optional<Double> value = dto.getValue(BudgetValues.TOTAL).getValue().getDouble();
-        Optional<String> month = dto.getValue(BudgetValues.MONTH).getValue().getString();
-        Optional<Integer> year = dto.getValue(BudgetValues.YEAR).getValue().getInteger();
+    public void setValues(CategoryTypeEnum category) {
+//        Optional<Double> value = dto.getValue(BudgetValues.TOTAL).getValue().getDouble();
+//        Optional<String> month = dto.getValue(BudgetValues.MONTH).getValue().getString();
+//        Optional<Integer> year = dto.getValue(BudgetValues.YEAR).getValue().getInteger();
 
-        if (month.isPresent()) {
-            Month extractedMonth = Month.valueOf(month.get());
-            if (!this.currentYearMonth.getMonth().equals(extractedMonth)) {
-                return;
-            }
-
-        }
-
-        if (year.isPresent()) {
-            Integer extractedYear = year.get();
-            if (this.currentYearMonth.getYear() != extractedYear) {
-                return;
-            }
-        }
-
-        if (value.isPresent()) {
-            Double extractedValue = value.get();
-            switch (category) {
-                case INCOME:
-                    totalIncomeLbl.setText(extractedValue.toString());
-                    break;
-                case EXPENSE:
-                    totalExpenseLbl.setText(extractedValue.toString());
-                    break;
-                case BILL:
-                    totalBillLbl.setText(extractedValue.toString());
-                    break;
-                case TRANSFER:
-                    break;
-                default:
-                    throw new AssertionError();
-
-            }
-        }
-
+//        if (month.isPresent()) {
+//            Month extractedMonth = Month.valueOf(month.get());
+//            if (!this.currentYearMonth.getMonth().equals(extractedMonth)) {
+//                return;
+//            }
+//
+//        }
+//        if (year.isPresent()) {
+//            Integer extractedYear = year.get();
+//            if (this.currentYearMonth.getYear() != extractedYear) {
+//                return;
+//            }
+//        }
+//        if (value.isPresent()) {
+//            Double extractedValue = value.get();
+//            switch (category) {
+//                case INCOME:
+//                    totalIncomeLbl.setText(extractedValue.toString());
+//                    break;
+//                case EXPENSE:
+//                    totalExpenseLbl.setText(extractedValue.toString());
+//                    break;
+//                case BILL:
+//                    totalBillLbl.setText(extractedValue.toString());
+//                    break;
+//                case TRANSFER:
+//                    break;
+//                default:
+//                    throw new AssertionError();
+//
+//            }
+//        }
     }
 
     @Override

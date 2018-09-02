@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.NordeaCsvFields;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
-import se.backede.jeconomix.event.events.Events;
 
 /**
  *
@@ -27,13 +26,13 @@ import se.backede.jeconomix.event.events.Events;
  * @param <TransactionTypes>
  */
 @Slf4j
-public class NordeaTransactionImporter implements CsvImporter<Transactions> {
+public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
 
     @Override
     public Optional<List<CsvRecordWrapper>> modifyCsvRecords(Optional<Normalizer> records) throws IOException {
         return records.map(handler -> {
             return handler
-                    .setOriginalValue(NordeaCsvFields.ORIGINAL_VALUE, NordeaCsvFields.TRANSACTION)
+                    .copyValueToNewColumn(NordeaCsvFields.ORIGINAL_VALUE, NordeaCsvFields.TRANSACTION)
                     .capitalizeAll(NordeaCsvFields.TRANSACTION)
                     .removePeriod(NordeaCsvFields.BELOPP)
                     .removePeriod(NordeaCsvFields.SALDO)
@@ -54,8 +53,6 @@ public class NordeaTransactionImporter implements CsvImporter<Transactions> {
 
         Transactions transactions = new Transactions();
         TransactionExtractor extractor = new NordeaTransactionExtractor();
-
-        Events.getInstance().fireProgressMaxValueEvent(((Collection<?>) records).size());
 
         Set<TransactionWrapper> createTransactions = new LinkedHashSet<>(extractor.createTransactions(records));
 

@@ -5,25 +5,41 @@
  */
 package se.backede.jeconomix.event;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.event.dto.Dto;
+import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.event.events.BudgetEvent;
+import se.backede.jeconomix.event.events.CategoryEvent;
+import se.backede.jeconomix.event.events.CompanyEvent;
+import se.backede.jeconomix.event.events.ProgressEvent;
+import se.backede.jeconomix.event.events.TransactionEvent;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class EventController implements EventSubscriber {
-
-    private final ArrayList<EventObserver> observers = new ArrayList<>();
-    private final List<EventObserver> syncedList = Collections.synchronizedList(observers);
+public class EventController {
 
     private static EventController instance = null;
 
+    private Map<Class, Optional<EventContainer>> events = new HashMap<>();
+    private Map<Class, Optional<EventContainer>> syncedEventMap;
+
     protected EventController() {
+
+        events.put(BudgetEvent.class, Optional.ofNullable(new EventContainer<>(BudgetEvent.class)));
+        events.put(CategoryEvent.class, Optional.ofNullable(new EventContainer<>(CategoryEvent.class)));
+        events.put(CompanyEvent.class, Optional.ofNullable(new EventContainer<>(CompanyEvent.class)));
+        events.put(ProgressEvent.class, Optional.ofNullable(new EventContainer<>(ProgressEvent.class)));
+        events.put(TransactionEvent.class, Optional.ofNullable(new EventContainer<>(TransactionEvent.class)));
+
+        syncedEventMap = Collections.unmodifiableMap(events);
     }
 
     public static EventController getInstance() {
@@ -33,34 +49,13 @@ public class EventController implements EventSubscriber {
         return instance;
     }
 
-    /**
-     * Adds a class that implements the interface EventObserver to the list
-     *
-     * @param observer
-     */
-    @Override
-    public void addObserver(EventObserver observer) {
-        observers.add(observer);
-        log.info("Observer added {}", observer.getClass().getName());
-    }
-
-    /**
-     * Removes the observer if it exists in the list
-     *
-     * @param observer
-     */
-    @Override
-    public void removeObserver(EventObserver observer) {
-        synchronized (syncedList) {
-            for (int i = 0; i < syncedList.size(); i++) {
-                if (syncedList.get(i).equals(observer)) {
-                    syncedList.remove(i);
-                    log.info("Observer {} removed ", observer.getClass().getSimpleName());
-                    break;
-                }
-            }
+    public void addObserver(Enum event, Consumer action) {
+        synchronized (syncedEventMap) {
+            syncedEventMap.getOrDefault(event.getClass(), Optional.empty()).ifPresent(container -> {
+                container.listenForEvent(event, action);
+            });
+            log.info("Observer added {}.{}", event.getClass().getName(), event.name());
         }
-
     }
 
     /**
@@ -70,18 +65,11 @@ public class EventController implements EventSubscriber {
      * @param eventType
      * @param data
      */
-    @Override
-    public void notifyObservers(Enum event, Dto data) {
-        synchronized (syncedList) {
-            for (int i = 0; i < syncedList.size(); i++) {
-                try {
-                    syncedList.get(i).onEvent(new NegodEvent(event, data));
-                } catch (EventNotImplementedException e) {
-                    log.info("Event {} not implemeted for class {}", event.name(), syncedList.get(i).getClass().getSimpleName());
-                } catch (Exception e) {
-                    log.error("Failed to notify: {} with event: {}.{} due to error {} ", syncedList.get(i).getClass().getSimpleName(), event.getClass().getSimpleName(), event.name(), e.getMessage());
-                }
-            }
+    public void notifyObservers(Enum event, Supplier supplier) {
+        synchronized (syncedEventMap) {
+            log.info("Notifying observers {}.{}", event.getClass().getName(), event.name());
+            syncedEventMap.getOrDefault(event.getClass(), Optional.empty())
+                    .ifPresent(consumer -> consumer.fireEvent(event, supplier));
         }
     }
 

@@ -10,8 +10,8 @@ import com.backede.fileutils.csv.parser.CsvRecordWrapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.importer.TransactionWrapper;
@@ -20,15 +20,13 @@ import se.backede.jeconomix.importer.TransactionWrapper;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-@Slf4j
+@Slf4j()
 public abstract class TransactionExtractor {
 
     public List<TransactionWrapper> createTransactions(List<CsvRecordWrapper> csvRecords) {
-        List<TransactionWrapper> transactions = new ArrayList<>();
-        for (CsvRecordWrapper csvRecord : csvRecords) {
-            transactions.add(createTransaction(csvRecord));
-        }
-        return transactions;
+        return csvRecords.stream()
+                .map(csvRecord -> createTransaction(csvRecord))
+                .collect(Collectors.toList());
     }
 
     public void setTransactionOriginalValue(TransactionWrapper transaction, CsvColumn column) {
