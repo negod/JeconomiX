@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.database.AccociatedCompanyHandler;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.importer.TransactionWrapper;
 
@@ -78,13 +79,13 @@ public abstract class TransactionExtractor {
     public static void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
         transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
 
-            CompanyHandler.getInstance().getAccociatedCompanyByName(value.toUpperCase()).ifPresent(accComp -> {
+            AccociatedCompanyHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {
                 transaction.getTransactionDto().setAscociatedCompany(accComp);
                 transaction.getTransactionDto().setCompany(accComp.getCompany());
             });
 
             if (transaction.getTransactionDto().getCompany() == null) {
-                CompanyHandler.getInstance().getCompanyByName(value.toUpperCase()).ifPresent(company -> {
+                CompanyHandler.getInstance().getCompanyByName(value).ifPresent(company -> {
                     transaction.getTransactionDto().setCompany(company);
                 });
             }

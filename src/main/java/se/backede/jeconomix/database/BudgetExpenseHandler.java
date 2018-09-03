@@ -5,19 +5,13 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.ConstraintException;
-import com.negod.generics.persistence.exception.DaoException;
-import com.negod.generics.persistence.exception.NotFoundException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.dao.BudgetExpenseDao;
 import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
-import se.backede.jeconomix.database.entity.budget.Budget;
 import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 
@@ -28,11 +22,11 @@ import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 @Slf4j
 public class BudgetExpenseHandler {
 
-    BudgetExpenseDao dao = new BudgetExpenseDao();
-    BudgetDao budgetDao = new BudgetDao();
-    CategoryDao categoryDao = new CategoryDao();
+    private final BudgetExpenseDao dao = new BudgetExpenseDao();
+    private final BudgetDao budgetDao = new BudgetDao();
+    private final CategoryDao categoryDao = new CategoryDao();
 
-    DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> mapper = new DtoEntityBaseMapper(BudgetExpenseDto.class, BudgetExpense.class);
+    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> mapper = new DtoEntityBaseMapper(BudgetExpenseDto.class, BudgetExpense.class);
 
     private static final BudgetExpenseHandler INSTANCE = new BudgetExpenseHandler();
 
@@ -44,75 +38,55 @@ public class BudgetExpenseHandler {
     }
 
     public Optional<BudgetExpenseDto> createBudgetExpense(BudgetExpenseDto dto) {
-        Optional<BudgetExpense> mapFromDtoToEntity = mapper.mapFromDtoToEntity(dto);
-        if (mapFromDtoToEntity.isPresent()) {
-            try {
-                dao.startTransaction();
 
-                Optional<Budget> budget = budgetDao.getById(dto.getBudget().getId());
-                Optional<Category> category = categoryDao.getById(dto.getCategory().getId());
+        return mapper.mapFromDtoToEntity(dto).map(entity -> {
 
-                if (budget.isPresent()) {
-                    mapFromDtoToEntity.get().setBudget(budget.get());
-                }
+            budgetDao.getById(entity.getId()).ifPresent(budget -> {
+                entity.setBudget(budget);
+            });
 
-                if (category.isPresent()) {
-                    mapFromDtoToEntity.get().setCategory(category.get());
-                }
+            categoryDao.getById(entity.getId()).ifPresent(category -> {
+                entity.setCategory(category);
+            });
 
-                Optional<BudgetExpense> persist = dao.persist(mapFromDtoToEntity.get());
-                if (persist.isPresent()) {
-                    return mapper.mapFromEntityToDto(persist.get());
-                }
-            } catch (DaoException | ConstraintException ex) {
-                log.error("Error when persisting BudgetExpense", ex);
-                return Optional.empty();
-            } finally {
-                dao.commitTransaction();
-            }
-        }
-        return Optional.empty();
+            return dao.execute(() -> dao.persist(entity)).map(persisted -> {
+                return mapper.mapFromEntityToDto(persisted).get();
+            });
+
+        }).orElse(Optional.empty());
+
     }
 
     public Optional<BudgetExpenseDto> updateBudgetExpense(BudgetExpenseDto dto) {
         Optional<BudgetExpense> mapFromDtoToEntity = mapper.mapFromDtoToEntity(dto);
         if (mapFromDtoToEntity.isPresent()) {
-            try {
-                dao.startTransaction();
+            dao.startTransaction();
 
-                Optional<BudgetExpense> budgetExpenseEntity = dao.getById(dto.getId());
-                if (budgetExpenseEntity.isPresent()) {
-                    if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
-                        Optional<Category> categoryEntity = CategoryHandler.getInstance().DAO.getById(dto.getCategory().getId());
-                        budgetExpenseEntity.get().setCategory(categoryEntity.get());
-                    }
+            Optional<BudgetExpense> budgetExpenseEntity = dao.getById(dto.getId());
+            if (budgetExpenseEntity.isPresent()) {
+                if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
+                    Optional<Category> categoryEntity = CategoryHandler.getInstance().DAO.getById(dto.getCategory().getId());
+                    budgetExpenseEntity.get().setCategory(categoryEntity.get());
                 }
-
-                budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
-
-                BudgetExpense merge = dao.getEntityManager().merge(budgetExpenseEntity.get());
-                Optional<BudgetExpenseDto> mapFromEntityToDto = mapper.mapFromEntityToDto(merge);
-                dao.commitTransaction();
-
-                return mapFromEntityToDto;
-            } catch (DaoException ex) {
-                log.error("Error when updating BudgetExpense", ex);
-                return Optional.empty();
             }
+
+            budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
+
+            BudgetExpense merge = dao.getEntityManager().merge(budgetExpenseEntity.get());
+            Optional<BudgetExpenseDto> mapFromEntityToDto = mapper.mapFromEntityToDto(merge);
+            dao.commitTransaction();
+
+            return mapFromEntityToDto;
+
         }
         return Optional.empty();
     }
 
     public Boolean deleteBudgetExpense(BudgetExpenseDto dto) {
-        try {
-            dao.startTransaction();
-            Boolean delete = dao.delete(dto.getId());
-            dao.commitTransaction();
-            return delete;
-        } catch (NotFoundException ex) {
-            log.error("Error when deleting budget expense", ex);
-        }
-        return false;
+        dao.startTransaction();
+        Optional<Boolean> delete = dao.delete(dto.getId());
+        dao.commitTransaction();
+        return delete.get();
     }
 
     public Optional<BudgetExpenseDto> upsertBudgetExpense(BudgetExpenseDto dto) {

@@ -35,24 +35,15 @@ public class CategoryTypeHandler {
     }
 
     public Optional<List<CategoryTypeDto>> getAllCategoryTypes() {
-        try {
-            Optional<List<CategoryType>> all = dao.getAll();
-            if (all.isPresent()) {
-                return mapper.mapToDtoList(all.get());
-            }
-        } catch (DaoException e) {
-            log.error("Error when getting category types", e);
+        Optional<List<CategoryType>> all = dao.getAll();
+        if (all.isPresent()) {
+            return mapper.mapToDtoList(all.get());
         }
         return Optional.empty();
     }
 
     public Optional<CategoryType> getById(String id) {
-        try {
-            return dao.getById(id);
-        } catch (DaoException e) {
-            log.error("Error when getting category type by id {}", id, e);
-        }
-        return Optional.empty();
+        return dao.getById(id);
     }
 
 }

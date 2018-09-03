@@ -47,16 +47,12 @@ public class CategoryHandler {
     }
 
     public Optional<CategoryDto> getById(String id) {
-        try {
-            DAO.startTransaction();
-            Optional<Category> byId = DAO.getById(id);
-            DAO.commitTransaction();
+        DAO.startTransaction();
+        Optional<Category> byId = DAO.getById(id);
+        DAO.commitTransaction();
 
-            if (byId.isPresent()) {
-                return mapper.mapFromEntityToDto(byId.get());
-            }
-        } catch (DaoException ex) {
-            Logger.getLogger(CategoryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        if (byId.isPresent()) {
+            return mapper.mapFromEntityToDto(byId.get());
         }
         return Optional.empty();
     }
@@ -65,24 +61,17 @@ public class CategoryHandler {
         Optional<Category> entity = mapper.mapFromDtoToEntity(category);
         Optional<CategoryDto> persistedCategory = Optional.empty();
         if (entity.isPresent()) {
-            try {
+            DAO.startTransaction();
 
-                DAO.startTransaction();
+            Optional<CategoryType> categoryType = CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId());
+            entity.get().setCategoryType(categoryType.get());
+            Optional<Category> persist = DAO.persist(entity.get());
 
-                Optional<CategoryType> categoryType = CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId());
-                entity.get().setCategoryType(categoryType.get());
-                Optional<Category> persist = DAO.persist(entity.get());
-
-                if (persist.isPresent()) {
-                    persistedCategory = mapper.mapFromEntityToDto(entity.get());
-                }
-
-                DAO.commitTransaction();
-
-            } catch (DaoException | ConstraintException ex) {
-                log.error("Error when persisting expense category", ex);
-
+            if (persist.isPresent()) {
+                persistedCategory = mapper.mapFromEntityToDto(entity.get());
             }
+
+            DAO.commitTransaction();
         }
         return persistedCategory;
     }
@@ -92,13 +81,9 @@ public class CategoryHandler {
     }
 
     public Optional<List<CategoryDto>> getAllCategories() {
-        try {
-            Optional<List<Category>> all = DAO.getAll();
-            if (all.isPresent()) {
-                return mapper.mapToDtoList(all.get());
-            }
-        } catch (DaoException e) {
-            log.error("Error when getting expenseCategories", e);
+        Optional<List<Category>> all = DAO.getAll();
+        if (all.isPresent()) {
+            return mapper.mapToDtoList(all.get());
         }
         return Optional.empty();
     }
@@ -121,20 +106,15 @@ public class CategoryHandler {
     }
 
     public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type) {
-        try {
+        Optional<List<Category>> all = DAO.getAll();
+        if (all.isPresent()) {
+            Optional<List<CategoryDto>> mapToDtoList = mapper.mapToDtoList(all.get());
+            List<CategoryDto> collect = mapToDtoList.get()
+                    .stream()
+                    .filter(isCategoryType(type))
+                    .collect(Collectors.<CategoryDto>toList());
 
-            Optional<List<Category>> all = DAO.getAll();
-            if (all.isPresent()) {
-                Optional<List<CategoryDto>> mapToDtoList = mapper.mapToDtoList(all.get());
-                List<CategoryDto> collect = mapToDtoList.get()
-                        .stream()
-                        .filter(isCategoryType(type))
-                        .collect(Collectors.<CategoryDto>toList());
-
-                return Optional.ofNullable(collect);
-            }
-        } catch (DaoException e) {
-            log.error("Error when getting expenseCategories", e);
+            return Optional.ofNullable(collect);
         }
         return Optional.empty();
     }
@@ -146,18 +126,14 @@ public class CategoryHandler {
             update.setType(UpdateType.UPDATE);
             update.setObjectId(categoryType.getId());
 
-            try {
-                DAO.startTransaction();
-                Optional<Category> billCategory = DAO.update(category.getId(), update);
-                DAO.commitTransaction();
+            DAO.startTransaction();
+            Optional<Category> billCategory = DAO.update(category.getId(), update);
+            DAO.commitTransaction();
 
-                if (billCategory.isPresent()) {
-                    return mapper.mapFromEntityToDto(billCategory.get());
-                }
-
-            } catch (DaoException ex) {
-                log.error("Error when updating expense category");
+            if (billCategory.isPresent()) {
+                return mapper.mapFromEntityToDto(billCategory.get());
             }
+
         }
 
         return Optional.empty();

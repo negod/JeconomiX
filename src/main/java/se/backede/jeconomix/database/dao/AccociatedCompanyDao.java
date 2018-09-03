@@ -34,7 +34,7 @@ public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
         return PersistenceHandler.getInstance().getHibernateSession();
     }
 
-    public Optional<CompanyAccociation> getByAccociatedCompanyByName(String name) throws DaoException {
+    public Optional<CompanyAccociation> getByAccociatedCompanyByName(String name) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
         Root entity = cq.from(getEntityClass());
@@ -42,7 +42,7 @@ public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
         return get(cq);
     }
 
-    public Optional<Company> getCompanyByAccociatedName(String name) throws DaoException {
+    public Optional<Company> getCompanyByAccociatedName(String name) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
         Root entity = cq.from(getEntityClass());

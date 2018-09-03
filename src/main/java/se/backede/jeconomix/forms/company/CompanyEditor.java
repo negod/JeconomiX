@@ -41,11 +41,12 @@ public class CompanyEditor extends NegodDialog {
     }
 
     public void setTableData() {
-        Optional<List<CompanyDto>> all = CompanyHandler.getInstance().getAllCompanies();
-        if (all.isPresent()) {
-            CompanyModel companyModel = new CompanyModel(all.get());
+        CompanyHandler.getInstance().getAllCompanies().ifPresent(companies -> {
+
+            CompanyModel companyModel = new CompanyModel(companies);
             companyTable.setModel(companyModel);
-            if (!all.get().isEmpty()) {
+
+            if (!companies.isEmpty()) {
                 companyTable.setRowSelectionInterval(0, 0);
                 CompanyDto selectedCompany = companyModel.getCompanyAt(0);
 
@@ -65,7 +66,9 @@ public class CompanyEditor extends NegodDialog {
                 companyNameLabel.setText(selectedCompany.getName());
             }
             companyTable.setModel(companyModel);
-        }
+
+        });
+
     }
 
     /**

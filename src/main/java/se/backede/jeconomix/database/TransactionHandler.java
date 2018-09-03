@@ -89,37 +89,29 @@ public class TransactionHandler {
 
         Optional<Transaction> entity = mapper.mapFromDtoToEntity(transaction);
         if (entity.isPresent()) {
-            try {
 
-                dao.startTransaction();
-                Optional<Company> byId = companyDao.getById(transaction.getCompany().getId());
+            dao.startTransaction();
+            Optional<Company> byId = companyDao.getById(transaction.getCompany().getId());
 
-                CategoryTypeEnum type = byId.get().getCategory().getCategoryType().getType();
-                Transaction decideBudgetMonth = decideBudgetMonth(entity.get(), type);
-                decideBudgetMonth.setCompany(byId.get());
+            CategoryTypeEnum type = byId.get().getCategory().getCategoryType().getType();
+            Transaction decideBudgetMonth = decideBudgetMonth(entity.get(), type);
+            decideBudgetMonth.setCompany(byId.get());
 
-                Optional<Transaction> persist = dao.persist(entity.get());
-                dao.commitTransaction();
+            Optional<Transaction> persist = dao.persist(entity.get());
+            dao.commitTransaction();
 
-                if (persist.isPresent()) {
-                    return mapper.mapFromEntityToDto(entity.get());
-                }
-
-            } catch (DaoException | ConstraintException ex) {
-                log.error("Error when persisting expense category", ex);
+            if (persist.isPresent()) {
+                return mapper.mapFromEntityToDto(entity.get());
             }
+
         }
         return Optional.empty();
     }
 
     public Optional<List<TransactionDto>> getAllTransactions() {
-        try {
-            Optional<List<Transaction>> all = dao.getAll();
-            if (all.isPresent()) {
-                return mapper.mapToDtoList(all.get());
-            }
-        } catch (DaoException e) {
-            log.error("Error when getting all transactions", e);
+        Optional<List<Transaction>> all = dao.getAll();
+        if (all.isPresent()) {
+            return mapper.mapToDtoList(all.get());
         }
         return Optional.empty();
     }

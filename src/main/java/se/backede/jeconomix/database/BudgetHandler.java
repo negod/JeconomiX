@@ -40,14 +40,10 @@ public class BudgetHandler {
     public Optional<BudgetDto> createBudget(BudgetDto budget) {
         Optional<Budget> mapFromDtoToEntity = mapper.mapFromDtoToEntity(budget);
         if (mapFromDtoToEntity.isPresent()) {
-            try {
-                dao.startTransaction();
-                Optional<Budget> persist = dao.persist(mapFromDtoToEntity.get());
-                dao.commitTransaction();
-                return mapper.mapFromEntityToDto(persist.get());
-            } catch (DaoException | ConstraintException ex) {
-                log.error("Error when persisting Budget");
-            }
+            dao.startTransaction();
+            Optional<Budget> persist = dao.persist(mapFromDtoToEntity.get());
+            dao.commitTransaction();
+            return mapper.mapFromEntityToDto(persist.get());
         }
         return Optional.empty();
     }
