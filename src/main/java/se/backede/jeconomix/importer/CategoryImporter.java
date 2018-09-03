@@ -32,7 +32,6 @@ public class CategoryImporter {
     public void importCategories(String filePath) {
         new Thread(() -> {
             Optional<Categories> importedCategories = READER.readXml(filePath, Categories.class);
-
             if (importedCategories.isPresent()) {
                 importedCategories.get().getCategory()
                         .stream().map((categoryDto) -> CategoryExportMapper.mapToDto(categoryDto)).forEachOrdered((dto) -> {

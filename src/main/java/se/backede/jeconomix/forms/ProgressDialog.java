@@ -5,12 +5,14 @@
  */
 package se.backede.jeconomix.forms;
 
-import se.backede.jeconomix.forms.importexport.ImportSummaryDialog;
 import com.backede.fileutils.xml.reader.XmlReader;
-import java.util.Optional;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.dto.ProgressDto;
 import se.backede.jeconomix.dto.export.Companies;
-import se.backede.jeconomix.event.events.fields.ImportSummaryValues;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.ProgressEvent;
+import se.backede.jeconomix.forms.importexport.ImportSummaryDialog;
 
 /**
  *
@@ -27,6 +29,13 @@ class ProgressDialog extends javax.swing.JDialog {
     public static final String IMPORT_LABEL_TEXT = "Importing progress";
     public static final String EXPORT_LABEL_TEXT = "Exporting progress";
 
+    private final String TOTAL_RECORDS = "Total records processed: {}";
+    private final String INVALID_RECORDS = "Total invalid records discarded: {}";
+    private final String DUPLICATE_RECORDS = "Total duplicate records discarded: {}";
+
+    private final String PROCESSING_DONE = "Processing Done";
+    private final String PROCESSING_ERROR = "Error when processing data";
+
     /**
      * Creates new form ImportProgressbar
      *
@@ -36,6 +45,8 @@ class ProgressDialog extends javax.swing.JDialog {
     public ProgressDialog(java.awt.Frame parent, boolean modal, Integer importExport) {
         super(parent, modal);
         initComponents();
+
+        setEvents();
 
         switch (importExport) {
             case ProgressDialog.IMPORT:
@@ -50,6 +61,50 @@ class ProgressDialog extends javax.swing.JDialog {
         }
 
         okButton.setEnabled(false);
+    }
+
+    private void setEvents() {
+
+        //Max value event
+        Consumer<ProgressDto> setMaxValue = dto -> progressBar.setMaximum(dto.getValue());
+        EventController.getInstance().addObserver(ProgressEvent.SET_MAX_VALUE, setMaxValue);
+
+        //Increase value event
+        Consumer<ProgressDto> increaseValue = dto -> {
+            progressBar.setValue(progressBar.getValue() + dto.getValue());
+            nameLabel.setText(dto.getText());
+        };
+        EventController.getInstance().addObserver(ProgressEvent.INCREASE, increaseValue);
+
+        //Done event
+        Consumer<ProgressDto> setDone = dto -> {
+
+            progressBar.setValue(progressBar.getMaximum());
+            nameLabel.setText(dto.getText());
+            importLabel.setText(PROCESSING_DONE);
+            okButton.setEnabled(true);
+
+            String duplicateRecords = DUPLICATE_RECORDS.replace("{}", dto.getDuplecateRecords().toString());
+            String totalRecords = TOTAL_RECORDS.replace("{}", dto.getTotalRecords().toString());
+            String invalidRecords = INVALID_RECORDS.replace("{}", dto.getInvalidRecords().toString());
+
+            String allData = duplicateRecords.concat("\n")
+                    .concat(totalRecords).concat("\n")
+                    .concat(invalidRecords);
+
+            new ImportSummaryDialog(this, true, allData).setVisible(true);
+        };
+        EventController.getInstance().addObserver(ProgressEvent.DONE, setDone);
+
+        //Error event
+        Consumer<ProgressDto> error = dto -> {
+            progressBar.setValue(progressBar.getValue() + dto.getValue());
+            nameLabel.setText(dto.getText());
+            importLabel.setText(PROCESSING_ERROR);
+            okButton.setEnabled(true);
+        };
+        EventController.getInstance().addObserver(ProgressEvent.ERROR, error);
+
     }
 
     /**
@@ -139,57 +194,4 @@ class ProgressDialog extends javax.swing.JDialog {
     private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 
-    public void onEvent() {
-//        if (event.equalsEvent(ProgressEvent.SET_MAX_VALUE)) {
-//            Optional<Integer> integer = event.getValues().get(ProgressEventValues.MAX_VALUE).getInteger();
-//            if (integer.isPresent()) {
-//                progressBar.setMaximum(integer.get());
-//            }
-//        }
-//        if (event.equalsEvent(ProgressEvent.INCREASE)) {
-//            Optional<Integer> integer = event.getValues().get(ProgressEventValues.INCREASE_VALUE).getInteger();
-//            if (integer.isPresent()) {
-//                int currentValue = progressBar.getValue();
-//                progressBar.setValue(currentValue + integer.get());
-//            }
-//            Optional<String> itemName = event.getValues().get(ProgressEventValues.ITEM_NAME).getString();
-//            if (itemName.isPresent()) {
-//                nameLabel.setText(itemName.get());
-//            }
-//        }
-//        if (event.equalsEvent(ProgressEvent.DONE)) {
-//            progressBar.setValue(progressBar.getMaximum());
-//            nameLabel.setText("");
-//            importLabel.setText("Processing Done!");
-//            okButton.setEnabled(true);
-//            setDoneLabelText(event.getValues());
-//        }
-//        if (event.equalsEvent(ProgressEvent.ERROR)) {
-//            progressBar.setValue(progressBar.getMaximum());
-//            nameLabel.setText("");
-//            importLabel.setText("Error when processing data");
-//            okButton.setEnabled(true);
-//        }
-    }
-
-    public void setDoneLabelText() {
-//        if (dto != null) {
-//
-//            Optional integer = dto.getValue(ImportSummaryValues.DUPLICATE_RECORDS).getValue().getInteger();
-//            Optional integer1 = dto.getValue(ImportSummaryValues.INVALID_RECORDS).getValue().getInteger();
-//            Optional integer2 = dto.getValue(ImportSummaryValues.TOTAL_RECORDS).getValue().getInteger();
-//
-//            String data = "Total records processed: ".concat(integer2.get().toString()).concat("\n");
-//            String concat = data.concat("Total invalid records discarded: ").concat(integer1.get().toString()).concat("\n");
-//            String concat1 = concat.concat("Total duplicate records discarded: ").concat(integer.get().toString());
-//
-//            new ImportSummaryDialog(this, true, concat1).setVisible(true);
-//
-//        }
-    }
-
-//    @Override
-//    public void registerAsObserver() {
-//        EventController.getInstance().addObserver(this);
-//    }
 }

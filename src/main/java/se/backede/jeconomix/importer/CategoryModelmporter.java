@@ -41,7 +41,6 @@ public class CategoryModelmporter {
         if (readXml.isPresent()) {
             Map<String, String> models = new HashMap<>();
             for (CategoryModelDto model : readXml.get().getModels()) {
-                log.error("WORD {} ID {}", model.getWord(), model.getCategoryId());
                 models.put(model.getWord(), model.getCategoryId());
             }
             MODEL = Optional.ofNullable(models);

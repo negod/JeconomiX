@@ -15,7 +15,6 @@ import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
-import se.backede.jeconomix.event.events.fields.CompanyValues;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 
 /**

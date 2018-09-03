@@ -144,11 +144,10 @@ public class CategoryEdit extends NegodPanel {
         CategoryTypeComboBoxModel expModel = (CategoryTypeComboBoxModel) categoryTypeCB.getModel();
         CategoryTypeDto categoryType = (CategoryTypeDto) expModel.getSelectedItem();
 
-        Optional<CategoryDto> setExpenseCategoryType = CategoryHandler.getInstance().setCategoryType(expCategory, categoryType);
-        if (setExpenseCategoryType.isPresent()) {
+        CategoryHandler.getInstance().setCategoryType(expCategory, categoryType).ifPresent(category -> {
             expCategory.setCategoryType(categoryType);
             model.fireTableDataChanged();
-        }
+        });
     }//GEN-LAST:event_categoryTypeCBActionPerformed
 
     private void expenseCategoryEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryEditActionPerformed

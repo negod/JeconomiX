@@ -7,14 +7,18 @@ package se.backede.jeconomix.forms.company;
 
 import com.backede.fileutils.xml.reader.XmlReader;
 import java.util.Optional;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.ProgressDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.ProgressEvent;
 
 /**
  *
@@ -37,7 +41,9 @@ public class CompanyImporter {
         new Thread(() -> {
             Optional<Companies> importedCompanies = READER.readXml(filePath, Companies.class);
             if (importedCompanies.isPresent()) {
-//                Events.getInstance().fireProgressMaxValueEvent(importedCompanies.get().getCompany().size());
+
+                Supplier<ProgressDto> setMaxValue = () -> new ProgressDto(importedCompanies.get().getCompany().size(), "Importing companies");
+                EventController.getInstance().notifyObservers(ProgressEvent.SET_MAX_VALUE, setMaxValue);
 
                 for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
                     CompanyDto dto = CompanyMapper.mapToDto(companyExportDto);
@@ -46,14 +52,18 @@ public class CompanyImporter {
                         dto.setCategory(expCat.get());
                         CompanyHandler.getInstance().createCompany(dto);
 
-//                        Events.getInstance().fireProgressIncreaseValueEvent(1, dto.getName());
+                        Supplier<ProgressDto> increaseValue = () -> new ProgressDto(1, dto.getName());
+                        EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, increaseValue);
+
                     } else {
                         log.error("Could not get Expense category for company {} aborting insert if this company", dto.getName());
                     }
                 }
-//                Events.getInstance().fireProgressDoneEvent();
+                Supplier<ProgressDto> doneEvent = () -> new ProgressDto(1, "Done importing Companies");
+                EventController.getInstance().notifyObservers(ProgressEvent.DONE, doneEvent);
             } else {
-//                Events.getInstance().fireErrorEvent();
+                Supplier<ProgressDto> errorEvent = () -> new ProgressDto(1, "Error when importing Companies");
+                EventController.getInstance().notifyObservers(ProgressEvent.ERROR, errorEvent);
                 return;
             }
         }).start();

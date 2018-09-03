@@ -58,8 +58,6 @@ public class Importer extends NegodDialog {
 
         HashMap<String, List<TransactionDto>> companies = new HashMap<>();
 
-        transactions.getNewTransactionsToEdit().stream().forEach(transaction -> log.info("Starting import of {}", transaction.getTransactionDto().toString()));
-
         for (TransactionWrapper transactionWrapper : transactions.getNewTransactionsToEdit()) {
             transactionWrapper.getCsvRecord().getColumn(companyNameColumn).ifPresent(companyName -> {
                 if (companies.containsKey(companyName)) {
@@ -121,7 +119,7 @@ public class Importer extends NegodDialog {
 
     }
 
-    private final void setValues(CompanyDto company) {
+    private void setValues(CompanyDto company) {
         counterLabel.setText((progressBar.getValue() + 1) + " of " + progressBar.getMaximum());
 
         companyName.setText(company.getName());

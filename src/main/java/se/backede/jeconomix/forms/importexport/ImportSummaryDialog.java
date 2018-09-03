@@ -5,8 +5,6 @@
  */
 package se.backede.jeconomix.forms.importexport;
 
-import se.backede.jeconomix.event.EventController;
-
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
