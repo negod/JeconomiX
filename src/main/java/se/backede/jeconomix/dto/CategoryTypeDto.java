@@ -20,15 +20,9 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 @ToString
 public class CategoryTypeDto extends GenericDto {
 
-    String id;
     private CategoryTypeEnum type;
 
     public CategoryTypeDto() {
-    }
-
-    public CategoryTypeDto(String id, CategoryTypeEnum type) {
-        this.id = id;
-        this.type = type;
     }
 
 }

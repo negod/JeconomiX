@@ -21,7 +21,7 @@ import se.backede.jeconomix.importer.TransactionWrapper;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-@Slf4j()
+@Slf4j
 public abstract class TransactionExtractor {
 
     public List<TransactionWrapper> createTransactions(List<CsvRecordWrapper> csvRecords) {
@@ -52,7 +52,7 @@ public abstract class TransactionExtractor {
         });
     }
 
-    public static void setTransactionSaldo(TransactionWrapper transaction, CsvColumn column) {
+    public void setTransactionSaldo(TransactionWrapper transaction, CsvColumn column) {
         transaction.getTransactionDto().setSaldo(BigDecimal.valueOf(0.00));
 
         transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
@@ -65,7 +65,7 @@ public abstract class TransactionExtractor {
         });
     }
 
-    public static void setTransactionDate(TransactionWrapper transaction, CsvColumn column) {
+    public void setTransactionDate(TransactionWrapper transaction, CsvColumn column) {
         transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
             try {
                 Date valueOf = Date.valueOf(value);
@@ -76,7 +76,7 @@ public abstract class TransactionExtractor {
         });
     }
 
-    public static void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
+    public void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
         transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
 
             AccociatedCompanyHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {

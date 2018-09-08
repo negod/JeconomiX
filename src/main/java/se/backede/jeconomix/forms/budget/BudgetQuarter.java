@@ -17,6 +17,8 @@ import se.backede.jeconomix.utils.TimeDecider;
  */
 public class BudgetQuarter extends NegodPanel {
 
+    private static final long serialVersionUID = 1L;
+
     BudgetQuarterEnum currentQuarter = TimeDecider.getCurrenQuarter();
     Integer currentYear = TimeDecider.getCurrentYear();
 

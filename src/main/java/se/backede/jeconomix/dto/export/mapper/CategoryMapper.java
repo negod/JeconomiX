@@ -27,7 +27,6 @@ public class CategoryMapper {
     public static CategoryDto mapToDto(CategoryExportDto input) {
         CategoryDto dto = new CategoryDto();
         dto.setId(input.getId());
-        dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
         CategoryDto expDto = new CategoryDto();
         return dto;

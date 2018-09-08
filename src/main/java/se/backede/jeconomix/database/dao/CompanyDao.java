@@ -22,11 +22,14 @@ import se.backede.jeconomix.database.entity.Company_;
  */
 public class CompanyDao extends GenericDao<Company> {
 
-    private final AccociatedCompanyDao accDao = new AccociatedCompanyDao();
-
     @Override
     public EntityManager getEntityManager() {
         return PersistenceHandler.getInstance().getEntityManager();
+    }
+
+    @Override
+    public EntityManager getEntityManager(String name) {
+        return PersistenceHandler.getInstance().getEntityManager(name);
     }
 
     @Override
@@ -34,10 +37,10 @@ public class CompanyDao extends GenericDao<Company> {
         return PersistenceHandler.getInstance().getHibernateSession();
     }
 
-    public Optional<Company> getCompanyByName(String name) {
+    protected Optional<Company> getCompanyByCompanyName(String name) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
-        Root entity = cq.from(getEntityClass());
+        CriteriaQuery<Company> cq = criteriaBuilder.createQuery(getEntityClass());
+        Root<Company> entity = cq.from(getEntityClass());
         cq.where(entity.get(Company_.name).in(name));
         return get(cq);
     }

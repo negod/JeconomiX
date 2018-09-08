@@ -19,19 +19,22 @@ public class PersistenceHandler {
     private static EntityManager em;
     private static EntityManagerFactory emf;
 
-    private static final PersistenceHandler handler = new PersistenceHandler();
+    private static final PersistenceHandler INSTANCE = new PersistenceHandler();
 
     protected PersistenceHandler() {
-
     }
 
     public static final PersistenceHandler getInstance() {
-        return handler;
+        return INSTANCE;
     }
 
-    public static EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
+        return getEntityManager("PU");
+    }
+
+    public EntityManager getEntityManager(String name) {
         if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("TestPu");
+            emf = Persistence.createEntityManagerFactory(name);
         }
         if (em == null || !em.isOpen()) {
             em = emf.createEntityManager();
@@ -39,8 +42,12 @@ public class PersistenceHandler {
         return em;
     }
 
-    public static Session getHibernateSession() {
+    public Session getHibernateSession() {
         return getEntityManager().unwrap(org.hibernate.Session.class);
+    }
+
+    public Session getHibernateSession(String name) {
+        return getEntityManager(name).unwrap(org.hibernate.Session.class);
     }
 
 }

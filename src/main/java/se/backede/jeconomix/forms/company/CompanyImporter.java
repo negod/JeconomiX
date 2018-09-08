@@ -47,7 +47,7 @@ public class CompanyImporter {
 
                 for (CompanyExportDto companyExportDto : importedCompanies.get().getCompany()) {
                     CompanyDto dto = CompanyMapper.mapToDto(companyExportDto);
-                    Optional<CategoryDto> expCat = CategoryHandler.getInstance().getById(companyExportDto.getCategory());
+                    Optional<CategoryDto> expCat = CategoryHandler.getInstance().getCategoryById(companyExportDto.getCategory());
                     if (expCat.isPresent()) {
                         dto.setCategory(expCat.get());
                         CompanyHandler.getInstance().createCompany(dto);

@@ -5,34 +5,26 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import com.negod.generics.persistence.update.ObjectUpdate;
 import com.negod.generics.persistence.update.UpdateType;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.database.dao.AccociatedCompanyDao;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.entity.Company;
-import se.backede.jeconomix.database.entity.CompanyAccociation;
-import se.backede.jeconomix.database.entity.Transaction;
+import se.backede.jeconomix.database.entity.Company_;
 import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.dto.CompanyAccociationDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class CompanyHandler {
+public class CompanyHandler extends CompanyDao {
 
-    CompanyDao companyDao = new CompanyDao();
-
-    DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
-    DtoEntityBaseMapper<TransactionDto, Transaction> transactionMapper = new DtoEntityBaseMapper(TransactionDto.class, Transaction.class);
+    private DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
 
     private static final CompanyHandler companyHandler = new CompanyHandler();
 
@@ -44,54 +36,25 @@ public class CompanyHandler {
     }
 
     public Optional<CompanyDto> createCompany(CompanyDto company) {
-
-        Optional<Company> entity = companyMapper.mapFromDtoToEntity(company);
-
-        //Handle transactions
-        entity.get().getTransactions().clear();
-
-        if (entity.isPresent()) {
-
-            companyDao.startTransaction();
-            Optional<Company> persist = companyDao.persist(entity.get());
-            companyDao.commitTransaction();
-
-            if (company.getTransactions() != null && !company.getTransactions().isEmpty()) {
-                for (TransactionDto transaction : company.getTransactions()) {
-                    companyDao.startTransaction();
-                    Transaction transactionEntity = transactionMapper.mapFromDtoToEntity(transaction).get();
-                    Optional<Company> byId = companyDao.getById(persist.get().getId());
-                    TransactionHandler.getInstance().decideBudgetMonth(transactionEntity, byId.get().getCategory().getCategoryType().getType());
-                    transactionEntity.setCompany(byId.get());
-
-                    byId.get().getTransactions().add(transactionEntity);
-                    companyDao.commitTransaction();
-                }
-            }
-
-            if (persist.isPresent()) {
-                return companyMapper.mapFromEntityToDto(entity.get());
-            }
-
-        }
-        return Optional.empty();
+        return companyMapper.mapFromDtoToEntity(company).map(companyEntity -> {
+            companyEntity.getTransactions().clear();
+            return super.executeTransaction(() -> super.persist(companyEntity)).map(persistedCompany -> {
+                return companyMapper.mapFromEntityToDto(persistedCompany).get();
+            });
+        }).orElse(Optional.empty());
     }
 
     public Optional<CompanyDto> updateCompany(CompanyDto companyDto) {
         return companyMapper.mapFromDtoToEntity(companyDto).map(companyEntity -> {
-            companyDao.startTransaction();
-            Optional<CompanyDto> mappedCompany = companyDao.update(companyEntity).map(newCompany -> {
+            return super.executeTransaction(() -> super.update(companyEntity)).map(newCompany -> {
                 return companyMapper.mapFromEntityToDto(newCompany).get();
             });
-            companyDao.commitTransaction();
-            return mappedCompany.get();
-        });
-
+        }).orElse(Optional.empty());
     }
 
     public Optional<CompanyDto> addAccociatedCompany(CompanyDto companyDto) {
         return companyMapper.mapFromDtoToEntity(companyDto).map(company -> {
-            return companyDao.execute(() -> companyDao.update(company)).map(persistedCompany -> {
+            return super.executeTransaction(() -> super.update(company)).map(persistedCompany -> {
                 return companyMapper.mapFromEntityToDto(persistedCompany).get();
             }).get();
         });
@@ -99,14 +62,14 @@ public class CompanyHandler {
     }
 
     public Optional<List<CompanyDto>> getAllCompanies() {
-        return companyDao.getAll().map(companies -> {
+        return super.getAll().map(companies -> {
             return companyMapper.mapToDtoList(companies).get();
         });
     }
 
     public Optional<CompanyDto> getCompanyByName(String name) {
         log.debug("Getting company by name {}", name);
-        return companyDao.getCompanyByName(name).map(company -> {
+        return super.getCompanyByCompanyName(name).map(company -> {
             return companyMapper.mapFromEntityToDto(company).get();
         });
     }
@@ -114,30 +77,24 @@ public class CompanyHandler {
     public Optional<CompanyDto> setCategory(CompanyDto companyDto, CategoryDto category) {
 
         ObjectUpdate update = new ObjectUpdate();
-        update.setObject("category");
+        update.setObject(Company_.category.getName());
         update.setType(UpdateType.UPDATE);
         update.setObjectId(category.getId());
 
-        companyDao.startTransaction();
-
-        Optional<CompanyDto> updatedCompany = companyDao.update(companyDto.getId(), update).map(company -> {
+        return super.executeTransaction(() -> super.update(companyDto.getId(), update)).map(company -> {
             return companyMapper.mapFromEntityToDto(company).get();
         });
-
-        companyDao.commitTransaction();
-
-        return updatedCompany;
 
     }
 
     public Optional<CompanyDto> getCompanyById(String id) {
-        return companyDao.getById(id).map(company -> {
+        return super.getById(id).map(company -> {
             return companyMapper.mapFromEntityToDto(company).get();
         });
     }
 
     public void reIndex() {
-        companyDao.indexEntity();
+        super.indexEntity();
     }
 
 }

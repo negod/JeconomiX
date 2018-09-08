@@ -23,6 +23,11 @@ public class BudgetDao extends GenericDao<Budget> {
     }
 
     @Override
+    public EntityManager getEntityManager(String name) {
+        return PersistenceHandler.getInstance().getEntityManager(name);
+    }
+
+    @Override
     public Session getHibernateSession() {
         return PersistenceHandler.getInstance().getHibernateSession();
     }

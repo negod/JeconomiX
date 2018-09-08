@@ -49,7 +49,7 @@ public class BudgetExpenseHandler {
                 entity.setCategory(category);
             });
 
-            return dao.execute(() -> dao.persist(entity)).map(persisted -> {
+            return dao.executeTransaction(() -> dao.persist(entity)).map(persisted -> {
                 return mapper.mapFromEntityToDto(persisted).get();
             });
 
@@ -65,7 +65,7 @@ public class BudgetExpenseHandler {
             Optional<BudgetExpense> budgetExpenseEntity = dao.getById(dto.getId());
             if (budgetExpenseEntity.isPresent()) {
                 if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
-                    Optional<Category> categoryEntity = CategoryHandler.getInstance().DAO.getById(dto.getCategory().getId());
+                    Optional<Category> categoryEntity = CategoryHandler.getInstance().getById(dto.getCategory().getId());
                     budgetExpenseEntity.get().setCategory(categoryEntity.get());
                 }
             }

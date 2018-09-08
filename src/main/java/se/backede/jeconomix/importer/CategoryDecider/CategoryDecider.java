@@ -16,27 +16,27 @@ import se.backede.jeconomix.importer.CategoryModelmporter;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class CategoryDecider {
-    
+
     private static CategoryDecider INSTANCE = new CategoryDecider();
-    
+
     protected CategoryDecider() {
     }
-    
+
     public static final CategoryDecider getInstance() {
         return INSTANCE;
     }
-    
+
     public Optional<CategoryDto> decideCactegory(String transactionName) {
         Optional<Map<String, String>> categoryModel = CategoryModelmporter.getInstance().getCategoryModel("models//category_model.xml");
         if (categoryModel.isPresent()) {
             for (String string : categoryModel.get().keySet()) {
                 String nameToLower = transactionName.toLowerCase();
                 if (nameToLower.contains(string)) {
-                    return CategoryHandler.getInstance().getById(categoryModel.get().get(string));
+                    return CategoryHandler.getInstance().getCategoryById(categoryModel.get().get(string));
                 }
             }
         }
         return Optional.empty();
     }
-    
+
 }

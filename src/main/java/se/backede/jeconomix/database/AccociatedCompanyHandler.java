@@ -27,30 +27,28 @@ import se.backede.jeconomix.dto.CompanyAccociationDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class AccociatedCompanyHandler {
-
-    private final AccociatedCompanyDao DAO = new AccociatedCompanyDao();
+public class AccociatedCompanyHandler extends AccociatedCompanyDao {
 
     private final DtoEntityBaseMapper<CompanyAccociationDto, CompanyAccociation> accociatedCompanyMapper = new DtoEntityBaseMapper(CompanyAccociationDto.class, CompanyAccociation.class);
     private final DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
 
-    private static final AccociatedCompanyHandler companyHandler = new AccociatedCompanyHandler();
+    private static final AccociatedCompanyHandler INSTANCE = new AccociatedCompanyHandler();
 
     protected AccociatedCompanyHandler() {
     }
 
     public static final AccociatedCompanyHandler getInstance() {
-        return companyHandler;
+        return INSTANCE;
     }
 
     public Optional<CompanyAccociationDto> getAccociatedCompanyByName(String name) {
-        return DAO.getByAccociatedCompanyByName(name).map(company -> {
+        return super.getByAccociatedCompanyByName(name).map(company -> {
             return accociatedCompanyMapper.mapFromEntityToDto(company).get();
         });
     }
 
-    public Optional<CompanyDto> getCompanyByAccociatedName(String name) {
-        return DAO.getCompanyByAccociatedName(name).map(company -> {
+    public Optional<CompanyDto> getByCompanyName(String name) {
+        return super.getAccosiatedCompanyByCompanyName(name).map(company -> {
             return companyMapper.mapFromEntityToDto(company).get();
         });
     }

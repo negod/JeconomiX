@@ -5,16 +5,12 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.ConstraintException;
-import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import com.negod.generics.persistence.update.ObjectUpdate;
 import com.negod.generics.persistence.update.UpdateType;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +20,6 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
-import se.backede.jeconomix.database.entity.CategoryType;
 import se.backede.jeconomix.dto.CategoryTypeDto;
 
 /**
@@ -32,9 +27,8 @@ import se.backede.jeconomix.dto.CategoryTypeDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class CategoryHandler {
+public class CategoryHandler extends CategoryDao {
 
-    final CategoryDao DAO = new CategoryDao();
     DtoEntityBaseMapper<CategoryDto, Category> mapper = new DtoEntityBaseMapper(CategoryDto.class, Category.class);
 
     private static final CategoryHandler companyHandler = new CategoryHandler();
@@ -46,32 +40,29 @@ public class CategoryHandler {
         return companyHandler;
     }
 
-    public Optional<CategoryDto> getById(String id) {
-        DAO.startTransaction();
-        Optional<Category> byId = DAO.getById(id);
-        DAO.commitTransaction();
-
-        if (byId.isPresent()) {
-            return mapper.mapFromEntityToDto(byId.get());
-        }
-        return Optional.empty();
+    public Optional<CategoryDto> getCategoryById(String id) {
+        return super.executeTransaction(() -> super.getById(id)).map(category -> {
+            return mapper.mapFromEntityToDto(category).get();
+        });
     }
 
     public Optional<CategoryDto> createCategory(CategoryDto category) {
         Optional<Category> entity = mapper.mapFromDtoToEntity(category);
         Optional<CategoryDto> persistedCategory = Optional.empty();
         if (entity.isPresent()) {
-            DAO.startTransaction();
+            super.startTransaction();
 
-            Optional<CategoryType> categoryType = CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId());
-            entity.get().setCategoryType(categoryType.get());
-            Optional<Category> persist = DAO.persist(entity.get());
+            CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId()).ifPresent(categoryType -> {
+                entity.get().setCategoryType(categoryType);
+            });
+
+            Optional<Category> persist = super.persist(entity.get());
 
             if (persist.isPresent()) {
                 persistedCategory = mapper.mapFromEntityToDto(entity.get());
             }
 
-            DAO.commitTransaction();
+            super.commitTransaction();
         }
         return persistedCategory;
     }
@@ -81,7 +72,7 @@ public class CategoryHandler {
     }
 
     public Optional<List<CategoryDto>> getAllCategories() {
-        Optional<List<Category>> all = DAO.getAll();
+        Optional<List<Category>> all = super.getAll();
         if (all.isPresent()) {
             return mapper.mapToDtoList(all.get());
         }
@@ -90,8 +81,8 @@ public class CategoryHandler {
 
     public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type, Integer year) {
         try {
-            DAO.startTransaction();
-            Query query = DAO.getHibernateSession().getNamedQuery("test");
+            super.startTransaction();
+            Query query = super.getHibernateSession().getNamedQuery("test");
             query.setParameter("year", year);
             query.setParameter("type", type);
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -100,13 +91,13 @@ public class CategoryHandler {
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Category");
         } finally {
-            DAO.commitTransaction();
+            super.commitTransaction();
         }
         return Optional.empty();
     }
 
     public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type) {
-        Optional<List<Category>> all = DAO.getAll();
+        Optional<List<Category>> all = super.getAll();
         if (all.isPresent()) {
             Optional<List<CategoryDto>> mapToDtoList = mapper.mapToDtoList(all.get());
             List<CategoryDto> collect = mapToDtoList.get()
@@ -126,9 +117,9 @@ public class CategoryHandler {
             update.setType(UpdateType.UPDATE);
             update.setObjectId(categoryType.getId());
 
-            DAO.startTransaction();
-            Optional<Category> billCategory = DAO.update(category.getId(), update);
-            DAO.commitTransaction();
+            super.startTransaction();
+            Optional<Category> billCategory = super.update(category.getId(), update);
+            super.commitTransaction();
 
             if (billCategory.isPresent()) {
                 return mapper.mapFromEntityToDto(billCategory.get());

@@ -30,6 +30,11 @@ public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
     }
 
     @Override
+    public EntityManager getEntityManager(String name) {
+        return PersistenceHandler.getInstance().getEntityManager(name);
+    }
+
+    @Override
     public Session getHibernateSession() {
         return PersistenceHandler.getInstance().getHibernateSession();
     }
@@ -42,7 +47,7 @@ public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
         return get(cq);
     }
 
-    public Optional<Company> getCompanyByAccociatedName(String name) {
+    public Optional<Company> getAccosiatedCompanyByCompanyName(String name) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
         Root entity = cq.from(getEntityClass());

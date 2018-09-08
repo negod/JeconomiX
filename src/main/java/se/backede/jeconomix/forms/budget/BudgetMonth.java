@@ -6,15 +6,12 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
-import java.time.Month;
 import java.time.YearMonth;
-import java.util.Optional;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
-import se.backede.jeconomix.event.events.fields.BudgetValues;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.table.BudgetModel;
 
@@ -23,6 +20,8 @@ import se.backede.jeconomix.models.table.BudgetModel;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class BudgetMonth extends NegodPanel {
+
+    private static final long serialVersionUID = 1L;
 
     private YearMonth currentYearMonth;
 

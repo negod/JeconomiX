@@ -3,23 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.database;
+package se.backede.jeconomix.database.dao;
 
 import com.negod.generics.persistence.entity.EntityRegistry;
 import javax.persistence.EntityManager;
+import se.backede.jeconomix.database.PersistenceHandler;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CacheInitializer extends EntityRegistry {
+public class TestCacheInitializer extends EntityRegistry {
 
     @Override
     public EntityManager getEntityManager() {
-        return PersistenceHandler.getInstance().getEntityManager();
+        return PersistenceHandler.getInstance().getEntityManager("TestPu");
     }
 
-    public CacheInitializer() {
+    public TestCacheInitializer() {
         super.registerEnties();
         super.registerSearchFields();
         super.registerSearchFieldCaches();
