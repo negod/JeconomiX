@@ -9,7 +9,7 @@ import com.backede.fileutils.csv.parser.CsvImporter;
 import com.backede.fileutils.csv.parser.CsvRecordWrapper;
 import com.backede.fileutils.csv.parser.Normalizer;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -56,26 +56,25 @@ public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
 
         Set<TransactionWrapper> createTransactions = new LinkedHashSet<>(extractor.createTransactions(records));
 
-        transactions.getDuplicateTransactions().addAll(createTransactions.stream()
+        transactions.setDuplicateTransactions(new HashSet<>(createTransactions.stream()
                 .filter(transaction -> TransactionHandler.getInstance().transactionExists(transaction.getTransactionDto()))
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()))
         );
 
-        transactions.getInvalidTransactions().addAll(createTransactions.stream()
+        transactions.setInvalidTransactions(new HashSet<>(createTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDto().getSum() == null)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()))
         );
 
-        transactions.getNewTransactionsToEdit().addAll(createTransactions.stream()
+        transactions.setvValidTransactionsForInsert(new HashSet<>(createTransactions.stream()
+                .filter(transaction -> transaction.getTransactionDto().getCompany() != null)
+                .collect(Collectors.toList()))
+        );
+
+        transactions.setNewTransactionsToEdit(new HashSet<>(createTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDto().getCompany() == null)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()))
         );
-
-        createTransactions.removeAll(transactions.getDuplicateTransactions());
-        createTransactions.removeAll(transactions.getValidTransactionsForInsert());
-        createTransactions.removeAll(transactions.getInvalidTransactions());
-
-        transactions.getNewTransactionsToEdit().addAll(createTransactions);
 
         return Optional.ofNullable(transactions);
     }

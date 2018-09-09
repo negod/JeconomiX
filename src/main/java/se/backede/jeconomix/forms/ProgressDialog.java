@@ -21,6 +21,8 @@ import se.backede.jeconomix.forms.importexport.ImportSummaryDialog;
 @Slf4j
 class ProgressDialog extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     private final XmlReader<Companies> READER = new XmlReader<>();
 
     public static final int IMPORT = 1;
@@ -64,6 +66,10 @@ class ProgressDialog extends javax.swing.JDialog {
     }
 
     private void setEvents() {
+
+        //Done and Close event
+        Consumer<ProgressDto> doneAndClose = dto -> this.dispose();
+        EventController.getInstance().addObserver(ProgressEvent.DONE_AND_CLOSE, doneAndClose);
 
         //Max value event
         Consumer<ProgressDto> setMaxValue = dto -> progressBar.setMaximum(dto.getValue());

@@ -86,6 +86,7 @@ public abstract class TransactionExtractor {
 
             if (transaction.getTransactionDto().getCompany() == null) {
                 CompanyHandler.getInstance().getCompanyByName(value).ifPresent(company -> {
+                    System.out.println(company.toString());
                     transaction.getTransactionDto().setCompany(company);
                 });
             }

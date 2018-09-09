@@ -17,6 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.NordeaCsvFields;
 import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.ProgressDto;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.ProgressEvent;
 import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.forms.basic.NegodJFrame;
@@ -24,6 +28,7 @@ import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
 import se.backede.jeconomix.forms.company.CompanyImporter;
 import se.backede.jeconomix.importer.NordeaCsvTransactionImporter;
+import se.backede.jeconomix.importer.TransactionWrapper;
 import se.backede.jeconomix.importer.Transactions;
 import se.backede.jeconomix.utils.TimeDecider;
 
@@ -298,17 +303,38 @@ public class MainForm extends NegodJFrame {
 
     private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
         FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent(filePath -> {
-            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
-            progressBar.setLocationRelativeTo(this);
-            progressBar.setVisible(true);
 
             Consumer<Transactions> startImporterDialog = transactions -> {
-                Importer importer = new Importer(this, true, transactions, NordeaCsvFields.TRANSACTION);
-                importer.setVisible(true);
+
+                transactions.getValidTransactionsForInsert().ifPresent(validTransactions -> {
+
+                    ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+                    progressBar.setLocationRelativeTo(this);
+                    progressBar.setVisible(true);
+
+                    EventController.getInstance().notifyObservers(ProgressEvent.SET_MAX_VALUE, () -> new ProgressDto(validTransactions.size(), "Creating transactions"));
+
+                    for (TransactionWrapper transactionWrapper : validTransactions) {
+                        TransactionHandler.getInstance().createTransaction(transactionWrapper.getTransactionDto()).ifPresent(action -> {
+                            EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, () -> new ProgressDto(1, "Creating transaction: ".concat(transactionWrapper.getTransactionDto().getOriginalValue())));
+                        });
+                    }
+
+                    EventController.getInstance().notifyObservers(ProgressEvent.DONE_AND_CLOSE, () -> new ProgressDto(validTransactions.size(), "Done creating transactions"));
+                });
+
+                transactions.getNewTransactionsToEdit().ifPresent(transactionsForEdit -> {
+                    Importer importer = new Importer(this, true, transactionsForEdit, NordeaCsvFields.TRANSACTION);
+                    importer.setVisible(true);
+                });
+
             };
 
             CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CsvFileHasHeaders);
-            extractor.executeLogic(startImporterDialog);
+
+            extractor.getRecords().ifPresent(records -> {
+                extractor.executeLogic(startImporterDialog);
+            });
 
         });
 

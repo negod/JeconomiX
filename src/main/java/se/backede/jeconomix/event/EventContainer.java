@@ -25,17 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 public class EventContainer<E extends Enum<E>, T> {
 
     private final EnumMap<E, Optional<List<Consumer<T>>>> events;
-    private Class<E> eventClass;
 
     public EventContainer(Class<E> event) {
-
         log.debug("Event container for eventclass {} starting..", event.getName());
 
         this.events = new EnumMap(event);
-        this.eventClass = eventClass;
 
         for (E enumConstant : event.getEnumConstants()) {
-            events.put(enumConstant, Optional.ofNullable(new ArrayList<Consumer<T>>()));
+            events.put(enumConstant, Optional.ofNullable(new ArrayList<>()));
         }
 
     }

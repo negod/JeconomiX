@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 import se.backede.jeconomix.database.dao.TestCacheInitializer;
 import se.backede.jeconomix.database.entity.CategoryType;
 import se.backede.jeconomix.dto.CategoryTypeDto;
@@ -21,7 +22,8 @@ import se.backede.jeconomix.event.TestDatabaseHandler;
  */
 public class CategoryTypeHandlerTest {
 
-    public CategoryTypeHandlerTest() {
+    @BeforeClass
+    public static void setUpClass() {
         System.out.println("Clearing database and createing new from Liquibase");
         TestDatabaseHandler.getInstance().deleteAndCreateNewDatabase();
         System.out.println("Spooling up cache");

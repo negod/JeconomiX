@@ -41,6 +41,8 @@ public class Transaction extends GenericEntity {
 
     private BigDecimal saldo;
 
+    private String originalValue;
+
     @Enumerated(EnumType.STRING)
     private Month budgetMonth;
 

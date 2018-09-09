@@ -23,9 +23,9 @@ import se.backede.jeconomix.event.events.TransactionEvent;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class EventContainerIT {
+public class EventContainerTest {
 
-    public EventContainerIT() {
+    public EventContainerTest() {
     }
 
     @BeforeClass
@@ -84,21 +84,6 @@ public class EventContainerIT {
         System.out.println("fireEvent");
         EventContainer instance = null;
         //instance.fireEvent(null);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getEventClass method, of class EventContainer.
-     */
-    @Ignore
-    @Test
-    public void testGetEventClass() {
-        System.out.println("getEventClass");
-        EventContainer instance = null;
-        Class expResult = null;
-        Class result = instance.getEventClass();
-        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

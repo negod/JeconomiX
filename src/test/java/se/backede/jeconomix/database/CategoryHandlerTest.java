@@ -27,15 +27,12 @@ import se.backede.jeconomix.mock.TestMock;
  */
 public class CategoryHandlerTest {
 
-    public CategoryHandlerTest() {
+    @BeforeClass
+    public static void setUpClass() {
         System.out.println("Clearing database and createing new from Liquibase");
         TestDatabaseHandler.getInstance().deleteAndCreateNewDatabase();
         System.out.println("Spooling up cache");
         TestCacheInitializer CACHE = new TestCacheInitializer();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
     }
 
     @AfterClass

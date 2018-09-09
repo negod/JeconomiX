@@ -36,17 +36,20 @@ public class TestDatabaseHandler {
         return INSTANCE;
     }
 
-    public void deleteAndCreateNewDatabase() {
+    public Connection deleteAndCreateNewDatabase() {
         try {
             java.sql.Connection connection = openConnection(); //your openConnection logic here
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new liquibase.Liquibase("liquibase/changelog/db-changelog-1.0.xml", new ClassLoaderResourceAccessor(), database);
+            liquibase.dropAll();
             liquibase.update(new Contexts(), new LabelExpression());
+            return connection;
         } catch (DatabaseException ex) {
             Logger.getLogger(TestDatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (LiquibaseException ex) {
             Logger.getLogger(TestDatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     private Connection openConnection() {

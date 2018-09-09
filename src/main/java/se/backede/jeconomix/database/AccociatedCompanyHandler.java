@@ -47,10 +47,4 @@ public class AccociatedCompanyHandler extends AccociatedCompanyDao {
         });
     }
 
-    public Optional<CompanyDto> getByCompanyName(String name) {
-        return super.getAccosiatedCompanyByCompanyName(name).map(company -> {
-            return companyMapper.mapFromEntityToDto(company).get();
-        });
-    }
-
 }

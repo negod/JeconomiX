@@ -23,9 +23,6 @@ import static se.backede.jeconomix.mock.TestMock.getCompany;
  */
 public class CompanyHandlerTest {
 
-    public CompanyHandlerTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
         System.out.println("Clearing database and createing new from Liquibase");

@@ -10,5 +10,5 @@ package se.backede.jeconomix.event.events;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public enum ProgressEvent {
-    SET_MAX_VALUE, INCREASE, DONE, ERROR;
+    SET_MAX_VALUE, INCREASE, DONE, DONE_AND_CLOSE, ERROR;
 }

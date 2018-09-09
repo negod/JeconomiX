@@ -6,8 +6,8 @@
 package se.backede.jeconomix.database.dao;
 
 import com.negod.generics.persistence.GenericDao;
-import com.negod.generics.persistence.exception.DaoException;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,23 +40,16 @@ public class AccociatedCompanyDao extends GenericDao<CompanyAccociation> {
     }
 
     public Optional<CompanyAccociation> getByAccociatedCompanyByName(String name) {
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
-        Root entity = cq.from(getEntityClass());
-        cq.where(entity.get(CompanyAccociation_.name).in(name));
-        return get(cq);
-    }
 
-    public Optional<Company> getAccosiatedCompanyByCompanyName(String name) {
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
-        Root entity = cq.from(getEntityClass());
-        cq.where(entity.get(CompanyAccociation_.name).in(name));
-        Optional<CompanyAccociation> data = get(cq);
-        if (data.isPresent()) {
-            return Optional.of(data.get().getCompany());
-        }
-        return Optional.empty();
+        Supplier<Optional<CompanyAccociation>> getCompanyAcc = () -> {
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery cq = criteriaBuilder.createQuery(getEntityClass());
+            Root entity = cq.from(getEntityClass());
+            cq.where(entity.get(CompanyAccociation_.name).in(name));
+            return get(cq);
+        };
+
+        return super.executeTransaction(getCompanyAcc);
     }
 
 }

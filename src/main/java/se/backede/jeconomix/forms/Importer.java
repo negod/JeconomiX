@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.swing.JOptionPane;
@@ -26,6 +27,7 @@ import se.backede.jeconomix.event.events.TransactionEvent;
 import se.backede.jeconomix.models.table.TransactionModel;
 import se.backede.jeconomix.utils.GenericIterator;
 import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
@@ -53,12 +55,12 @@ public class Importer extends NegodDialog {
     private final GenericIterator<CompanyDto> companyIterator;
     HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
 
-    public Importer(java.awt.Frame parent, boolean modal, Transactions transactions, CsvColumn companyNameColumn) {
+    public Importer(java.awt.Frame parent, boolean modal, Set<TransactionWrapper> transactions, CsvColumn companyNameColumn) {
         super(parent, modal);
 
         HashMap<String, List<TransactionDto>> companies = new HashMap<>();
 
-        for (TransactionWrapper transactionWrapper : transactions.getNewTransactionsToEdit()) {
+        for (TransactionWrapper transactionWrapper : transactions) {
             transactionWrapper.getCsvRecord().getColumn(companyNameColumn).ifPresent(companyName -> {
                 if (companies.containsKey(companyName)) {
                     companies.get(companyName).add(transactionWrapper.getTransactionDto());
@@ -340,15 +342,14 @@ public class Importer extends NegodDialog {
 
             for (CompanyDto company : companyIterator.getAll()) {
 
-                for (TransactionDto transaction : company.getTransactions()) {
-                    transaction.setCompany(company);
-                }
-
                 //Has the company been created already?
                 if (company.getId() == null) {
                     Optional<CompanyDto> persist = CompanyHandler.getInstance().createCompany(company);
-                } else {
-                    Optional<CompanyDto> updateCompany = CompanyHandler.getInstance().updateCompany(company);
+                }
+
+                for (TransactionDto transaction : company.getTransactions()) {
+                    transaction.setCompany(company);
+                    TransactionHandler.getInstance().createTransaction(transaction);
                 }
 
             }

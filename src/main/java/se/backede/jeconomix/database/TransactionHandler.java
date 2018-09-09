@@ -5,12 +5,11 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.ConstraintException;
-import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
@@ -44,25 +43,29 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public boolean transactionExists(TransactionDto transaction) {
-        try {
+
+        Supplier<Optional<Transaction>> getTransaction = () -> {
             if (transaction.getCompany() != null) {
-                Optional<Company> companyEntity = companyMapper.mapFromDtoToEntity(transaction.getCompany());
-                super.startTransaction();
-                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
-                query.setParameter("company", companyEntity.get());
-                query.setParameter("date", transaction.getTransDate());
-                query.setParameter("saldo", transaction.getSaldo());
-                query.setParameter("sum", transaction.getSum());
-                Transaction transactionEntity = (Transaction) query.getSingleResult();
-                super.commitTransaction();
+                return companyMapper.mapFromDtoToEntity(transaction.getCompany()).map(companyEntity -> {
+                    try {
+                        Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
+                        query.setParameter("company", companyEntity);
+                        query.setParameter("date", transaction.getTransDate());
+                        query.setParameter("saldo", transaction.getSaldo());
+                        query.setParameter("sum", transaction.getSum());
+                        return (Transaction) query.getSingleResult();
+                    } catch (javax.persistence.NoResultException e) {
+                        log.error("No result when getting transaction [Transaction exists?]");
+                        return null;
+                    }
+                });
             } else {
-                throw new NoResultException("Company not present in transaction");
+                return Optional.empty();
             }
-        } catch (NoResultException ex) {
-            log.debug("No result for query when getting Transaction");
-            return false;
-        }
-        return true;
+        };
+
+        return super.executeTransaction(getTransaction).isPresent();
+
     }
 
     public Transaction decideBudgetMonth(Transaction transaction, CategoryTypeEnum category) {

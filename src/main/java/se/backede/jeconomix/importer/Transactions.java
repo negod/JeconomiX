@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.importer;
 
-import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 
@@ -16,9 +16,25 @@ import lombok.Getter;
 @Getter
 public class Transactions {
 
-    private Set<TransactionWrapper> newTransactionsToEdit = new LinkedHashSet<>();
-    private Set<TransactionWrapper> duplicateTransactions = new LinkedHashSet<>();
-    private Set<TransactionWrapper> invalidTransactions = new LinkedHashSet<>();
-    private Set<TransactionWrapper> validTransactionsForInsert = new LinkedHashSet<>();
+    private Optional<Set<TransactionWrapper>> newTransactionsToEdit = Optional.empty();
+    private Optional<Set<TransactionWrapper>> duplicateTransactions = Optional.empty();
+    private Optional<Set<TransactionWrapper>> invalidTransactions = Optional.empty();
+    private Optional<Set<TransactionWrapper>> validTransactionsForInsert = Optional.empty();
+
+    public void setNewTransactionsToEdit(Set<TransactionWrapper> transactions) {
+        newTransactionsToEdit = Optional.ofNullable(transactions);
+    }
+
+    public void setDuplicateTransactions(Set<TransactionWrapper> transactions) {
+        duplicateTransactions = Optional.ofNullable(transactions);
+    }
+
+    public void setInvalidTransactions(Set<TransactionWrapper> transactions) {
+        invalidTransactions = Optional.ofNullable(transactions);
+    }
+
+    public void setvValidTransactionsForInsert(Set<TransactionWrapper> transactions) {
+        validTransactionsForInsert = Optional.ofNullable(transactions);
+    }
 
 }

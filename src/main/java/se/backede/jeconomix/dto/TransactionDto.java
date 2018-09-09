@@ -24,6 +24,8 @@ import lombok.ToString;
 @ToString(exclude = {"company", "ascociatedCompany"})
 public class TransactionDto extends GenericDto {
 
+    private static final long serialVersionUID = 1L;
+
     private Date transDate;
 
     private BigDecimal sum;

@@ -21,6 +21,8 @@ import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
  */
 public class CompanyChooser extends NegodPanel {
 
+    private static final long serialVersionUID = 1L;
+
     ComboBoxWrapper<CompanyDto, CompanyComboBoxModel> companyCB;
 
     /**
