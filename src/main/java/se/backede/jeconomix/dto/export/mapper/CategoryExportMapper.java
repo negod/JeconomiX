@@ -48,7 +48,7 @@ public class CategoryExportMapper {
         if (dto.getCategoryType() != null) {
             CategoryTypeDto categoryType = new CategoryTypeDto();
             categoryType.setType(dto.getCategoryType().getType());
-            categoryType.setId(categoryType.getId());
+            categoryType.setId(dto.getCategoryType().getId());
             return categoryType;
         }
         return new CategoryTypeDto();

@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Month;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -45,11 +46,11 @@ public class Transaction extends GenericEntity {
 
     private Integer budgetYear;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "company", referencedColumnName = "id", insertable = true)
     private Company company;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ascociatedCompany", referencedColumnName = "id", insertable = true)
     private CompanyAccociation ascociatedCompany;
 

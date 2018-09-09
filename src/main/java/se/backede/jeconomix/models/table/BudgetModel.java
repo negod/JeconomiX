@@ -20,8 +20,6 @@ import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.events.fields.BudgetValues;
 
 /**
  *

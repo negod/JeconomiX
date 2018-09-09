@@ -28,34 +28,33 @@ import se.backede.jeconomix.dto.CompanyDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class TransactionHandler {
+public class TransactionHandler extends TransactionDao {
 
-    TransactionDao dao = new TransactionDao();
     CompanyDao companyDao = new CompanyDao();
-    DtoEntityBaseMapper<TransactionDto, Transaction> mapper = new DtoEntityBaseMapper(TransactionDto.class, Transaction.class);
-    DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
+    DtoEntityBaseMapper<TransactionDto, Transaction> mapper = new DtoEntityBaseMapper<>(TransactionDto.class, Transaction.class);
+    DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper<>(CompanyDto.class, Company.class);
 
-    private static final TransactionHandler companyHandler = new TransactionHandler();
+    private static final TransactionHandler INSTANCE = new TransactionHandler();
 
     protected TransactionHandler() {
     }
 
     public static final TransactionHandler getInstance() {
-        return companyHandler;
+        return INSTANCE;
     }
 
     public boolean transactionExists(TransactionDto transaction) {
         try {
             if (transaction.getCompany() != null) {
                 Optional<Company> companyEntity = companyMapper.mapFromDtoToEntity(transaction.getCompany());
-                dao.startTransaction();
-                Query query = dao.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
+                super.startTransaction();
+                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
                 query.setParameter("company", companyEntity.get());
                 query.setParameter("date", transaction.getTransDate());
                 query.setParameter("saldo", transaction.getSaldo());
                 query.setParameter("sum", transaction.getSum());
                 Transaction transactionEntity = (Transaction) query.getSingleResult();
-                dao.commitTransaction();
+                super.commitTransaction();
             } else {
                 throw new NoResultException("Company not present in transaction");
             }
@@ -90,15 +89,15 @@ public class TransactionHandler {
         Optional<Transaction> entity = mapper.mapFromDtoToEntity(transaction);
         if (entity.isPresent()) {
 
-            dao.startTransaction();
+            super.startTransaction();
             Optional<Company> byId = companyDao.getById(transaction.getCompany().getId());
 
             CategoryTypeEnum type = byId.get().getCategory().getCategoryType().getType();
             Transaction decideBudgetMonth = decideBudgetMonth(entity.get(), type);
             decideBudgetMonth.setCompany(byId.get());
 
-            Optional<Transaction> persist = dao.persist(entity.get());
-            dao.commitTransaction();
+            Optional<Transaction> persist = super.persist(entity.get());
+            super.commitTransaction();
 
             if (persist.isPresent()) {
                 return mapper.mapFromEntityToDto(entity.get());
@@ -109,7 +108,7 @@ public class TransactionHandler {
     }
 
     public Optional<List<TransactionDto>> getAllTransactions() {
-        Optional<List<Transaction>> all = dao.getAll();
+        Optional<List<Transaction>> all = super.getAll();
         if (all.isPresent()) {
             return mapper.mapToDtoList(all.get());
         }

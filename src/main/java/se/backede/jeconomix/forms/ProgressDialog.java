@@ -26,15 +26,15 @@ class ProgressDialog extends javax.swing.JDialog {
     public static final int IMPORT = 1;
     public static final int EXPORT = 2;
 
-    public static final String IMPORT_LABEL_TEXT = "Importing progress";
-    public static final String EXPORT_LABEL_TEXT = "Exporting progress";
+    public static final String IMPORT_LABEL_TEXT = "Importing progress ";
+    public static final String EXPORT_LABEL_TEXT = "Exporting progress ";
 
     private final String TOTAL_RECORDS = "Total records processed: {}";
     private final String INVALID_RECORDS = "Total invalid records discarded: {}";
     private final String DUPLICATE_RECORDS = "Total duplicate records discarded: {}";
 
-    private final String PROCESSING_DONE = "Processing Done";
-    private final String PROCESSING_ERROR = "Error when processing data";
+    private final String PROCESSING_DONE = "Success! ";
+    private final String PROCESSING_ERROR = "Error when processing data ";
 
     /**
      * Creates new form ImportProgressbar
@@ -84,16 +84,28 @@ class ProgressDialog extends javax.swing.JDialog {
             importLabel.setText(PROCESSING_DONE);
             okButton.setEnabled(true);
 
-            String duplicateRecords = DUPLICATE_RECORDS.replace("{}", dto.getDuplecateRecords().toString());
-            String totalRecords = TOTAL_RECORDS.replace("{}", dto.getTotalRecords().toString());
-            String invalidRecords = INVALID_RECORDS.replace("{}", dto.getInvalidRecords().toString());
+            StringBuilder builder = new StringBuilder();
+            if (dto.getDuplecateRecords() != null) {
+                String duplicateRecords = DUPLICATE_RECORDS.replace("{}", dto.getDuplecateRecords().toString());
+                builder.append(duplicateRecords).append("\n");
+            }
 
-            String allData = duplicateRecords.concat("\n")
-                    .concat(totalRecords).concat("\n")
-                    .concat(invalidRecords);
+            if (dto.getTotalRecords() != null) {
+                String totalRecords = TOTAL_RECORDS.replace("{}", dto.getTotalRecords().toString());
+                builder.append(totalRecords).append("\n");
+            }
 
-            new ImportSummaryDialog(this, true, allData).setVisible(true);
+            if (dto.getInvalidRecords() != null) {
+                String invalidRecords = INVALID_RECORDS.replace("{}", dto.getInvalidRecords().toString());
+                builder.append(invalidRecords);
+            }
+
+            if (builder.length() > 1) {
+                new ImportSummaryDialog(this, true, builder.toString()).setVisible(true);
+            }
+
         };
+
         EventController.getInstance().addObserver(ProgressEvent.DONE, setDone);
 
         //Error event

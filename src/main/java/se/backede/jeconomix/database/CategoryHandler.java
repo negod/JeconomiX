@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
@@ -29,15 +29,15 @@ import se.backede.jeconomix.dto.CategoryTypeDto;
 @Slf4j
 public class CategoryHandler extends CategoryDao {
 
-    DtoEntityBaseMapper<CategoryDto, Category> mapper = new DtoEntityBaseMapper(CategoryDto.class, Category.class);
+    DtoEntityBaseMapper<CategoryDto, Category> mapper = new DtoEntityBaseMapper<>(CategoryDto.class, Category.class);
 
-    private static final CategoryHandler companyHandler = new CategoryHandler();
+    private static final CategoryHandler INSTANCE = new CategoryHandler();
 
     protected CategoryHandler() {
     }
 
     public static final CategoryHandler getInstance() {
-        return companyHandler;
+        return INSTANCE;
     }
 
     public Optional<CategoryDto> getCategoryById(String id) {
@@ -47,24 +47,14 @@ public class CategoryHandler extends CategoryDao {
     }
 
     public Optional<CategoryDto> createCategory(CategoryDto category) {
-        Optional<Category> entity = mapper.mapFromDtoToEntity(category);
-        Optional<CategoryDto> persistedCategory = Optional.empty();
-        if (entity.isPresent()) {
-            super.startTransaction();
-
-            CategoryTypeHandler.getInstance().getById(category.getCategoryType().getId()).ifPresent(categoryType -> {
-                entity.get().setCategoryType(categoryType);
+        return mapper.mapFromDtoToEntity(category).map(categoryEntity -> {
+            return CategoryTypeHandler.getInstance().getById(categoryEntity.getCategoryType().getId()).map(categoryType -> {
+                categoryEntity.setCategoryType(categoryType);
+                return super.executeTransaction(() -> super.persist(categoryEntity)).map(persisted -> {
+                    return mapper.mapFromEntityToDto(persisted).get();
+                }).get();
             });
-
-            Optional<Category> persist = super.persist(entity.get());
-
-            if (persist.isPresent()) {
-                persistedCategory = mapper.mapFromEntityToDto(entity.get());
-            }
-
-            super.commitTransaction();
-        }
-        return persistedCategory;
+        }).orElse(Optional.empty());
     }
 
     private Predicate<CategoryDto> isCategoryType(CategoryTypeEnum type) {

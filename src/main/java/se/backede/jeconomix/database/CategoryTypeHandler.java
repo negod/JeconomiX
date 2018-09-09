@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.List;
 import java.util.Optional;

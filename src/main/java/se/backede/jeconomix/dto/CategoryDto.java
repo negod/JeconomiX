@@ -23,6 +23,8 @@ import se.backede.jeconomix.annotations.ComboBoxField;
 @EqualsAndHashCode(exclude = "companies")
 public class CategoryDto extends GenericDto implements Comparable<CategoryDto> {
 
+    private static final long serialVersionUID = 1L;
+
     @ComboBoxField
     private String name;
     private Set<CompanyDto> companies;
