@@ -35,7 +35,7 @@ public abstract class TransactionExtractor {
             try {
                 transaction.getTransactionDto().setOriginalValue(value);
             } catch (NumberFormatException e) {
-                log.error("Error when getting origianlValue from CSVField {}", column.getColumnName());
+                log.debug("Error when getting origianlValue from CSVField {}", column.getColumnName());
             }
         });
     }
@@ -47,7 +47,7 @@ public abstract class TransactionExtractor {
                 BigDecimal bigDecimalValue = valueOf.setScale(2, RoundingMode.HALF_UP);
                 transaction.getTransactionDto().setSum(bigDecimalValue);
             } catch (NumberFormatException e) {
-                log.error("Error when parsing transaction sum from CSVField {}", column.getColumnName());
+                log.debug("Error when parsing transaction sum from CSVField {}", column.getColumnName());
             }
         });
     }
@@ -60,7 +60,7 @@ public abstract class TransactionExtractor {
                 BigDecimal valueOf = BigDecimal.valueOf(Double.parseDouble(value));
                 transaction.getTransactionDto().setSaldo(valueOf);
             } catch (NumberFormatException e) {
-                log.error("Error when parsing transaction saldo from CSVField {}", column.getColumnName());
+                log.debug("Error when parsing transaction saldo from CSVField {}", column.getColumnName());
             }
         });
     }
@@ -71,7 +71,7 @@ public abstract class TransactionExtractor {
                 Date valueOf = Date.valueOf(value);
                 transaction.getTransactionDto().setTransDate(valueOf);
             } catch (NumberFormatException e) {
-                log.error("Error when parsing transaction date from CSVField {}", column.getColumnName());
+                log.debug("Error when parsing transaction date from CSVField {}", column.getColumnName());
             }
         });
     }

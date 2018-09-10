@@ -8,14 +8,14 @@ package se.backede.jeconomix.forms;
 import com.backede.fileutils.csv.parser.CsvColumn;
 import java.awt.CardLayout;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +33,6 @@ import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.importer.TransactionWrapper;
-import se.backede.jeconomix.importer.Transactions;
 
 @Getter
 @Setter
@@ -55,7 +54,7 @@ public class Importer extends NegodDialog {
     private static final long serialVersionUID = 1L;
 
     private final GenericIterator<CompanyDto> companyIterator;
-    HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
+    private HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
 
     public Importer(java.awt.Frame parent, boolean modal, Set<TransactionWrapper> transactions, CsvColumn companyNameColumn) {
         super(parent, modal);
@@ -67,7 +66,9 @@ public class Importer extends NegodDialog {
                 if (companies.containsKey(companyName)) {
                     companies.get(companyName).add(transactionWrapper.getTransactionDto());
                 } else {
-                    companies.put(companyName, Arrays.asList(transactionWrapper.getTransactionDto()));
+                    companies.put(companyName,
+                            Stream.of(transactionWrapper.getTransactionDto()).collect(Collectors.toList())
+                    );
                 }
             });
         }
