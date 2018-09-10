@@ -36,7 +36,7 @@ public class Category extends GenericEntity {
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Company> companies;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_type", referencedColumnName = "id")
     private CategoryType categoryType;
 

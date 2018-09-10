@@ -19,7 +19,7 @@ import se.backede.jeconomix.annotations.ComboBoxField;
  */
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "companies")
 @EqualsAndHashCode(exclude = "companies")
 public class CategoryDto extends GenericDto implements Comparable<CategoryDto> {
 

@@ -77,7 +77,7 @@ public abstract class TransactionExtractor {
     }
 
     public void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
-        transaction.getCsvRecord().getColumn(column).ifPresent(value -> {
+        transaction.getCsvRecord().getColumn(column).ifPresent((String value) -> {
 
             AccociatedCompanyHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {
                 transaction.getTransactionDto().setAscociatedCompany(accComp);
@@ -86,7 +86,6 @@ public abstract class TransactionExtractor {
 
             if (transaction.getTransactionDto().getCompany() == null) {
                 CompanyHandler.getInstance().getCompanyByName(value).ifPresent(company -> {
-                    System.out.println(company.toString());
                     transaction.getTransactionDto().setCompany(company);
                 });
             }

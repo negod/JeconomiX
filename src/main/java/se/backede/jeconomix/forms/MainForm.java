@@ -302,6 +302,7 @@ public class MainForm extends NegodJFrame {
     }//GEN-LAST:event_exportExpenseTypesActionPerformed
 
     private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
+
         FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent(filePath -> {
 
             Consumer<Transactions> startImporterDialog = transactions -> {
@@ -324,8 +325,7 @@ public class MainForm extends NegodJFrame {
                 });
 
                 transactions.getNewTransactionsToEdit().ifPresent(transactionsForEdit -> {
-                    Importer importer = new Importer(this, true, transactionsForEdit, NordeaCsvFields.TRANSACTION);
-                    importer.setVisible(true);
+                    new Importer(this, true, transactionsForEdit, NordeaCsvFields.TRANSACTION).setVisible(true);
                 });
 
             };

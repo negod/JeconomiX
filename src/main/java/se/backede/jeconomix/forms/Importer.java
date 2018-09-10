@@ -52,6 +52,8 @@ class CompanyIteratorState {
 @Slf4j
 public class Importer extends NegodDialog {
 
+    private static final long serialVersionUID = 1L;
+
     private final GenericIterator<CompanyDto> companyIterator;
     HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
 
@@ -344,7 +346,10 @@ public class Importer extends NegodDialog {
 
                 //Has the company been created already?
                 if (company.getId() == null) {
-                    Optional<CompanyDto> persist = CompanyHandler.getInstance().createCompany(company);
+                    CompanyHandler.getInstance().createCompany(company).ifPresent(compsnyEntity -> {
+                        company.setId(compsnyEntity.getId());
+                        company.setUpdatedDate(compsnyEntity.getUpdatedDate());
+                    });
                 }
 
                 for (TransactionDto transaction : company.getTransactions()) {

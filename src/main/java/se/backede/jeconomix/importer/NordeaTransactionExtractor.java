@@ -19,6 +19,7 @@ public class NordeaTransactionExtractor extends TransactionExtractor {
 
     @Override
     public TransactionWrapper createTransaction(CsvRecordWrapper csvRecord) {
+
         TransactionWrapper wrapper = new TransactionWrapper(csvRecord);
 
         super.setTransactionSum(wrapper, NordeaCsvFields.BELOPP);
@@ -27,7 +28,7 @@ public class NordeaTransactionExtractor extends TransactionExtractor {
         super.setTransactionCompany(wrapper, NordeaCsvFields.TRANSACTION);
         super.setTransactionOriginalValue(wrapper, NordeaCsvFields.ORIGINAL_VALUE);
 
-        log.info("Transaction created {}", wrapper.getTransactionDto().toString());
+        log.debug("Transaction created {} ", wrapper.getTransactionDto().toString());
 
         return wrapper;
     }

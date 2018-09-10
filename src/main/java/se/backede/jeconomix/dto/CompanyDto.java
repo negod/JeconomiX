@@ -11,6 +11,7 @@ import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import se.backede.jeconomix.annotations.ComboBoxField;
 
 /**
@@ -20,6 +21,7 @@ import se.backede.jeconomix.annotations.ComboBoxField;
 @Getter
 @Setter
 @EqualsAndHashCode
+@ToString(exclude = {"transactions", "accociations"})
 public class CompanyDto extends GenericDto implements Comparable<CompanyDto> {
 
     @ComboBoxField

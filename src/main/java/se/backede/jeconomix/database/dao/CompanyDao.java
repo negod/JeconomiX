@@ -7,6 +7,7 @@ package se.backede.jeconomix.database.dao;
 
 import com.negod.generics.persistence.GenericDao;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -38,11 +39,14 @@ public class CompanyDao extends GenericDao<Company> {
     }
 
     protected Optional<Company> getCompanyByCompanyName(String name) {
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Company> cq = criteriaBuilder.createQuery(getEntityClass());
-        Root<Company> entity = cq.from(getEntityClass());
-        cq.where(entity.get(Company_.name).in(name));
-        return get(cq);
+        Supplier<Optional<Company>> companySypplier = () -> {
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<Company> cq = criteriaBuilder.createQuery(super.getEntityClass());
+            Root<Company> entity = cq.from(getEntityClass());
+            cq.where(entity.get(Company_.name).in(name));
+            return get(cq);
+        };
+        return super.executeTransaction(companySypplier);
     }
 
 }

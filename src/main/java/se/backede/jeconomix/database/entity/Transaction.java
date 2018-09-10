@@ -32,7 +32,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 @Entity
 @Getter
 @Setter
-@NamedQuery(name = EntityQueries.TRANSACTION_EXISTS, query = "select t from Transaction t where t.company =:company  AND t.transDate =:date and t.saldo=:saldo and t.sum=:sum")
+@NamedQuery(name = EntityQueries.TRANSACTION_EXISTS, query = "select t from Transaction t where t.company =:company  AND t.transDate =:date and t.saldo=:saldo and t.sum=:sum and t.originalValue=:originalValue")
 public class Transaction extends GenericEntity {
 
     private Date transDate;

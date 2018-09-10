@@ -47,12 +47,14 @@ public class TransactionHandler extends TransactionDao {
         Supplier<Optional<Transaction>> getTransaction = () -> {
             if (transaction.getCompany() != null) {
                 return companyMapper.mapFromDtoToEntity(transaction.getCompany()).map(companyEntity -> {
+
                     try {
                         Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
                         query.setParameter("company", companyEntity);
                         query.setParameter("date", transaction.getTransDate());
                         query.setParameter("saldo", transaction.getSaldo());
                         query.setParameter("sum", transaction.getSum());
+                        query.setParameter("originalValue", transaction.getOriginalValue());
                         return (Transaction) query.getSingleResult();
                     } catch (javax.persistence.NoResultException e) {
                         log.error("No result when getting transaction [Transaction exists?]");

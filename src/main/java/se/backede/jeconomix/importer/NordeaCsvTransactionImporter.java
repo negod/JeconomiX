@@ -51,30 +51,49 @@ public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
     @Override
     public Optional<Transactions> executeLogic(List<CsvRecordWrapper> records) {
 
-        Transactions transactions = new Transactions();
         TransactionExtractor extractor = new NordeaTransactionExtractor();
-
         Set<TransactionWrapper> createTransactions = new LinkedHashSet<>(extractor.createTransactions(records));
 
-        transactions.setDuplicateTransactions(new HashSet<>(createTransactions.stream()
+        List<TransactionWrapper> duplicateTransactions = createTransactions.stream()
                 .filter(transaction -> TransactionHandler.getInstance().transactionExists(transaction.getTransactionDto()))
-                .collect(Collectors.toList()))
-        );
+                .collect(Collectors.toList());
+        createTransactions.removeAll(duplicateTransactions);
 
-        transactions.setInvalidTransactions(new HashSet<>(createTransactions.stream()
+        List<TransactionWrapper> invalidTransactions = createTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDto().getSum() == null)
-                .collect(Collectors.toList()))
-        );
+                .collect(Collectors.toList());
+        createTransactions.removeAll(invalidTransactions);
 
-        transactions.setvValidTransactionsForInsert(new HashSet<>(createTransactions.stream()
+        List<TransactionWrapper> validTransactions = createTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDto().getCompany() != null)
-                .collect(Collectors.toList()))
-        );
+                .collect(Collectors.toList());
+        createTransactions.removeAll(validTransactions);
 
-        transactions.setNewTransactionsToEdit(new HashSet<>(createTransactions.stream()
+        List<TransactionWrapper> editableTransactions = createTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDto().getCompany() == null)
-                .collect(Collectors.toList()))
-        );
+                .collect(Collectors.toList());
+        createTransactions.removeAll(editableTransactions);
+
+        if (!createTransactions.isEmpty()) {
+            log.error("Some transactions are unhandeled during import AMOUNT {}", createTransactions.size());
+        }
+
+        Transactions transactions = new Transactions();
+        if (!duplicateTransactions.isEmpty()) {
+            transactions.setDuplicateTransactions(new HashSet<>(duplicateTransactions));
+        }
+
+        if (!invalidTransactions.isEmpty()) {
+            transactions.setInvalidTransactions(new HashSet<>(invalidTransactions));
+        }
+
+        if (!validTransactions.isEmpty()) {
+            transactions.setvValidTransactionsForInsert(new HashSet<>(validTransactions));
+        }
+
+        if (!editableTransactions.isEmpty()) {
+            transactions.setNewTransactionsToEdit(new HashSet<>(editableTransactions));
+        }
 
         return Optional.ofNullable(transactions);
     }
