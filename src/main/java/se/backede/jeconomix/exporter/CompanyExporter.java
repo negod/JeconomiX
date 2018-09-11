@@ -6,13 +6,17 @@
 package se.backede.jeconomix.exporter;
 
 import com.backede.fileutils.xml.writer.XmlWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.CompanyDto;
+import se.backede.jeconomix.dto.ProgressDto;
 import se.backede.jeconomix.dto.export.Companies;
 import se.backede.jeconomix.dto.export.CompanyExportDto;
 import se.backede.jeconomix.dto.export.mapper.CompanyMapper;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.ProgressEvent;
 
 /**
  *
@@ -32,20 +36,24 @@ public class CompanyExporter {
     public void exportCompanies(String filename) {
         new Thread(() -> {
             Optional<List<CompanyDto>> allCompanies = CompanyHandler.getInstance().getAllCompanies();
-            if (allCompanies.isPresent()) {
-//                Events.getInstance().fireProgressMaxValueEvent(3);
-                Companies companies = new Companies();
-//                Events.getInstance().fireProgressIncreaseValueEvent(1, "Mapping companies");
-                List<CompanyExportDto> mapToExportDto = CompanyMapper.mapToExportDto(allCompanies.get());
-                companies.setCompany(mapToExportDto);
-//                Events.getInstance().fireProgressIncreaseValueEvent(2, "Exporting file");
-                XmlWriter.writeXml(filename, Companies.class, companies);
-            } else {
-//                Events.getInstance().fireErrorEvent();
-                return;
-            }
-//            Events.getInstance().fireProgressDoneEvent();
 
+            if (allCompanies.isPresent()) {
+                EventController.getInstance().notifyObservers(ProgressEvent.SET_MAX_VALUE, () -> new ProgressDto(allCompanies.get().size(), "Exporting companies.."));
+                Companies companies = new Companies();
+                List<CompanyExportDto> exportList = new ArrayList<>();
+
+                for (CompanyDto companyDto : allCompanies.get()) {
+                    CompanyExportDto exportDto = CompanyMapper.mapToExportDto(companyDto);
+                    exportList.add(exportDto);
+                    EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, () -> new ProgressDto(1, "Exporting company: ".concat(exportDto.getName())));
+                }
+                companies.setCompany(exportList);
+                XmlWriter.writeXml(filename, Companies.class, companies);
+                EventController.getInstance().notifyObservers(ProgressEvent.DONE, () -> new ProgressDto(exportList.size(), String.valueOf(exportList.size()).concat(" companies successfully exported!")));
+            } else {
+                EventController.getInstance().notifyObservers(ProgressEvent.DONE, () -> new ProgressDto(0, "No companies exported"));
+
+            }
         }).start();
     }
 }

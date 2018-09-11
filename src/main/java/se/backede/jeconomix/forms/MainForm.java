@@ -303,7 +303,7 @@ public class MainForm extends NegodJFrame {
 
     private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
 
-        FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent(filePath -> {
+        FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent((String filePath) -> {
 
             Consumer<Transactions> startImporterDialog = transactions -> {
 
@@ -330,7 +330,7 @@ public class MainForm extends NegodJFrame {
 
             };
 
-            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CsvFileHasHeaders);
+            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CSV_FILE_HA_HEADERS);
 
             extractor.getRecords().ifPresent(records -> {
                 extractor.executeLogic(startImporterDialog);

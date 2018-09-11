@@ -42,6 +42,11 @@ public class CategoryChooser extends NegodPanel {
             categoryCB.setSelectedItem(category);
         };
         EventController.getInstance().addObserver(CategoryEvent.CREATE, createCategory);
+
+        Consumer<CategoryDto> getSelectedCategory = category -> {
+            EventController.getInstance().notifyObservers(CategoryEvent.SELECTED, categoryCB::getSelectedItem);
+        };
+        EventController.getInstance().addObserver(CategoryEvent.GET_SELECTED, getSelectedCategory);
     }
 
     /**
@@ -203,7 +208,7 @@ public class CategoryChooser extends NegodPanel {
     }//GEN-LAST:event_categoryComboBoxItemStateChanged
 
     private void addCategoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCategoryBtnActionPerformed
-        new AddCategory(null, false).setVisible(true);
+        new AddCategory(null, true).setVisible(true);
     }//GEN-LAST:event_addCategoryBtnActionPerformed
 
     private void incomeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeRadioButtonActionPerformed
@@ -259,5 +264,6 @@ public class CategoryChooser extends NegodPanel {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
         categoryCB = new ComboBoxWrapper(categoryComboBox);
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.INCOME));
+        categoryCB.setSelectedItem(categoryCB.getComboBoxModel().getItems().get(0));
     }
 }

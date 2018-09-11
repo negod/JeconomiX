@@ -8,7 +8,6 @@ package se.backede.jeconomix.importer;
 import com.backede.fileutils.csv.parser.CsvImporter;
 import com.backede.fileutils.csv.parser.CsvRecordWrapper;
 import com.backede.fileutils.csv.parser.Normalizer;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,13 +22,12 @@ import se.backede.jeconomix.database.entity.extractor.TransactionExtractor;
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
- * @param <TransactionTypes>
  */
 @Slf4j
 public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
 
     @Override
-    public Optional<List<CsvRecordWrapper>> modifyCsvRecords(Optional<Normalizer> records) throws IOException {
+    public Optional<List<CsvRecordWrapper>> modifyCsvRecords(Optional<Normalizer> records) {
         return records.map(handler -> {
             return handler
                     .copyValueToNewColumn(NordeaCsvFields.ORIGINAL_VALUE, NordeaCsvFields.TRANSACTION)
@@ -97,4 +95,5 @@ public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
 
         return Optional.ofNullable(transactions);
     }
+
 }

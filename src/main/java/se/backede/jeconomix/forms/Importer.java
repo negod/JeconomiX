@@ -38,9 +38,9 @@ import se.backede.jeconomix.importer.TransactionWrapper;
 @Setter
 class CompanyIteratorState {
 
-    Boolean newCompany = Boolean.FALSE;
-    Boolean hasParent = Boolean.FALSE;
-    CompanyDto parentCompany;
+    private Boolean isNewCompany = Boolean.FALSE;
+    private Boolean hasParentCompany = Boolean.FALSE;
+    private CompanyDto parentCompany;
 
 }
 
@@ -54,7 +54,7 @@ public class Importer extends NegodDialog {
     private static final long serialVersionUID = 1L;
 
     private final GenericIterator<CompanyDto> companyIterator;
-    private HashMap<CompanyDto, CompanyIteratorState> companyState = new HashMap<>();
+    private HashMap<String, CompanyIteratorState> companyState = new HashMap<>();
 
     public Importer(java.awt.Frame parent, boolean modal, Set<TransactionWrapper> transactions, CsvColumn companyNameColumn) {
         super(parent, modal);
@@ -66,24 +66,25 @@ public class Importer extends NegodDialog {
                 if (companies.containsKey(companyName)) {
                     companies.get(companyName).add(transactionWrapper.getTransactionDto());
                 } else {
-                    companies.put(companyName,
-                            Stream.of(transactionWrapper.getTransactionDto()).collect(Collectors.toList())
-                    );
+                    companies.put(companyName, Stream.of(transactionWrapper.getTransactionDto()).collect(Collectors.toList()));
                 }
             });
         }
 
         List<CompanyDto> companyList = new ArrayList<>();
-        for (String companyName : companies.keySet()) {
-            CompanyDto company = new CompanyDto(companyName);
-            company.getTransactions().addAll(companies.get(companyName));
-            companyState.put(company, new CompanyIteratorState());
+        for (String companyNameKey : companies.keySet()) {
+            CompanyDto company = new CompanyDto(companyNameKey);
+            company.getTransactions().addAll(companies.get(companyNameKey));
+            companyState.put(companyNameKey, new CompanyIteratorState());
             companyList.add(company);
         }
 
         companyIterator = new GenericIterator(new LinkedList<>(companyList));
 
         initComponents();
+
+        categoryChooser1.init();
+        companyChooser1.init();
 
         setToggleButtonData();
         progressBar.setMaximum(companyIterator.getAll().size());
@@ -96,16 +97,16 @@ public class Importer extends NegodDialog {
 
         //EVENTS
         Consumer<CategoryDto> setSelectedCategory = category -> {
-            companyIterator.getAtCurrentIndex().setCategory(category);
+            if (category != null) {
+                companyIterator.getAtCurrentIndex().setCategory(category);
+            }
         };
         EventController.getInstance().addObserver(CategoryEvent.SELECTED, setSelectedCategory);
 
         Consumer<CompanyDto> setSelectedCompany = company -> {
-            CompanyIteratorState state = new CompanyIteratorState();
-            state.newCompany = Boolean.TRUE;
-            state.hasParent = Boolean.TRUE;
-            state.parentCompany = company;
-            companyState.put(companyIterator.getAtCurrentIndex(), state);
+            companyState.get(companyIterator.getAtCurrentIndex().getName()).setHasParentCompany(Boolean.TRUE);
+            companyState.get(companyIterator.getAtCurrentIndex().getName()).setIsNewCompany(Boolean.TRUE);
+            companyState.get(companyIterator.getAtCurrentIndex().getName()).setParentCompany(company);
         };
         EventController.getInstance().addObserver(CompanyEvent.SELECTED, setSelectedCompany);
     }
@@ -125,6 +126,7 @@ public class Importer extends NegodDialog {
     }
 
     private void setValues(CompanyDto company) {
+
         counterLabel.setText((progressBar.getValue() + 1) + " of " + progressBar.getMaximum());
 
         companyName.setText(company.getName());
@@ -132,16 +134,20 @@ public class Importer extends NegodDialog {
         TransactionModel transactionModel = new TransactionModel(company.getTransactions());
         transactionsTable.setModel(transactionModel);
 
-        if (company.getCategory() != null) {
-            Supplier<CategoryDto> getCategory = () -> company.getCategory();
-            EventController.getInstance().notifyObservers(CategoryEvent.SET_SELECTED, getCategory);
+        if (!categoryToggleBtn.isSelected()) {
+            if (company.getCategory() != null) {
+                EventController.getInstance().notifyObservers(CategoryEvent.SET_SELECTED, () -> company.getCategory());
+            } else {
+                EventController.getInstance().notifyObservers(CategoryEvent.GET_SELECTED, () -> new CategoryDto());
+            }
         }
 
-        categoryToggleBtn.setSelected(companyState.get(company).newCompany);
+        categoryToggleBtn.setSelected(companyState.get(company.getName()).getIsNewCompany());
+
         setToggleButtonData();
 
         if (categoryToggleBtn.isSelected()) {
-            Supplier<CompanyDto> getCompany = () -> companyState.get(company).getParentCompany();
+            Supplier<CompanyDto> getCompany = () -> companyState.get(company.getName()).getParentCompany();
             EventController.getInstance().notifyObservers(CompanyEvent.SET_SELECTED, getCompany);
         }
 
@@ -327,20 +333,15 @@ public class Importer extends NegodDialog {
     //TODO Fix company if it has been associated
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         if (companyIterator.hasNext()) {
-
-            CompanyDto atCurrentIndex = companyIterator.getAtCurrentIndex();
             progressBar.setValue(progressBar.getValue() + 1);
             setValues(companyIterator.next());
-
         } else {
 
             for (CompanyDto company : companyIterator.getAll()) {
-
                 if (company.getCategory() == null) {
                     JOptionPane.showMessageDialog(rootPane, "Company: " + company.getName() + " must have a category set!", "close", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
-
             }
 
             for (CompanyDto company : companyIterator.getAll()) {

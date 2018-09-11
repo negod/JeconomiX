@@ -29,6 +29,7 @@ public class AddCategory extends NegodDialog {
     public AddCategory(java.awt.Dialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
         setBillCategoryTypeComboBox();
     }
 
@@ -56,6 +57,8 @@ public class AddCategory extends NegodDialog {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Add category");
+        setAlwaysOnTop(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
