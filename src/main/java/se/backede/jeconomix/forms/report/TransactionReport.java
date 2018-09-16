@@ -17,7 +17,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
@@ -86,15 +85,13 @@ public class TransactionReport extends javax.swing.JDialog {
             public String generateLabel(CategoryDataset dataset, int series, int category) {
                 if (average) {
                     if (series == 0) {
-                        String result = null;
                         Number value = dataset.getValue(series, category);
-                        result = value.toString(); // could apply formatting here
+                        String result = value.toString(); // could apply formatting here
                         return result;
                     }
                 } else {
-                    String result = null;
                     Number value = dataset.getValue(series, category);
-                    result = value.toString(); // could apply formatting here
+                    String result = value.toString(); // could apply formatting here
                     return result;
                 }
                 return null;

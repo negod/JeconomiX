@@ -64,8 +64,8 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
         fireContentsChanged(this, items.size(), items.size());
     }
 
-    public void addElements(List<T> items) {
-        this.items.addAll(items);
+    public void addElements(List<T> listData) {
+        this.items.addAll(listData);
         fireContentsChanged(this, items.size(), items.size());
     }
 

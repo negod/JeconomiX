@@ -141,7 +141,7 @@ public class AddCompany extends NegodDialog {
             company.setCategory(newCategory.get());
             Optional<CompanyDto> createCompany = CompanyHandler.getInstance().createCompany(company);
             if (createCompany.isPresent()) {
-                Supplier<CompanyDto> getCompany = () -> createCompany.get();
+                Supplier<Optional<CompanyDto>> getCompany = () -> createCompany;
                 EventController.getInstance().notifyObservers(CompanyEvent.CREATE, getCompany);
                 this.dispose();
             } else {

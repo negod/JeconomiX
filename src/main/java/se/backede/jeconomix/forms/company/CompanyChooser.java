@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms.company;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
@@ -32,13 +33,17 @@ public class CompanyChooser extends NegodPanel {
         super();
         initComponents();
 
-        Consumer<CompanyDto> setSelectedCompany = company -> {
-            companyCB.setSelectedItem(company);
+        Consumer<Optional<CompanyDto>> setSelectedCompany = company -> {
+            company.ifPresent(companyDto -> {
+                companyCB.setSelectedItem(companyDto);
+            });
         };
         EventController.getInstance().addObserver(CompanyEvent.SET_SELECTED, setSelectedCompany);
 
-        Consumer<CompanyDto> createCompany = company -> {
-            companyCB.getComboBoxModel().addElement(company);
+        Consumer<Optional<CompanyDto>> createCompany = company -> {
+            company.ifPresent(companyDto -> {
+                companyCB.getComboBoxModel().addElement(companyDto);
+            });
         };
         EventController.getInstance().addObserver(CompanyEvent.CREATE, createCompany);
     }
@@ -195,7 +200,9 @@ public class CompanyChooser extends NegodPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void companyComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyComboBoxItemStateChanged
-        Supplier<CompanyDto> getCompany = () -> (CompanyDto) evt.getItem();
+        Supplier<Optional<CompanyDto>> getCompany = () -> {
+            return Optional.ofNullable((CompanyDto) evt.getItem());
+        };
         EventController.getInstance().notifyObservers(CompanyEvent.CREATE, getCompany);
     }//GEN-LAST:event_companyComboBoxItemStateChanged
 
@@ -237,7 +244,7 @@ public class CompanyChooser extends NegodPanel {
     @Override
     public void init() {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
-        companyCB = new ComboBoxWrapper(companyComboBox);
+        companyCB = new ComboBoxWrapper<>(companyComboBox);
         companyCB.setComboBoxModel(new CompanyComboBoxModel(CategoryTypeEnum.INCOME));
     }
 }

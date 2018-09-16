@@ -11,10 +11,10 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -26,27 +26,29 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
-import se.backede.jeconomix.renderer.combobox.CompanyComboBoxRenderer;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class SingleTransactionReport extends javax.swing.JDialog {
+public final class SingleTransactionReport extends javax.swing.JDialog {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates new form SingleTransactionReport
      */
     TransactionReportDto reports;
-    Set<CompanyDto> companyList = new HashSet<CompanyDto>();
-    Set<Integer> years = new HashSet<Integer>();
-    SortedSet<Month> months = new TreeSet<Month>();
+    Set<CompanyDto> companyList = new HashSet<>();
+    Set<Integer> years = new HashSet<>();
+    SortedSet<Month> months = new TreeSet<>();
 
     private final String ALL_MONTHS = "All months";
     private final String ALL_YEARS = "All years";
@@ -71,39 +73,40 @@ public class SingleTransactionReport extends javax.swing.JDialog {
     }
 
     public void extractCompaniesFromTransactoins() {
-        for (TransactionDto transction : reports.getTransctions()) {
+        reports.getTransctions().forEach((transction) -> {
             companyList.add(transction.getCompany());
-        }
+        });
     }
 
     public void extractYears() {
-        for (TransactionDto transction : reports.getTransctions()) {
+        reports.getTransctions().forEach((transction) -> {
             years.add(transction.getBudgetYear());
-        }
+        });
     }
 
     public void extractMonths() {
-        for (TransactionDto transction : reports.getTransctions()) {
+        reports.getTransctions().forEach((transction) -> {
             months.add(transction.getBudgetMonth());
-        }
+        });
     }
 
     public void setYearComboBox() {
         yearComboBox.addItem(ALL_YEARS);
-        for (Integer year : years) {
+        years.forEach((year) -> {
             yearComboBox.addItem(year.toString());
-        }
+        });
     }
 
     public void setMonthComboBox() {
         monthComboBox.addItem(ALL_MONTHS);
-        for (Month month : months) {
-            monthComboBox.addItem(month.name().toString());
-        }
+        months.forEach((Month month) -> {
+            monthComboBox.addItem(month.name());
+        });
     }
 
     public void setCompanyComboBox() {
         companyCB = new ComboBoxWrapper<>(companyComboBox);
+        companyCB.setComboBoxModel(new CompanyComboBoxModel());
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companyCB.getComboBoxModel().addElement(blancCompany);
         companyCB.setSelectedItem(blancCompany);
@@ -147,7 +150,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
             }
         }
 
-        LinkedList<TransactionDto> filteredCompanies = new LinkedList<TransactionDto>(reports.getTransctions());
+        LinkedList<TransactionDto> filteredCompanies = new LinkedList<>(reports.getTransctions());
 
         if (company != null) {
             if (!company.getName().equals(ALL_COMPANIES)) {
@@ -161,14 +164,14 @@ public class SingleTransactionReport extends javax.swing.JDialog {
         if (yearString != null) {
             if (!yearString.equals(ALL_YEARS)) {
                 for (TransactionDto filteredTransaction : filteredCompanies) {
-                    if (filteredTransaction.getBudgetYear() != year) {
+                    if (!Objects.equals(filteredTransaction.getBudgetYear(), year)) {
                         filteredByYear.remove(filteredTransaction);
                     }
                 }
             }
         }
 
-        LinkedList<TransactionDto> filteredByMonth = (LinkedList) filteredByYear.clone();;
+        LinkedList<TransactionDto> filteredByMonth = (LinkedList) filteredByYear.clone();
         if (monthString != null) {
             if (!monthString.equals(ALL_MONTHS)) {
                 for (TransactionDto filteredTransaction : filteredByYear) {
@@ -183,7 +186,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
 
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
 
-        TransactionCompanyModel transModel = new TransactionCompanyModel(new HashSet<TransactionDto>(filteredByMonth));
+        TransactionCompanyModel transModel = new TransactionCompanyModel(new HashSet<>(filteredByMonth));
 
         transactionTable.setModel(transModel);
 
@@ -206,21 +209,19 @@ public class SingleTransactionReport extends javax.swing.JDialog {
 
         List<Month> monthList = new LinkedList<>(Arrays.asList(Month.values()));
 
-        for (Month month : monthList) {
+        monthList.forEach((month) -> {
             sums.put(month, BigDecimal.valueOf(0));
-        }
+        });
 
-        for (TransactionDto transaction : reports.getTransctions()) {
-            for (Month month : monthList) {
-                if (transaction.getBudgetMonth().equals(month)) {
-                    BigDecimal currentSum = sums.get(month);
-                    if (transaction.getSum() != null) {
-                        BigDecimal newSum = currentSum.add(transaction.getSum());
-                        sums.put(month, newSum);
-                    }
+        reports.getTransctions().forEach((TransactionDto transaction) -> {
+            monthList.stream().filter((month) -> (transaction.getBudgetMonth().equals(month))).forEachOrdered((month) -> {
+                BigDecimal currentSum = sums.get(month);
+                if (transaction.getSum() != null) {
+                    BigDecimal newSum = currentSum.add(transaction.getSum());
+                    sums.put(month, newSum);
                 }
-            }
-        }
+            });
+        });
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(sums.get(Month.JANUARY), lineTitle, "Jan");
@@ -243,7 +244,7 @@ public class SingleTransactionReport extends javax.swing.JDialog {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
 
-        TransactionCompanyModel transModel = new TransactionCompanyModel(new HashSet<TransactionDto>(reports.getTransctions()));
+        TransactionCompanyModel transModel = new TransactionCompanyModel(new HashSet<>(reports.getTransctions()));
         transactionTable.setModel(transModel);
         transactionTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
 

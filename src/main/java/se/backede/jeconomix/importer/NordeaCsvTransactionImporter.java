@@ -93,6 +93,11 @@ public class NordeaCsvTransactionImporter implements CsvImporter<Transactions> {
             transactions.setNewTransactionsToEdit(new HashSet<>(editableTransactions));
         }
 
+        log.error("Duplicate transactions {}", duplicateTransactions.size());
+        log.error("Invalid transactions {}", invalidTransactions.size());
+        log.error("Editable transactions {}", editableTransactions.size());
+        log.error("Vaild transactions for insert {}", validTransactions.size());
+
         return Optional.ofNullable(transactions);
     }
 

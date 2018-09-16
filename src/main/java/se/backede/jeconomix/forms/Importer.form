@@ -63,7 +63,7 @@
                           </Group>
                           <Component id="counterLabel" alignment="1" min="-2" pref="84" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="categoryToggleBtn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="categoryCompanyToggleBtn" alignment="0" max="32767" attributes="0"/>
                       <Component id="lowerButtonPanel" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -81,7 +81,7 @@
                       <Component id="companyName" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                  <Component id="categoryToggleBtn" min="-2" max="-2" attributes="0"/>
+                  <Component id="categoryCompanyToggleBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="choosePanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -121,12 +121,12 @@
             <Property name="text" type="java.lang.String" value="Company name:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JToggleButton" name="categoryToggleBtn">
+        <Component class="javax.swing.JToggleButton" name="categoryCompanyToggleBtn">
           <Properties>
             <Property name="text" type="java.lang.String" value="jToggleButton1"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="categoryToggleBtnActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="categoryCompanyToggleBtnActionPerformed"/>
           </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="transactionsScrollPane">

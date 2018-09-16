@@ -13,7 +13,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.database.AccociatedCompanyHandler;
+import se.backede.jeconomix.database.CompanyAccociationHandler;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.importer.TransactionWrapper;
 
@@ -61,6 +61,8 @@ public abstract class TransactionExtractor {
                 transaction.getTransactionDto().setSaldo(valueOf);
             } catch (NumberFormatException e) {
                 log.debug("Error when parsing transaction saldo from CSVField {}", column.getColumnName());
+            } catch (Exception e) {
+                log.debug("Error when parsing transaction saldo from CSVField {}", column.getColumnName(), e);
             }
         });
     }
@@ -70,8 +72,8 @@ public abstract class TransactionExtractor {
             try {
                 Date valueOf = Date.valueOf(value);
                 transaction.getTransactionDto().setTransDate(valueOf);
-            } catch (NumberFormatException e) {
-                log.debug("Error when parsing transaction date from CSVField {}", column.getColumnName());
+            } catch (IllegalArgumentException e) {
+                log.debug("Error when parsing transaction date from CSVField {}", column.getColumnName(), e.getMessage());
             }
         });
     }
@@ -79,7 +81,7 @@ public abstract class TransactionExtractor {
     public void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
         transaction.getCsvRecord().getColumn(column).ifPresent((String value) -> {
 
-            AccociatedCompanyHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {
+            CompanyAccociationHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {
                 transaction.getTransactionDto().setAscociatedCompany(accComp);
                 transaction.getTransactionDto().setCompany(accComp.getCompany());
             });

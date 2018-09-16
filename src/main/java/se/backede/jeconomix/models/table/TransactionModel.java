@@ -94,7 +94,7 @@ public class TransactionModel extends AbstractTableModel {
      * @param row
      * @return
      */
-    public TransactionDto getCompanyAt(int row) {
+    public TransactionDto getTransactionAt(int row) {
         return transactions.get(row);
     }
 

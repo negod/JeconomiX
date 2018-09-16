@@ -17,19 +17,19 @@
                 <constraints nullable="false"/>
             </column>
             <column name="sum" type="DECIMAL(12, 2)" >
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="saldo" type="DECIMAL(12, 2)" >
-                <constraints nullable="true"/>
+                <constraints primaryKey="true" nullable="true"/>
             </column>
             <column name="budgetMonth" type="varchar(10)" >
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="budgetYear" type="Integer" >
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="originalValue" type="varchar(255)" >
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="company" type="varchar(36)" >
                 <constraints nullable="false"/>

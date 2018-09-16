@@ -90,26 +90,15 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public Optional<TransactionDto> createTransaction(TransactionDto transaction) {
-
-        Optional<Transaction> entity = mapper.mapFromDtoToEntity(transaction);
-        if (entity.isPresent()) {
-
-            super.startTransaction();
-            Optional<Company> byId = companyDao.getById(transaction.getCompany().getId());
-
-            CategoryTypeEnum type = byId.get().getCategory().getCategoryType().getType();
-            Transaction decideBudgetMonth = decideBudgetMonth(entity.get(), type);
-            decideBudgetMonth.setCompany(byId.get());
-
-            Optional<Transaction> persist = super.persist(entity.get());
-            super.commitTransaction();
-
-            if (persist.isPresent()) {
-                return mapper.mapFromEntityToDto(entity.get());
-            }
-
-        }
-        return Optional.empty();
+        return mapper.mapFromDtoToEntity(transaction).map(transactionEntity -> {
+            return companyDao.getById(transaction.getCompany().getId()).map(company -> {
+                CategoryTypeEnum type = company.getCategory().getCategoryType().getType();
+                Transaction decideBudgetMonth = decideBudgetMonth(transactionEntity, type);
+                return super.executeTransaction(() -> super.persist(transactionEntity)).map(persisted -> {
+                    return mapper.mapFromEntityToDto(persisted);
+                }).get();
+            }).get();
+        }).get();
     }
 
     public Optional<List<TransactionDto>> getAllTransactions() {

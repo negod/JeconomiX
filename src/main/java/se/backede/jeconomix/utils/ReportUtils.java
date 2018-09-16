@@ -107,10 +107,10 @@ public class ReportUtils {
         return dataset;
     }
 
-    public static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allBillCategories, Integer year) {
+    public static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allCategories, Integer year) {
         List<TransactionReportDto> transactionReports = new ArrayList<>();
 
-        for (CategoryDto categoryDto : allBillCategories) {
+        for (CategoryDto categoryDto : allCategories) {
             TransactionReportDto report = new TransactionReportDto();
             Set<CompanyDto> companies = categoryDto.getCompanies();
 
@@ -142,7 +142,7 @@ public class ReportUtils {
                     }
 
                 }
-                report.setSum(totalSum);
+                report.setSum(totalSum.plus());
                 report.setCategory(categoryDto.getName());
                 transactionReports.add(report);
             }

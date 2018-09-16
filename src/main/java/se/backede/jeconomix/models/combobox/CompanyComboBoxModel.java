@@ -7,9 +7,11 @@ package se.backede.jeconomix.models.combobox;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.forms.basic.component.GenericComboBoxModel;
 
@@ -30,9 +32,11 @@ public class CompanyComboBoxModel extends GenericComboBoxModel<CompanyDto, Categ
     @Override
     public void getAllData(CategoryTypeEnum type) {
         CategoryHandler.getInstance().getFilteredCategories(type).ifPresent(categories -> {
-            categories.forEach((categoryDto) -> {
-                reInitModelData(new ArrayList<>(categoryDto.getCompanies()));
+            List<CompanyDto> companyList = new ArrayList<>();
+            categories.forEach((category) -> {
+                companyList.addAll(category.getCompanies());
             });
+            reInitModelData(new ArrayList<>(companyList));
             Collections.sort(getItems());
         });
     }

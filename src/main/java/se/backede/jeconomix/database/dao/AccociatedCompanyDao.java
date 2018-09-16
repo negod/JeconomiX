@@ -14,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import se.backede.jeconomix.database.PersistenceHandler;
-import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.database.entity.CompanyAccociation_;
 
