@@ -35,6 +35,12 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
     public TransactionsTotalReport(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        initChart(currentYear);
+    }
+
+    private void initChart(Integer year) {
+
+        yearLabel.setText(year.toString());
 
         List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL, currentYear);
         List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE, currentYear);
@@ -75,6 +81,10 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
     private void initComponents() {
 
         lineChartPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        previousBtn = new javax.swing.JButton();
+        nextBtn = new javax.swing.JButton();
+        yearLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -89,7 +99,52 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         );
         lineChartPanelLayout.setVerticalGroup(
             lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 404, Short.MAX_VALUE)
+            .addGap(0, 444, Short.MAX_VALUE)
+        );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        previousBtn.setText("Previous");
+        previousBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousBtnActionPerformed(evt);
+            }
+        });
+
+        nextBtn.setText("Next");
+        nextBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextBtnActionPerformed(evt);
+            }
+        });
+
+        yearLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        yearLabel.setForeground(new java.awt.Color(0, 0, 0));
+        yearLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        yearLabel.setText("YEAR");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(341, 341, 341)
+                .addComponent(previousBtn)
+                .addGap(18, 18, 18)
+                .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addComponent(nextBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(previousBtn)
+                    .addComponent(nextBtn)
+                    .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -97,18 +152,35 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void previousBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousBtnActionPerformed
+        currentYear--;
+        initChart(currentYear);
+    }//GEN-LAST:event_previousBtnActionPerformed
+
+    private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
+        currentYear++;
+        initChart(currentYear);
+    }//GEN-LAST:event_nextBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel lineChartPanel;
+    private javax.swing.JButton nextBtn;
+    private javax.swing.JButton previousBtn;
+    private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
 }

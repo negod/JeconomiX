@@ -20,6 +20,7 @@ public class FileChooser {
 
     private static final String XML = "xml";
     private static final String CSV = "csv";
+    private static final String FOLDER = "folder";
 
     private static final FileChooser INSTANCE = new FileChooser();
 

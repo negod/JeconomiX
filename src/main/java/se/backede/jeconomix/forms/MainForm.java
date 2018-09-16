@@ -330,7 +330,7 @@ public class MainForm extends NegodJFrame {
 
             };
 
-            CsvExtractor<Transactions> extractor = new CsvExtractor(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CSV_FILE_HA_HEADERS);
+            CsvExtractor<Transactions> extractor = new CsvExtractor<>(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CSV_FILE_HA_HEADERS);
 
             extractor.getRecords().ifPresent(records -> {
                 extractor.executeLogic(startImporterDialog);

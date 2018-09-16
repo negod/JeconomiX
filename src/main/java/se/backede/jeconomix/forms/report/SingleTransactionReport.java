@@ -26,7 +26,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.dto.TransactionDto;
@@ -217,7 +216,8 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
             monthList.stream().filter((month) -> (transaction.getBudgetMonth().equals(month))).forEachOrdered((month) -> {
                 BigDecimal currentSum = sums.get(month);
                 if (transaction.getSum() != null) {
-                    BigDecimal newSum = currentSum.add(transaction.getSum());
+                    double abs = Math.abs(transaction.getSum().doubleValue());
+                    BigDecimal newSum = currentSum.add(BigDecimal.valueOf(abs));
                     sums.put(month, newSum);
                 }
             });

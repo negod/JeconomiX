@@ -162,8 +162,8 @@ public class ReportUtils {
             for (TransactionReportDto report : reports) {
                 BigDecimal reportSum = report.getMonthReport().get(month);
                 if (reportSum != null) {
-                    BigDecimal oldSum = currentSum;
-                    currentSum = currentSum.add(report.getMonthReport().get(month));
+                    double abs = Math.abs(reportSum.doubleValue());
+                    currentSum = currentSum.add(BigDecimal.valueOf(abs));
                     sums.put(month, currentSum);
                 }
             }
