@@ -26,6 +26,7 @@ public class CompanyDto extends GenericDto implements Comparable<CompanyDto> {
 
     @ComboBoxField
     private String name;
+    private String originalName;
     private CategoryDto category;
     private Set<TransactionDto> transactions = new HashSet<>();
     private Set<CompanyAccociationDto> accociations = new HashSet<>();

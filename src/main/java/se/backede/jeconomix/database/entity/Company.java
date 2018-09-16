@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
@@ -51,12 +52,16 @@ import se.backede.jeconomix.constants.EntityConstants;
         filters = {
             @TokenFilterDef(factory = LowerCaseFilterFactory.class)
         })
+@EqualsAndHashCode(exclude = {"transactions", "accociations", "category"})
 public class Company extends GenericEntity {
 
     @Analyzer(definition = "company_customanalyzer")
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
     @Column(name = "name", insertable = true, unique = true)
     private String name;
+
+    @Column(name = "originalName", insertable = true, unique = true)
+    private String originalName;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")

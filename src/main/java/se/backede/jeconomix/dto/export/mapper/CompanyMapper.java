@@ -23,11 +23,13 @@ public class CompanyMapper {
         dto.setName(input.getName());
         dto.setUpdatedDate(input.getUpdatedDate());
         dto.setCategory(input.getCategory().getId());
+        dto.setOriginalName(input.getOriginalName());
         return dto;
     }
 
     public static CompanyDto mapToDto(CompanyExportDto input) {
         CompanyDto dto = new CompanyDto(input.getName());
+        dto.setOriginalName(input.getOriginalName());
         dto.setId(input.getId());
         dto.setUpdatedDate(input.getUpdatedDate());
         CategoryDto expDto = new CategoryDto();

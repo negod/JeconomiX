@@ -6,6 +6,7 @@
 package se.backede.jeconomix.forms;
 
 import com.backede.fileutils.csv.parser.CsvExtractor;
+import java.io.File;
 import se.backede.jeconomix.forms.report.TransactionReport;
 import se.backede.jeconomix.forms.importexport.FileChooser;
 import se.backede.jeconomix.forms.company.CompanyEditor;
@@ -65,6 +66,7 @@ public class MainForm extends NegodJFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         importerMenu = new javax.swing.JMenu();
         importTransactionMenuItem = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         importMenu = new javax.swing.JMenu();
         importCategoriesMenuItem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
@@ -111,6 +113,14 @@ public class MainForm extends NegodJFrame {
             }
         });
         importerMenu.add(importTransactionMenuItem);
+
+        jMenuItem2.setText("Transaction - Folder");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        importerMenu.add(jMenuItem2);
 
         importMenu.setText("Listdata");
 
@@ -302,43 +312,64 @@ public class MainForm extends NegodJFrame {
     }//GEN-LAST:event_exportExpenseTypesActionPerformed
 
     private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
+        importTransactions(JFileChooser.FILES_AND_DIRECTORIES);
+    }//GEN-LAST:event_importTransactionMenuItemActionPerformed
 
-        FileChooser.getInstance().getCsvFilePath(JFileChooser.FILES_AND_DIRECTORIES).ifPresent((String filePath) -> {
+    private void importTransactions(Integer importType) {
 
-            Consumer<Transactions> startImporterDialog = transactions -> {
+        FileChooser.getInstance().getCsvFilePath(importType).ifPresent((String filePath) -> {
 
-                transactions.getValidTransactionsForInsert().ifPresent(validTransactions -> {
+            File file = new File(filePath);
 
-                    ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
-                    progressBar.setLocationRelativeTo(this);
-                    progressBar.setVisible(true);
-
-                    EventController.getInstance().notifyObservers(ProgressEvent.SET_MAX_VALUE, () -> new ProgressDto(validTransactions.size(), "Creating transactions"));
-
-                    for (TransactionWrapper transactionWrapper : validTransactions) {
-                        TransactionHandler.getInstance().createTransaction(transactionWrapper.getTransactionDto()).ifPresent(action -> {
-                            EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, () -> new ProgressDto(1, "Creating transaction: ".concat(transactionWrapper.getTransactionDto().getOriginalValue())));
-                        });
+            if (file.isDirectory()) {
+                for (File listFile : file.listFiles()) {
+                    if (listFile.isFile()) {
+                        log.info("Importing file {}", listFile.getAbsolutePath());
+                        importTransactionsToDb(listFile.getAbsolutePath());
                     }
+                }
+            } else {
+                log.info("Importing file {}", filePath);
+                importTransactionsToDb(filePath);
+            }
+        });
+    }
 
-                    EventController.getInstance().notifyObservers(ProgressEvent.DONE_AND_CLOSE, () -> new ProgressDto(validTransactions.size(), "Done creating transactions"));
-                });
+    private void importTransactionsToDb(String filePath) {
+        CsvExtractor<Transactions> extractor = new CsvExtractor<>(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CSV_FILE_HA_HEADERS);
 
-                transactions.getNewTransactionsToEdit().ifPresent(transactionsForEdit -> {
-                    new Importer(this, true, transactionsForEdit, NordeaCsvFields.TRANSACTION).setVisible(true);
-                });
+        extractor.getRecords().ifPresent(records -> {
+            extractor.executeLogic(createTransactionConsumer());
+        });
+    }
 
-            };
+    private Consumer<Transactions> createTransactionConsumer() {
+        Consumer<Transactions> startImporterDialog = transactions -> {
 
-            CsvExtractor<Transactions> extractor = new CsvExtractor<>(new NordeaCsvTransactionImporter(), filePath, CsvExtractor.CSV_FILE_HA_HEADERS);
+            transactions.getValidTransactionsForInsert().ifPresent(validTransactions -> {
 
-            extractor.getRecords().ifPresent(records -> {
-                extractor.executeLogic(startImporterDialog);
+                ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.IMPORT);
+                progressBar.setLocationRelativeTo(this);
+                progressBar.setVisible(true);
+
+                EventController.getInstance().notifyObservers(ProgressEvent.SET_MAX_VALUE, () -> new ProgressDto(validTransactions.size(), "Creating transactions"));
+
+                for (TransactionWrapper transactionWrapper : validTransactions) {
+                    TransactionHandler.getInstance().createTransaction(transactionWrapper.getTransactionDto()).ifPresent(action -> {
+                        EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, () -> new ProgressDto(1, "Creating transaction: ".concat(transactionWrapper.getTransactionDto().getOriginalValue())));
+                    });
+                }
+
+                EventController.getInstance().notifyObservers(ProgressEvent.DONE_AND_CLOSE, () -> new ProgressDto(validTransactions.size(), "Done creating transactions"));
             });
 
-        });
+            transactions.getNewTransactionsToEdit().ifPresent(transactionsForEdit -> {
+                new Importer(this, true, transactionsForEdit, NordeaCsvFields.TRANSACTION).setVisible(true);
+            });
 
-    }//GEN-LAST:event_importTransactionMenuItemActionPerformed
+        };
+        return startImporterDialog;
+    }
 
     private void importCategoriesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importCategoriesMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.FILES_AND_DIRECTORIES);
@@ -362,6 +393,10 @@ public class MainForm extends NegodJFrame {
         new TransactionsTotalReport(this, true).setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        importTransactions(JFileChooser.DIRECTORIES_ONLY);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem billReportMenuItem;
     private se.backede.jeconomix.forms.budget.BudgetQuarter budgetQuarter1;
@@ -384,6 +419,7 @@ public class MainForm extends NegodJFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;

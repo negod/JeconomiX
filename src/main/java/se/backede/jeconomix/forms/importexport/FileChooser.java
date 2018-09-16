@@ -39,6 +39,7 @@ public class FileChooser {
                 jfc.setDialogTitle("Select destinationfolder");
                 jfc.setDialogType(JFileChooser.SAVE_DIALOG);
                 jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
                 break;
             case JFileChooser.FILES_AND_DIRECTORIES:
                 jfc.setDialogTitle("Select file to import");

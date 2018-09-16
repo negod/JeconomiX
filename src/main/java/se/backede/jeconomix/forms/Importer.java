@@ -363,6 +363,9 @@ public class Importer extends NegodDialog {
 
                 company.getTransactions().stream().map((transaction) -> {
 
+                    // Set the original value for update later
+                    company.setOriginalName(transaction.getOriginalValue());
+
                     accComp.ifPresentOrElse(accCompany -> {
                         transaction.setAscociatedCompany(accCompany);
                         transaction.setCompany(companyState.get(company.getName()).getParentCompany().get());
@@ -377,6 +380,9 @@ public class Importer extends NegodDialog {
                 }).forEachOrdered((transaction) -> {
                     TransactionHandler.getInstance().createTransaction(transaction);
                 });
+
+                // Update company with original value
+                CompanyHandler.getInstance().updateCompany(company);
 
                 Supplier<ProgressDto> increaseValue = () -> new ProgressDto(1, company.getName());
                 EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, increaseValue);

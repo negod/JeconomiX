@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import se.backede.jeconomix.constants.EntityConstants;
@@ -33,6 +34,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 @Getter
 @Setter
 @NamedQuery(name = EntityQueries.TRANSACTION_EXISTS, query = "select t from Transaction t where t.company =:company  AND t.transDate =:date and t.saldo=:saldo and t.sum=:sum and t.originalValue=:originalValue")
+@EqualsAndHashCode(exclude = {"company", "ascociatedCompany"})
 public class Transaction extends GenericEntity {
 
     private Date transDate;
@@ -55,31 +57,5 @@ public class Transaction extends GenericEntity {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ascociatedCompany", referencedColumnName = "id", insertable = true)
     private CompanyAccociation ascociatedCompany;
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.transDate);
-        hash = 59 * hash + Objects.hashCode(this.sum);
-        hash = 59 * hash + Objects.hashCode(this.saldo);
-        return hash;
-    }
-
-    public boolean equals(TransactionDto obj) {
-        if (obj == null) {
-            return false;
-        }
-        final TransactionDto other = (TransactionDto) obj;
-        if (!Objects.equals(this.transDate, other.getTransDate())) {
-            return false;
-        }
-        if (!Objects.equals(this.sum, other.getSum())) {
-            return false;
-        }
-        if (!Objects.equals(this.saldo, other.getSaldo())) {
-            return false;
-        }
-        return true;
-    }
 
 }

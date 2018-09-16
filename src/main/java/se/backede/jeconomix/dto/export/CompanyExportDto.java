@@ -23,5 +23,6 @@ public class CompanyExportDto {
     private Date updatedDate;
     private String name;
     private String category;
+    private String originalName;
 
 }

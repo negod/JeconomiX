@@ -25,8 +25,8 @@ public class NordeaTransactionExtractor extends TransactionExtractor {
         super.setTransactionSum(wrapper, NordeaCsvFields.BELOPP);
         super.setTransactionSaldo(wrapper, NordeaCsvFields.SALDO);
         super.setTransactionDate(wrapper, NordeaCsvFields.DATE);
-        super.setTransactionCompany(wrapper, NordeaCsvFields.TRANSACTION);
         super.setTransactionOriginalValue(wrapper, NordeaCsvFields.ORIGINAL_VALUE);
+        super.setTransactionCompany(wrapper, NordeaCsvFields.TRANSACTION);
 
         log.debug("Transaction created {} ", wrapper.getTransactionDto().toString());
 

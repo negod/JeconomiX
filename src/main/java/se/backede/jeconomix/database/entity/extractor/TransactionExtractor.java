@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.CompanyAccociationHandler;
 import se.backede.jeconomix.database.CompanyHandler;
+import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.importer.TransactionWrapper;
 
 /**
@@ -79,6 +80,7 @@ public abstract class TransactionExtractor {
     }
 
     public void setTransactionCompany(TransactionWrapper transaction, CsvColumn column) {
+
         transaction.getCsvRecord().getColumn(column).ifPresent((String value) -> {
 
             CompanyAccociationHandler.getInstance().getAccociatedCompanyByName(value).ifPresent(accComp -> {
@@ -91,7 +93,6 @@ public abstract class TransactionExtractor {
                     transaction.getTransactionDto().setCompany(company);
                 });
             }
-
         });
     }
 
