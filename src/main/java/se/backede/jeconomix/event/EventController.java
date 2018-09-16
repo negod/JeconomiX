@@ -54,20 +54,20 @@ public class EventController {
             syncedEventMap.getOrDefault(event.getClass(), Optional.empty()).ifPresent(container -> {
                 container.listenForEvent(event, action);
             });
-            log.info("Observer added {}.{}", event.getClass().getName(), event.name());
         }
+        log.debug("Observer added {}.{}", event.getClass().getName(), event.name());
     }
 
     /**
      * Notifies all the observers with the eventtype selected from the class
      * that fires the event.
      *
-     * @param eventType
-     * @param data
+     * @param event
+     * @param supplier
      */
     public void notifyObservers(Enum event, Supplier supplier) {
+        log.debug("Notifying observers {}.{}", event.getClass().getName(), event.name());
         synchronized (syncedEventMap) {
-            log.info("Notifying observers {}.{}", event.getClass().getName(), event.name());
             syncedEventMap.getOrDefault(event.getClass(), Optional.empty())
                     .ifPresent(consumer -> consumer.fireEvent(event, supplier));
         }

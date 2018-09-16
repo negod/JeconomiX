@@ -10,5 +10,5 @@ package se.backede.jeconomix.event.events;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public enum CategoryEvent {
-    CREATE, UPDATE, DELETE, SELECTED, SET_SELECTED, GET_SELECTED;
+    CREATE, UPDATE, DELETE, SELECTED, SET_SELECTED, GET_SELECTED, CATEGORY_TYPE_SELECTED;
 }

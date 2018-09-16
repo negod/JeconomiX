@@ -25,7 +25,6 @@ import se.backede.jeconomix.database.CompanyAccociationHandler;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.events.TransactionEvent;
 import se.backede.jeconomix.models.table.TransactionModel;
 import se.backede.jeconomix.utils.GenericIterator;
 import se.backede.jeconomix.database.CompanyHandler;

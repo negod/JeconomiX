@@ -5,19 +5,23 @@
  */
 package se.backede.jeconomix.forms.company;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
-import se.backede.jeconomix.constants.ComboBoxRenderer;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.CompanyDto;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
-import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.CompanyModel;
 import se.backede.jeconomix.models.table.TransactionModel;
-import se.backede.jeconomix.renderer.combobox.CompanyItemRenderer;
 
 /**
  *
@@ -31,28 +35,54 @@ public class CompanyEditor extends NegodDialog {
     public CompanyEditor(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setCategoryCBData();
-        setTableData();
+        categoryChooser1.init();
+        setTableData(null, CategoryTypeEnum.INCOME);
+        setEvents();
     }
 
-    public void setCategoryCBData() {
-        categoryComboBox.setModel(new CategoryComboBoxModel());
-        categoryComboBox.setRenderer(new CompanyItemRenderer(ComboBoxRenderer.SINGLE));
+    public void setEvents() {
+
+        Consumer<CategoryTypeEnum> setSelectedCategoryType = categoryType -> {
+            if (categoryType != null) {
+                setTableData(null, categoryType);
+            }
+        };
+        EventController.getInstance().addObserver(CategoryEvent.CATEGORY_TYPE_SELECTED, setSelectedCategoryType);
+
+        Consumer<CategoryDto> setSelectedCategory = category -> {
+            if (category != null) {
+                setTableData(category, category.getCategoryType().getType());
+            }
+        };
+        EventController.getInstance().addObserver(CategoryEvent.SELECTED, setSelectedCategory);
+
     }
 
-    public void setTableData() {
-        CompanyHandler.getInstance().getAllCompanies().ifPresent(companies -> {
+    public void setTableData(CategoryDto category, CategoryTypeEnum categoryType) {
 
-            CompanyModel companyModel = new CompanyModel(companies);
+        CategoryHandler.getInstance().getFilteredCategories(categoryType).map(categories -> {
+            Set<CompanyDto> companies = new HashSet<>();
+            for (CategoryDto categoryDto : categories) {
+
+                if (category == null) {
+                    companies.addAll(categoryDto.getCompanies());
+                } else {
+                    if (categoryDto.getId().equals(category.getId())) {
+                        companies.addAll(categoryDto.getCompanies());
+                    }
+                }
+
+            }
+            return companies;
+
+        }).ifPresent(companyList -> {
+
+            CompanyModel companyModel = new CompanyModel(companyList.stream().collect(Collectors.toList()));
             companyTable.setModel(companyModel);
 
-            if (!companies.isEmpty()) {
+            if (!companyList.isEmpty()) {
                 companyTable.setRowSelectionInterval(0, 0);
                 CompanyDto selectedCompany = companyModel.getCompanyAt(0);
-
-                //Set bill combobox
-                CategoryComboBoxModel billComboBoxModel = (CategoryComboBoxModel) categoryComboBox.getModel();
-                billComboBoxModel.setSelectedItem(selectedCompany.getCategory());
 
                 //Align columns to right
                 DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
@@ -80,8 +110,6 @@ public class CompanyEditor extends NegodDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        categoryComboBox = new javax.swing.JComboBox<>();
-        billCategoryLabel = new javax.swing.JLabel();
         transactionSumLabel = new javax.swing.JLabel();
         companyNameLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -89,16 +117,9 @@ public class CompanyEditor extends NegodDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         companyTable = new javax.swing.JTable();
         sumLabel = new javax.swing.JLabel();
+        categoryChooser1 = new se.backede.jeconomix.forms.category.CategoryChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        categoryComboBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                categoryComboBoxItemStateChanged(evt);
-            }
-        });
-
-        billCategoryLabel.setText("Category");
 
         transactionSumLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         transactionSumLabel.setText("jLabel1");
@@ -144,24 +165,25 @@ public class CompanyEditor extends NegodDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(companyNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(billCategoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sumLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transactionSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(categoryChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE))
+                                .addGap(2, 2, 2)
+                                .addComponent(companyNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sumLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(transactionSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -174,13 +196,12 @@ public class CompanyEditor extends NegodDialog {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(transactionSumLabel)
-                    .addComponent(billCategoryLabel)
-                    .addComponent(sumLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(transactionSumLabel)
+                        .addComponent(sumLabel))
+                    .addComponent(categoryChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 18, Short.MAX_VALUE))
         );
 
         pack();
@@ -190,10 +211,6 @@ public class CompanyEditor extends NegodDialog {
         int selectedRow = companyTable.getSelectedRow();
         CompanyModel model = (CompanyModel) companyTable.getModel();
         CompanyDto company = model.getCompanyAt(selectedRow);
-
-        if (company.getCategory() != null) {
-            categoryComboBox.setSelectedItem(company.getCategory());
-        }
 
         if (company.getTransactions() != null) {
             DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
@@ -210,22 +227,8 @@ public class CompanyEditor extends NegodDialog {
         companyNameLabel.setText(company.getName());
     }//GEN-LAST:event_companyTableMouseClicked
 
-    private void categoryComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_categoryComboBoxItemStateChanged
-        int selectedRow = companyTable.getSelectedRow();
-        CompanyModel model = (CompanyModel) companyTable.getModel();
-        CompanyDto company = model.getCompanyAt(selectedRow);
-
-        CategoryComboBoxModel expModel = (CategoryComboBoxModel) categoryComboBox.getModel();
-        CategoryDto category = (CategoryDto) expModel.getSelectedItem();
-        company.setCategory(category);
-        CompanyHandler.getInstance().setCategory(company, category);
-
-        model.fireTableDataChanged();
-    }//GEN-LAST:event_categoryComboBoxItemStateChanged
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel billCategoryLabel;
-    private javax.swing.JComboBox<String> categoryComboBox;
+    private se.backede.jeconomix.forms.category.CategoryChooser categoryChooser1;
     private javax.swing.JLabel companyNameLabel;
     private javax.swing.JTable companyTable;
     private javax.swing.JScrollPane jScrollPane1;

@@ -213,18 +213,22 @@ public class CategoryChooser extends NegodPanel {
 
     private void incomeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeRadioButtonActionPerformed
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.INCOME));
+        EventController.getInstance().notifyObservers(CategoryEvent.CATEGORY_TYPE_SELECTED, () -> CategoryTypeEnum.INCOME);
     }//GEN-LAST:event_incomeRadioButtonActionPerformed
 
     private void transferRadionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transferRadionButtonActionPerformed
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.TRANSFER));
+        EventController.getInstance().notifyObservers(CategoryEvent.CATEGORY_TYPE_SELECTED, () -> CategoryTypeEnum.TRANSFER);
     }//GEN-LAST:event_transferRadionButtonActionPerformed
 
     private void billRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billRadioButtonActionPerformed
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.BILL));
+        EventController.getInstance().notifyObservers(CategoryEvent.CATEGORY_TYPE_SELECTED, () -> CategoryTypeEnum.BILL);
     }//GEN-LAST:event_billRadioButtonActionPerformed
 
     private void expenseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseRadioButtonActionPerformed
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.EXPENSE));
+        EventController.getInstance().notifyObservers(CategoryEvent.CATEGORY_TYPE_SELECTED, () -> CategoryTypeEnum.EXPENSE);
     }//GEN-LAST:event_expenseRadioButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
