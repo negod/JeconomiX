@@ -5,8 +5,6 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.exception.ConstraintException;
-import com.negod.generics.persistence.exception.DaoException;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.YearMonth;
 import java.util.Optional;
@@ -16,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.entity.budget.Budget;
+import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 import se.backede.jeconomix.dto.budget.BudgetDto;
+import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 
 /**
  *
@@ -26,7 +26,9 @@ import se.backede.jeconomix.dto.budget.BudgetDto;
 public class BudgetHandler {
 
     BudgetDao dao = new BudgetDao();
-    DtoEntityBaseMapper<BudgetDto, Budget> mapper = new DtoEntityBaseMapper(BudgetDto.class, Budget.class);
+
+    DtoEntityBaseMapper<BudgetDto, Budget> MAPPER = new DtoEntityBaseMapper<>(BudgetDto.class, Budget.class);
+    DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> EXPENSE_MAPPER = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
 
     private static final BudgetHandler INSTANCE = new BudgetHandler();
 
@@ -38,12 +40,12 @@ public class BudgetHandler {
     }
 
     public Optional<BudgetDto> createBudget(BudgetDto budget) {
-        Optional<Budget> mapFromDtoToEntity = mapper.mapFromDtoToEntity(budget);
+        Optional<Budget> mapFromDtoToEntity = MAPPER.mapFromDtoToEntity(budget);
         if (mapFromDtoToEntity.isPresent()) {
             dao.startTransaction();
             Optional<Budget> persist = dao.persist(mapFromDtoToEntity.get());
             dao.commitTransaction();
-            return mapper.mapFromEntityToDto(persist.get());
+            return MAPPER.mapFromEntityToDto(persist.get());
         }
         return Optional.empty();
     }
@@ -57,7 +59,7 @@ public class BudgetHandler {
             Budget budget = (Budget) query.getSingleResult();
 
             if (budget != null) {
-                return mapper.mapFromEntityToDto(budget);
+                return MAPPER.mapFromEntityToDto(budget);
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);

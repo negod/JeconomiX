@@ -20,13 +20,12 @@ import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class BudgetExpenseHandler {
+public class BudgetExpenseHandler extends BudgetExpenseDao {
 
-    private final BudgetExpenseDao dao = new BudgetExpenseDao();
     private final BudgetDao budgetDao = new BudgetDao();
     private final CategoryDao categoryDao = new CategoryDao();
 
-    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> mapper = new DtoEntityBaseMapper(BudgetExpenseDto.class, BudgetExpense.class);
+    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> mapper = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
 
     private static final BudgetExpenseHandler INSTANCE = new BudgetExpenseHandler();
 
@@ -49,7 +48,7 @@ public class BudgetExpenseHandler {
                 entity.setCategory(category);
             });
 
-            return dao.executeTransaction(() -> dao.persist(entity)).map(persisted -> {
+            return super.executeTransaction(() -> super.persist(entity)).map(persisted -> {
                 return mapper.mapFromEntityToDto(persisted).get();
             });
 
@@ -60,9 +59,9 @@ public class BudgetExpenseHandler {
     public Optional<BudgetExpenseDto> updateBudgetExpense(BudgetExpenseDto dto) {
         Optional<BudgetExpense> mapFromDtoToEntity = mapper.mapFromDtoToEntity(dto);
         if (mapFromDtoToEntity.isPresent()) {
-            dao.startTransaction();
+            super.startTransaction();
 
-            Optional<BudgetExpense> budgetExpenseEntity = dao.getById(dto.getId());
+            Optional<BudgetExpense> budgetExpenseEntity = super.getById(dto.getId());
             if (budgetExpenseEntity.isPresent()) {
                 if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
                     Optional<Category> categoryEntity = CategoryHandler.getInstance().getById(dto.getCategory().getId());
@@ -72,9 +71,9 @@ public class BudgetExpenseHandler {
 
             budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
 
-            BudgetExpense merge = dao.getEntityManager().merge(budgetExpenseEntity.get());
+            BudgetExpense merge = super.getEntityManager().merge(budgetExpenseEntity.get());
             Optional<BudgetExpenseDto> mapFromEntityToDto = mapper.mapFromEntityToDto(merge);
-            dao.commitTransaction();
+            super.commitTransaction();
 
             return mapFromEntityToDto;
 
@@ -82,11 +81,8 @@ public class BudgetExpenseHandler {
         return Optional.empty();
     }
 
-    public Boolean deleteBudgetExpense(BudgetExpenseDto dto) {
-        dao.startTransaction();
-        Optional<Boolean> delete = dao.delete(dto.getId());
-        dao.commitTransaction();
-        return delete.get();
+    public Optional<Boolean> deleteBudgetExpense(BudgetExpenseDto dto) {
+        return super.executeTransactionBoolean(() -> super.delete(dto.getId()));
     }
 
     public Optional<BudgetExpenseDto> upsertBudgetExpense(BudgetExpenseDto dto) {

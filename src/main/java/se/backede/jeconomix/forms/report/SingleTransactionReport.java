@@ -62,13 +62,14 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         setTableData();
         addLineChart(reports);
 
+        setCompanyComboBox();
         extractCompaniesFromTransactoins();
         extractYears();
         extractMonths();
 
         setYearComboBox();
         setMonthComboBox();
-        setCompanyComboBox();
+
     }
 
     public void extractCompaniesFromTransactoins() {
@@ -109,6 +110,7 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companyCB.getComboBoxModel().addElement(blancCompany);
         companyCB.setSelectedItem(blancCompany);
+
     }
 
     public void addLineChart(TransactionReportDto reports) {

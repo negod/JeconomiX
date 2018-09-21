@@ -7,11 +7,16 @@ package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.Optional;
+import java.util.function.Consumer;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.BudgetEvent;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.table.BudgetModel;
 
@@ -30,6 +35,7 @@ public class BudgetMonth extends NegodPanel {
      */
     public BudgetMonth() {
         initComponents();
+        setEvents();
     }
 
     public void setMonth(YearMonth yearMonth) {
@@ -38,12 +44,55 @@ public class BudgetMonth extends NegodPanel {
 
         billTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.BILL));
         setUpDropDownColumn(billTable, billTable.getColumnModel().getColumn(0), CategoryTypeEnum.BILL);
+        BudgetModel billModel = (BudgetModel) billTable.getModel();
+        totalBillLbl.setText(billModel.getTotalSumForColumn(1).toString());
 
         expenseTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.EXPENSE));
         setUpDropDownColumn(expenseTable, expenseTable.getColumn(CategoryTypeEnum.EXPENSE.name()), CategoryTypeEnum.EXPENSE);
+        BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
+        totalExpenseLbl.setText(expenseModel.getTotalSumForColumn(1).toString());
 
         incomeTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.INCOME));
         setUpDropDownColumn(incomeTable, incomeTable.getColumn(CategoryTypeEnum.INCOME.name()), CategoryTypeEnum.INCOME);
+        BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
+        totalIncomeLbl.setText(icomeModel.getTotalSumForColumn(1).toString());
+
+    }
+
+    public void setEvents() {
+
+        Consumer<BudgetExpenseDto> createBudgetExpense = (dto) -> {
+
+            if (dto.getBudget().getMonth().equals(currentYearMonth.getMonth()) && dto.getBudget().getYear() == currentYearMonth.getYear()) {
+
+                switch (dto.getCategory().getCategoryType().getType()) {
+
+                    case INCOME:
+                        BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
+                        icomeModel.addBudgetExpence(dto);
+                        totalIncomeLbl.setText(icomeModel.getTotalSumForColumn(1).toString());
+                        break;
+                    case EXPENSE:
+                        BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
+                        expenseModel.addBudgetExpence(dto);
+                        totalExpenseLbl.setText(expenseModel.getTotalSumForColumn(1).toString());
+                        break;
+                    case BILL:
+                        BudgetModel billModel = (BudgetModel) billTable.getModel();
+                        billModel.addBudgetExpence(dto);
+                        totalBillLbl.setText(billModel.getTotalSumForColumn(1).toString());
+                        break;
+                    case TRANSFER:
+                        break;
+                    default:
+                        throw new AssertionError(dto.getCategory().getCategoryType().getType().name());
+
+                }
+
+            }
+
+        };
+        EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
 
     }
 
@@ -339,8 +388,14 @@ public class BudgetMonth extends NegodPanel {
         model.removeBudgetExpenseAt(table.getSelectedRow());
     }
 
+    private void addBudgetLine(CategoryTypeEnum category, Optional<BudgetExpenseDto> budgetExpense) {
+        AddBudgetLine budgetLine = new AddBudgetLine(budgetExpense, currentYearMonth);
+        budgetLine.init(category);
+        budgetLine.setVisible(true);
+    }
+
     private void addIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIncomeBtnActionPerformed
-        addBudgetExense(incomeTable);
+        addBudgetLine(CategoryTypeEnum.INCOME, Optional.empty());
     }//GEN-LAST:event_addIncomeBtnActionPerformed
 
     private void removeIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeIncomeBtnActionPerformed
@@ -352,7 +407,7 @@ public class BudgetMonth extends NegodPanel {
     }//GEN-LAST:event_removeExpenseBtnActionPerformed
 
     private void addBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBillBtnActionPerformed
-        addBudgetExense(billTable);
+        addBudgetLine(CategoryTypeEnum.BILL, Optional.empty());
     }//GEN-LAST:event_addBillBtnActionPerformed
 
     private void removeBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBillBtnActionPerformed
@@ -360,7 +415,7 @@ public class BudgetMonth extends NegodPanel {
     }//GEN-LAST:event_removeBillBtnActionPerformed
 
     private void addExpenseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addExpenseBtnActionPerformed
-        addBudgetExense(expenseTable);
+        addBudgetLine(CategoryTypeEnum.EXPENSE, Optional.empty());
     }//GEN-LAST:event_addExpenseBtnActionPerformed
 
     private void budgetSuggestionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_budgetSuggestionBtnActionPerformed
@@ -390,58 +445,8 @@ public class BudgetMonth extends NegodPanel {
     private javax.swing.JLabel totalIncomeLbl;
     // End of variables declaration//GEN-END:variables
 
-    public void onEvent() {
-//        if (event.equalsEvent(CategoryTypeEnum.BILL)) {
-//            setValues(event.getValues(), CategoryTypeEnum.BILL);
-//        } else if (event.equalsEvent(CategoryTypeEnum.EXPENSE)) {
-//            setValues(event.getValues(), CategoryTypeEnum.EXPENSE);
-//        } else if (event.equalsEvent(CategoryTypeEnum.INCOME)) {
-//            setValues(event.getValues(), CategoryTypeEnum.INCOME);
-//        }
-    }
-
-    public void setValues(CategoryTypeEnum category) {
-//        Optional<Double> value = dto.getValue(BudgetValues.TOTAL).getValue().getDouble();
-//        Optional<String> month = dto.getValue(BudgetValues.MONTH).getValue().getString();
-//        Optional<Integer> year = dto.getValue(BudgetValues.YEAR).getValue().getInteger();
-
-//        if (month.isPresent()) {
-//            Month extractedMonth = Month.valueOf(month.get());
-//            if (!this.currentYearMonth.getMonth().equals(extractedMonth)) {
-//                return;
-//            }
-//
-//        }
-//        if (year.isPresent()) {
-//            Integer extractedYear = year.get();
-//            if (this.currentYearMonth.getYear() != extractedYear) {
-//                return;
-//            }
-//        }
-//        if (value.isPresent()) {
-//            Double extractedValue = value.get();
-//            switch (category) {
-//                case INCOME:
-//                    totalIncomeLbl.setText(extractedValue.toString());
-//                    break;
-//                case EXPENSE:
-//                    totalExpenseLbl.setText(extractedValue.toString());
-//                    break;
-//                case BILL:
-//                    totalBillLbl.setText(extractedValue.toString());
-//                    break;
-//                case TRANSFER:
-//                    break;
-//                default:
-//                    throw new AssertionError();
-//
-//            }
-//        }
-    }
-
     @Override
     public void init() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

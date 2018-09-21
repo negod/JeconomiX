@@ -3,9 +3,9 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
- 
+
     <changeSet id="Create Budget Expense table" author="Joakim Backede">
-        
+
         <createTable tableName="budget_expense">
             <column name="id" type="varchar(36)" >
                 <constraints primaryKey="true" nullable="false" />
@@ -23,18 +23,18 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
+
         <addForeignKeyConstraint baseColumnNames="budget"
                                  baseTableName="budget_expense"
-                                 constraintName="budget_expense_budget_fk"                                 
+                                 constraintName="budget_expense_budget_fk"
                                  referencedColumnNames="id"
                                  referencedTableName="budget"
                                  onDelete="NO ACTION"
                                  onUpdate="RESTRICT"/>
-        
+
         <addForeignKeyConstraint baseColumnNames="category"
                                  baseTableName="budget_expense"
-                                 constraintName="budget_expense_category_fk"                                 
+                                 constraintName="budget_expense_category_fk"
                                  referencedColumnNames="id"
                                  referencedTableName="category"
                                  onDelete="NO ACTION"
@@ -43,7 +43,13 @@
         <rollback>
             <dropTable tableName="budget_expense" cascadeConstraints="true" />
         </rollback>
-        
+
     </changeSet>
-    
+
+    <changeSet id="addComment" author="Joakim Backede">
+        <addColumn tableName="budget_expense">
+            <column name="comment" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

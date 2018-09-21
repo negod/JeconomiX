@@ -29,17 +29,18 @@ public class BudgetModel extends AbstractTableModel {
 
     private BudgetDto BUDGET;
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
-    private BigDecimal sum = BigDecimal.valueOf(0);
     private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;
-    private YearMonth yearMonth;
+    private YearMonth BUDGET_MONTH;
 
     public BudgetModel() {
     }
 
     public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {
-        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(yearMonth);
-        this.yearMonth = yearMonth;
+
+        this.BUDGET_MONTH = yearMonth;
         this.CATEGORY_TYPE = category;
+
+        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(yearMonth);
 
         if (retrievedBudget.isPresent()) {
             setFilteredCategories(retrievedBudget.get());
@@ -58,8 +59,6 @@ public class BudgetModel extends AbstractTableModel {
                 this.BUDGET = createBudget.get();
             }
         }
-
-        calculateTotalSumAndSendEvent();
 
     }
 
@@ -159,7 +158,6 @@ public class BudgetModel extends AbstractTableModel {
             if (upsertBudgetExpense.isPresent()) {
                 filteredCategories.set(rowIndex, upsertBudgetExpense.get());
                 fireTableCellUpdated(rowIndex, columnIndex);
-                calculateTotalSumAndSendEvent();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Budget transaction must have a category set!", "close", JOptionPane.INFORMATION_MESSAGE);
@@ -167,20 +165,12 @@ public class BudgetModel extends AbstractTableModel {
 
     }
 
-    public void calculateTotalSumAndSendEvent() {
-//        Dto dto = new Dto(BudgetValues.class);
-//
-//        Double total = BigDecimal.ZERO.doubleValue();
-//
-//        for (BudgetExpenseDto filteredCategory : filteredCategories) {
-//            total += filteredCategory.getEstimatedsum().doubleValue();
-//        }
-//
-//        dto.set(BudgetValues.TOTAL, total);
-//        dto.set(BudgetValues.MONTH, yearMonth.getMonth().name());
-//        dto.set(BudgetValues.YEAR, yearMonth.getYear());
-//
-//        EventController.getInstance().notifyObservers(CATEGORY_TYPE, dto);
+    public BigDecimal getTotalSumForColumn(int column) {
+        BigDecimal totalSum = BigDecimal.ZERO;
+        for (BudgetExpenseDto filteredCategory : filteredCategories) {
+            totalSum = totalSum.add(filteredCategory.getEstimatedsum());
+        }
+        return totalSum;
     }
 
     /**
@@ -194,18 +184,15 @@ public class BudgetModel extends AbstractTableModel {
     }
 
     public void removeBudgetExpenseAt(int row) {
-        Boolean deleteBudgetExpense = BudgetExpenseHandler.getInstance().deleteBudgetExpense(getBudgetExpenceAt(row));
-        if (deleteBudgetExpense) {
+        BudgetExpenseHandler.getInstance().deleteBudgetExpense(getBudgetExpenceAt(row)).ifPresent(action -> {
             filteredCategories.remove(row);
             this.fireTableRowsDeleted(row, row);
-            calculateTotalSumAndSendEvent();
-        }
+        });
     }
 
     public void addBudgetExpence(BudgetExpenseDto dto) {
         dto.setBudget(BUDGET);
         filteredCategories.add(dto);
         this.fireTableDataChanged();
-        calculateTotalSumAndSendEvent();
     }
 }
