@@ -5,9 +5,15 @@
  */
 package se.backede.jeconomix.forms.budget;
 
+import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Optional;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
@@ -28,20 +34,23 @@ public class AddBudgetLine extends javax.swing.JFrame {
 
     ComboBoxWrapper<CategoryDto, CategoryComboBoxModel> categoryCB;
 
-    private final YearMonth budgetMmonth;
-    private Optional<BudgetExpenseDto> expense = Optional.empty();
+    private final YearMonth BUDGET_MONTH;
+    private Optional<BudgetExpenseDto> EXPENSE = Optional.empty();
 
     public AddBudgetLine(Optional<BudgetExpenseDto> expense, YearMonth month) {
-        this.expense = expense;
-        this.budgetMmonth = month;
+        this.EXPENSE = expense;
+        this.BUDGET_MONTH = month;
         initComponents();
+
+        PlainDocument doc = (PlainDocument) sumTextField.getDocument();
+        installNumberCharacters(doc);
+
     }
 
     public void init(CategoryTypeEnum type) {
         categoryCB = new ComboBoxWrapper<>(categoryComboBox);
         categoryCB.setComboBoxModel(new CategoryComboBoxModel(type));
         categoryCB.setSelectedItem(categoryCB.getComboBoxModel().getItems().get(0));
-
         categoryTypeLabel.setText(type.name());
     }
 
@@ -101,8 +110,10 @@ public class AddBudgetLine extends javax.swing.JFrame {
         jLabel3.setLabelFor(sumTextField);
         jLabel3.setText("Sum:");
 
+        commentTextArea.setEditable(false);
         commentTextArea.setColumns(20);
         commentTextArea.setRows(5);
+        commentTextArea.setEnabled(false);
         jScrollPane1.setViewportView(commentTextArea);
 
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
@@ -185,7 +196,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
-        BudgetHandler.getInstance().getBudget(budgetMmonth).ifPresent(budget -> {
+        BudgetHandler.getInstance().getBudget(BUDGET_MONTH).ifPresent(budget -> {
             BudgetExpenseDto dto = new BudgetExpenseDto();
             dto.setBudget(budget);
             dto.setCategory(categoryCB.getSelectedItem());
@@ -216,4 +227,38 @@ public class AddBudgetLine extends javax.swing.JFrame {
     private javax.swing.JButton okBtn;
     private javax.swing.JTextField sumTextField;
     // End of variables declaration//GEN-END:variables
+
+    public static void installNumberCharacters(AbstractDocument document) {
+        document.setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                try {
+                    if (string.equals(".") && !fb.getDocument().getText(0, fb.getDocument().getLength()).contains(".")) {
+                        super.insertString(fb, offset, string, attr);
+                        return;
+                    }
+                    Double.parseDouble(string);
+                    super.insertString(fb, offset, string, attr);
+                } catch (NumberFormatException | BadLocationException e) {
+                    Toolkit.getDefaultToolkit().beep();
+                }
+
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                try {
+                    if (text.equals(".") && !fb.getDocument().getText(0, fb.getDocument().getLength()).contains(".")) {
+                        super.insertString(fb, offset, text, attrs);
+                        return;
+                    }
+                    Double.parseDouble(text);
+                    super.replace(fb, offset, length, text, attrs);
+                } catch (NumberFormatException | BadLocationException e) {
+                    Toolkit.getDefaultToolkit().beep();
+                }
+            }
+        });
+    }
+
 }

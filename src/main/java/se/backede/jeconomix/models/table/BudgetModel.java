@@ -7,8 +7,10 @@ package se.backede.jeconomix.models.table;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -33,6 +35,27 @@ public class BudgetModel extends AbstractTableModel {
     private YearMonth BUDGET_MONTH;
 
     public BudgetModel() {
+    }
+
+    public BudgetModel(List<BudgetExpenseDto> filteredCategories, Boolean categorize) {
+
+        if (categorize) {
+            Map<String, BudgetExpenseDto> categorized = new HashMap<>();
+            filteredCategories.forEach((BudgetExpenseDto filteredCategory) -> {
+                if (categorized.containsKey(filteredCategory.getCategory().getId())) {
+                    BigDecimal estimatedsum = categorized.get(filteredCategory.getCategory().getId()).getEstimatedsum();
+                    BigDecimal newSum = filteredCategory.getEstimatedsum().add(estimatedsum);
+                    categorized.get(filteredCategory.getCategory().getId()).setEstimatedsum(newSum);
+                } else {
+                    categorized.put(filteredCategory.getCategory().getId(), filteredCategory);
+                }
+            });
+            categorized.forEach((key, value) -> {
+                this.filteredCategories.add(value);
+            });
+        } else {
+            this.filteredCategories = filteredCategories;
+        }
     }
 
     public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {
