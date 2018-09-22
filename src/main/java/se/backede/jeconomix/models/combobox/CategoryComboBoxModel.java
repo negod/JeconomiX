@@ -6,9 +6,11 @@
 package se.backede.jeconomix.models.combobox;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
@@ -20,6 +22,8 @@ import se.backede.jeconomix.forms.basic.component.GenericComboBoxModel;
  */
 public class CategoryComboBoxModel extends GenericComboBoxModel<CategoryDto, CategoryTypeEnum> {
 
+    private static final long serialVersionUID = 1L;
+
     public CategoryComboBoxModel(CategoryTypeEnum filter) {
         super(filter);
     }
@@ -29,26 +33,28 @@ public class CategoryComboBoxModel extends GenericComboBoxModel<CategoryDto, Cat
     }
 
     @Override
-    public void getAllData() {
-        CategoryHandler.getInstance().getAllCategories().ifPresent(categories -> {
-            addElements(categories);
-            Collections.sort(getItems());
+    public Optional<List<CategoryDto>> getAllData() {
+        return CategoryHandler.getInstance().getAllCategories().map(categories -> {
+            return categories.stream()
+                    .sorted()
+                    .collect(Collectors.toList());
         });
     }
 
     @Override
-    public void getAllData(CategoryTypeEnum filter) {
-        CategoryHandler.getInstance().getFilteredCategories(filter).ifPresent(categories -> {
-            addElements(new ArrayList<>(categories));
-            Collections.sort(getItems());
-        });
+    public Optional<List<CategoryDto>> getAllData(CategoryTypeEnum filter) {
+        return CategoryHandler.getInstance().getFilteredCategories(filter);
 
     }
 
-    public void getAllData(CategoryTypeEnum... filter) {
-        for (CategoryTypeEnum categoryTypeEnum : filter) {
-            getAllData(categoryTypeEnum);
-        }
+    public Optional<List<CategoryDto>> getAllData(CategoryTypeEnum... filter) {
+        List<CategoryDto> allCategories = new ArrayList<>();
+        Arrays.asList(filter).forEach(category -> {
+            CategoryHandler.getInstance().getFilteredCategories(category).ifPresent(categoryList -> {
+                allCategories.addAll(categoryList);
+            });
+        });
+        return Optional.ofNullable(allCategories);
     }
 
 }

@@ -7,6 +7,7 @@ package se.backede.jeconomix.forms.basic.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import lombok.Getter;
@@ -22,15 +23,28 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
 
     private static final long serialVersionUID = 1L;
 
-    List<T> items = new ArrayList<>();
-    T selection = null;
+    private List<T> items = new ArrayList<>();
+    private T selection = null;
 
     public GenericComboBoxModel() {
-        getAllData();
+        getAllData().ifPresent(list -> {
+            this.items = list;
+            fireContentsChanged(this, items.size(), items.size());
+        });
     }
 
     public GenericComboBoxModel(E filter) {
-        getAllData(filter);
+        getAllData(filter).ifPresent(list -> {
+            this.items = list;
+            fireContentsChanged(this, items.size(), items.size());
+        });
+    }
+
+    public GenericComboBoxModel(E... filter) {
+        getAllData(filter).ifPresent(list -> {
+            this.items = list;
+            fireContentsChanged(this, items.size(), items.size());
+        });
     }
 
     @Override
@@ -54,11 +68,6 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
         return selection;
     }
 
-    public void reInitModelData(List<T> listData) {
-        items = listData;
-        fireContentsChanged(this, items.size(), items.size());
-    }
-
     public void addElement(T item) {
         items.add(item);
         fireContentsChanged(this, items.size(), items.size());
@@ -69,8 +78,10 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
         fireContentsChanged(this, items.size(), items.size());
     }
 
-    public abstract void getAllData();
+    public abstract Optional<List<T>> getAllData();
 
-    public abstract void getAllData(E filter);
+    public abstract Optional<List<T>> getAllData(E filter);
+
+    public abstract Optional<List<T>> getAllData(E... filter);
 
 }

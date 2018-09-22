@@ -37,7 +37,9 @@ public class BudgetModel extends AbstractTableModel {
     public BudgetModel() {
     }
 
-    public BudgetModel(List<BudgetExpenseDto> filteredCategories, Boolean categorize) {
+    public BudgetModel(List<BudgetExpenseDto> filteredCategories, Boolean categorize, CategoryTypeEnum category) {
+
+        this.CATEGORY_TYPE = category;
 
         if (categorize) {
             Map<String, BudgetExpenseDto> categorized = new HashMap<>();
@@ -218,4 +220,9 @@ public class BudgetModel extends AbstractTableModel {
         filteredCategories.add(dto);
         this.fireTableDataChanged();
     }
+
+    public List<BudgetExpenseDto> getAll() {
+        return filteredCategories;
+    }
+
 }

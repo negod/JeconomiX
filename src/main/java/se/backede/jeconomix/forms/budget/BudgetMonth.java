@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Optional;
 import java.util.function.Consumer;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
@@ -42,21 +42,16 @@ public class BudgetMonth extends NegodPanel {
         this.currentYearMonth = yearMonth;
         monthLabel.setText(yearMonth.getMonth().name());
 
-        billTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.BILL));
-        setUpDropDownColumn(billTable, billTable.getColumnModel().getColumn(0), CategoryTypeEnum.BILL);
-        BudgetModel billModel = (BudgetModel) billTable.getModel();
-        totalBillLbl.setText(billModel.getTotalSumForColumn(1).toString());
+        setInitData(billTable, yearMonth, totalExpenseLbl, CategoryTypeEnum.BILL);
+        setInitData(expenseTable, yearMonth, totalExpenseLbl, CategoryTypeEnum.EXPENSE);
+        setInitData(incomeTable, yearMonth, totalIncomeLbl, CategoryTypeEnum.INCOME);
+    }
 
-        expenseTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.EXPENSE));
-        setUpDropDownColumn(expenseTable, expenseTable.getColumn(CategoryTypeEnum.EXPENSE.name()), CategoryTypeEnum.EXPENSE);
-        BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
-        totalExpenseLbl.setText(expenseModel.getTotalSumForColumn(1).toString());
-
-        incomeTable.setModel(new BudgetModel(yearMonth, CategoryTypeEnum.INCOME));
-        setUpDropDownColumn(incomeTable, incomeTable.getColumn(CategoryTypeEnum.INCOME.name()), CategoryTypeEnum.INCOME);
-        BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
-        totalIncomeLbl.setText(icomeModel.getTotalSumForColumn(1).toString());
-
+    public void setInitData(JTable table, YearMonth budgetMonth, JLabel lbl, CategoryTypeEnum category) {
+        table.setModel(new BudgetModel(budgetMonth, category));
+        setUpDropDownColumn(table, table.getColumnModel().getColumn(0), category);
+        BudgetModel billModel = (BudgetModel) table.getModel();
+        lbl.setText(billModel.getTotalSumForColumn(1).toString());
     }
 
     public void setEvents() {
