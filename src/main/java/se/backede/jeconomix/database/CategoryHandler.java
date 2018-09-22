@@ -8,15 +8,15 @@ package se.backede.jeconomix.database;
 import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
 import com.negod.generics.persistence.update.ObjectUpdate;
 import com.negod.generics.persistence.update.UpdateType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Criteria;
 import org.hibernate.query.Query;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
@@ -57,10 +57,6 @@ public class CategoryHandler extends CategoryDao {
         }).orElse(Optional.empty());
     }
 
-    private Predicate<CategoryDto> isCategoryType(CategoryTypeEnum type) {
-        return p -> p.getCategoryType().getType().equals(type);
-    }
-
     public Optional<List<CategoryDto>> getAllCategories() {
         Optional<List<Category>> all = super.getAll();
         if (all.isPresent()) {
@@ -69,10 +65,10 @@ public class CategoryHandler extends CategoryDao {
         return Optional.empty();
     }
 
-    public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type, Integer year) {
+    public Optional<List<CategoryDto>> getFilteredCategories(Integer year, CategoryTypeEnum... type) {
         try {
             super.startTransaction();
-            Query query = super.getHibernateSession().getNamedQuery("test");
+            Query query = super.getHibernateSession().getNamedQuery(EntityQueries.FILTERED_CATEGORIES_BY_YEAR);
             query.setParameter("year", year);
             query.setParameter("type", type);
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -86,16 +82,18 @@ public class CategoryHandler extends CategoryDao {
         return Optional.empty();
     }
 
-    public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum type) {
-        Optional<List<Category>> all = super.getAll();
-        if (all.isPresent()) {
-            Optional<List<CategoryDto>> mapToDtoList = mapper.mapToDtoList(all.get());
-            List<CategoryDto> collect = mapToDtoList.get()
-                    .stream()
-                    .filter(isCategoryType(type))
-                    .collect(Collectors.<CategoryDto>toList());
-
-            return Optional.ofNullable(collect);
+    public Optional<List<CategoryDto>> getFilteredCategories(CategoryTypeEnum... type) {
+        try {
+            super.startTransaction();
+            Query query = super.getHibernateSession().getNamedQuery(EntityQueries.FILTERED_CATEGORIES);
+            query.setParameter("type", Arrays.asList(type));
+            query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            List<Category> categories = (List<Category>) query.list();
+            return mapper.mapToDtoList(categories);
+        } catch (NoResultException ex) {
+            log.debug("No result for query when getting Category");
+        } finally {
+            super.commitTransaction();
         }
         return Optional.empty();
     }

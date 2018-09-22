@@ -33,7 +33,7 @@ import se.backede.jeconomix.dto.TransactionReportDto;
 public class ReportUtils {
 
     public static List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type, Integer year) {
-        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(type, year);
+        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(year, type);
         if (categories.isPresent()) {
             return extractTransactionReportList(categories.get(), year);
         }

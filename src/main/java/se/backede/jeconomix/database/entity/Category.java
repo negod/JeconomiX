@@ -12,12 +12,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import se.backede.jeconomix.constants.EntityConstants;
+import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 
 /**
@@ -28,7 +30,11 @@ import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 @Entity
 @Getter
 @Setter
-@NamedQuery(name = "test", query = "select t from Category t left join t.companies c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id")
+@NamedQueries({
+    @NamedQuery(name = EntityQueries.FILTERED_CATEGORIES_BY_YEAR, query = "select t from Category t left join t.companies c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id"),
+    @NamedQuery(name = EntityQueries.FILTERED_CATEGORIES, query = "select t from Category t where t.categoryType.type IN :type")
+})
+
 public class Category extends GenericEntity {
 
     private String name;

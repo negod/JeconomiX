@@ -47,14 +47,9 @@ public class CategoryComboBoxModel extends GenericComboBoxModel<CategoryDto, Cat
 
     }
 
+    @Override
     public Optional<List<CategoryDto>> getAllData(CategoryTypeEnum... filter) {
-        List<CategoryDto> allCategories = new ArrayList<>();
-        Arrays.asList(filter).forEach(category -> {
-            CategoryHandler.getInstance().getFilteredCategories(category).ifPresent(categoryList -> {
-                allCategories.addAll(categoryList);
-            });
-        });
-        return Optional.ofNullable(allCategories);
+        return CategoryHandler.getInstance().getFilteredCategories(filter);
     }
 
 }
