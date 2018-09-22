@@ -24,13 +24,13 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="332" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="378" max="32767" attributes="0"/>
                   <Component id="jScrollPane2" alignment="0" pref="0" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="budgetSuggestionBtn" min="-2" pref="37" max="-2" attributes="0"/>
+                      <Component id="budgetSuggestionBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="monthLabel" min="-2" pref="265" max="-2" attributes="0"/>
+                      <Component id="monthLabel" min="-2" pref="151" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -323,7 +323,7 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="*"/>
+        <Property name="text" type="java.lang.String" value="Create budget"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="budgetSuggestionBtnActionPerformed"/>

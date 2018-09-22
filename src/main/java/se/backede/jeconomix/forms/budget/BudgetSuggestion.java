@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import javax.swing.ButtonModel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
@@ -24,7 +27,7 @@ import se.backede.jeconomix.utils.BudgetUtils;
  */
 public class BudgetSuggestion extends NegodDialog {
 
-    YearMonth yearMonth;
+    YearMonth CURRENT_BUDGET_MONTH;
 
     /**
      * Creates new form BudgetSuggestion
@@ -35,37 +38,64 @@ public class BudgetSuggestion extends NegodDialog {
      */
     public BudgetSuggestion(java.awt.Frame parent, boolean modal, YearMonth yearMonth) {
         super(parent, modal);
-        this.yearMonth = yearMonth;
+        this.CURRENT_BUDGET_MONTH = yearMonth;
         initComponents();
         yearLabel.setText(Integer.toString(yearMonth.getYear()));
         monthLabel.setText(yearMonth.getMonth().name());
+
+        baseBudgetOnBtnGroup.setSelected(baseOnBudgetRadioBtn.getModel(), true);
+        periodSelectionBtnGroup.setSelected(preMonthRadioBtn.getModel(), true);
+
     }
 
-//    private YearMonth decideBudgetMonth(){
-//
-//
-//
-//    }
     private void setBudgetTables(Map<CategoryTypeEnum, List<BudgetExpenseDto>> map) {
         map.forEach((key, dtoList) -> {
             switch (key) {
                 case INCOME:
                     incomeTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.INCOME));
-//                        totalIncomeLbl.setText(icomeModel.getTotalSumForColumn(1).toString());
                     break;
                 case EXPENSE:
                     expenseTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.EXPENSE));
-//                        totalExpenseLbl.setText(expenseModel.getTotalSumForColumn(1).toString());
                     break;
                 case BILL:
                     billTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.BILL));
-//                        totalBillLbl.setText(billModel.getTotalSumForColumn(1).toString());
                     break;
                 case TRANSFER:
                     break;
                 default:
                     throw new AssertionError(key.name());
             }
+        });
+    }
+
+    private void clearTables() {
+        incomeTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.INCOME));
+        expenseTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.EXPENSE));
+        billTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.BILL));
+    }
+
+    private void setBudgetFromActualOutcome(YearMonth yearMonth) {
+        BudgetUtils.getInstance().createBudgetFromTransaction(yearMonth).ifPresent(map -> {
+
+            Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
+                List<BudgetExpenseDto> budgetExpenses = new ArrayList<>();
+                map.forEach((key, value) -> {
+                    budgetExpenses.addAll(value);
+                });
+                return budgetExpenses;
+            };
+
+            EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
+            setBudgetTables(map);
+        });
+    }
+
+    private void setBudgetFromBudget(YearMonth yearMonth) {
+        BudgetHandler.getInstance().getBudget(yearMonth).ifPresent(budget -> {
+            Map<CategoryTypeEnum, List<BudgetExpenseDto>> mapPersons = budget.getBudgetExpenseSet()
+                    .stream()
+                    .collect(Collectors.groupingBy(dto -> dto.getCategory().getCategoryType().getType()));
+            setBudgetTables(mapPersons);
         });
     }
 
@@ -95,13 +125,13 @@ public class BudgetSuggestion extends NegodDialog {
         budgetTotal1 = new se.backede.jeconomix.forms.budget.BudgetTotal();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
+        baseOnBudgetRadioBtn = new javax.swing.JRadioButton();
+        baseOnOutcomeRadionBtn = new javax.swing.JRadioButton();
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        preYearRadioBtn = new javax.swing.JRadioButton();
+        preMonthRadioBtn = new javax.swing.JRadioButton();
+        preQuarterRadioBtn = new javax.swing.JRadioButton();
         suggestBudgetBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -177,11 +207,11 @@ public class BudgetSuggestion extends NegodDialog {
 
         jButton4.setText("Cancel");
 
-        baseBudgetOnBtnGroup.add(jRadioButton4);
-        jRadioButton4.setText("Base on budget");
+        baseBudgetOnBtnGroup.add(baseOnBudgetRadioBtn);
+        baseOnBudgetRadioBtn.setText("Base on budget");
 
-        baseBudgetOnBtnGroup.add(jRadioButton5);
-        jRadioButton5.setText("Base on outcome");
+        baseBudgetOnBtnGroup.add(baseOnOutcomeRadionBtn);
+        baseOnOutcomeRadionBtn.setText("Base on outcome");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -190,31 +220,31 @@ public class BudgetSuggestion extends NegodDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton4)
-                    .addComponent(jRadioButton5))
+                    .addComponent(baseOnBudgetRadioBtn)
+                    .addComponent(baseOnOutcomeRadionBtn))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton4)
+                .addComponent(baseOnBudgetRadioBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton5)
+                .addComponent(baseOnOutcomeRadionBtn)
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
         jButton2.setText("Analyze and suggest");
         jButton2.setEnabled(false);
 
-        periodSelectionBtnGroup.add(jRadioButton1);
-        jRadioButton1.setText("Previous year");
+        periodSelectionBtnGroup.add(preYearRadioBtn);
+        preYearRadioBtn.setText("Previous year");
 
-        periodSelectionBtnGroup.add(jRadioButton2);
-        jRadioButton2.setText("Previous month");
+        periodSelectionBtnGroup.add(preMonthRadioBtn);
+        preMonthRadioBtn.setText("Previous month");
 
-        periodSelectionBtnGroup.add(jRadioButton3);
-        jRadioButton3.setText("Previous quarter");
+        periodSelectionBtnGroup.add(preQuarterRadioBtn);
+        preQuarterRadioBtn.setText("Previous quarter");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -223,20 +253,20 @@ public class BudgetSuggestion extends NegodDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                    .addComponent(jRadioButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jRadioButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(preQuarterRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                    .addComponent(preMonthRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(preYearRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton1)
+                .addComponent(preYearRadioBtn)
                 .addGap(3, 3, 3)
-                .addComponent(jRadioButton2)
+                .addComponent(preMonthRadioBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
-                .addComponent(jRadioButton3)
+                .addComponent(preQuarterRadioBtn)
                 .addContainerGap())
         );
 
@@ -356,19 +386,29 @@ public class BudgetSuggestion extends NegodDialog {
 
     private void suggestBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestBudgetBtnActionPerformed
 
-        BudgetUtils.getInstance().createBudgetFromTransaction(yearMonth).ifPresent(map -> {
+        clearTables();
 
-            Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
-                List<BudgetExpenseDto> budgetExpenses = new ArrayList<>();
-                map.forEach((key, value) -> {
-                    budgetExpenses.addAll(value);
-                });
-                return budgetExpenses;
-            };
+        ButtonModel periodSelection = periodSelectionBtnGroup.getSelection();
+        ButtonModel basedOnSelection = baseBudgetOnBtnGroup.getSelection();
 
-            EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
-            setBudgetTables(map);
-        });
+        if (basedOnSelection.equals(baseOnOutcomeRadionBtn.getModel())) {
+            if (periodSelection.equals(preYearRadioBtn.getModel())) {
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusYears(1));
+            } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(1));
+            } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(3));
+            }
+        } else if (basedOnSelection.equals(baseOnBudgetRadioBtn.getModel())) {
+            if (periodSelection.equals(preYearRadioBtn.getModel())) {
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusYears(1));
+            } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(1));
+            } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(3));
+            }
+        }
+
     }//GEN-LAST:event_suggestBudgetBtnActionPerformed
 
     /**
@@ -376,6 +416,8 @@ public class BudgetSuggestion extends NegodDialog {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup baseBudgetOnBtnGroup;
+    private javax.swing.JRadioButton baseOnBudgetRadioBtn;
+    private javax.swing.JRadioButton baseOnOutcomeRadionBtn;
     private javax.swing.JTable billTable;
     private se.backede.jeconomix.forms.budget.BudgetTotal budgetTotal1;
     private javax.swing.JTable expenseTable;
@@ -387,17 +429,15 @@ public class BudgetSuggestion extends NegodDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel monthLabel;
     private javax.swing.ButtonGroup periodSelectionBtnGroup;
+    private javax.swing.JRadioButton preMonthRadioBtn;
+    private javax.swing.JRadioButton preQuarterRadioBtn;
+    private javax.swing.JRadioButton preYearRadioBtn;
     private javax.swing.JButton suggestBudgetBtn;
     private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables

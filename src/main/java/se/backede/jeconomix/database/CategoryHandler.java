@@ -70,7 +70,7 @@ public class CategoryHandler extends CategoryDao {
             super.startTransaction();
             Query query = super.getHibernateSession().getNamedQuery(EntityQueries.FILTERED_CATEGORIES_BY_YEAR);
             query.setParameter("year", year);
-            query.setParameter("type", type);
+            query.setParameter("type", Arrays.asList(type));
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             List<Category> categories = (List<Category>) query.list();
             return mapper.mapToDtoList(categories);

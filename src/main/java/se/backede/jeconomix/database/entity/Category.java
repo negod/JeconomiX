@@ -31,7 +31,7 @@ import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 @Getter
 @Setter
 @NamedQueries({
-    @NamedQuery(name = EntityQueries.FILTERED_CATEGORIES_BY_YEAR, query = "select t from Category t left join t.companies c left join c.transactions tr where t.categoryType.type =:type and tr.budgetYear =:year group by t.id"),
+    @NamedQuery(name = EntityQueries.FILTERED_CATEGORIES_BY_YEAR, query = "select t from Category t left join t.companies c left join c.transactions tr where t.categoryType.type IN :type and tr.budgetYear =:year group by t.id"),
     @NamedQuery(name = EntityQueries.FILTERED_CATEGORIES, query = "select t from Category t where t.categoryType.type IN :type")
 })
 
