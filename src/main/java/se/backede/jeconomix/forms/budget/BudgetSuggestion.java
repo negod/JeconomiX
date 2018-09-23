@@ -27,7 +27,11 @@ import se.backede.jeconomix.utils.BudgetUtils;
  */
 public class BudgetSuggestion extends NegodDialog {
 
-    YearMonth CURRENT_BUDGET_MONTH;
+    private YearMonth CURRENT_BUDGET_MONTH;
+
+    private final Integer ONE_YEAR_BACK = 1;
+    private final Integer ONE_MONTH_BACK = 1;
+    private final Integer ONE_QUARTER_BACK = 3;
 
     /**
      * Creates new form BudgetSuggestion
@@ -78,11 +82,9 @@ public class BudgetSuggestion extends NegodDialog {
         BudgetUtils.getInstance().createBudgetFromTransaction(yearMonth).ifPresent(map -> {
 
             Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
-                List<BudgetExpenseDto> budgetExpenses = new ArrayList<>();
-                map.forEach((key, value) -> {
-                    budgetExpenses.addAll(value);
-                });
-                return budgetExpenses;
+                return map.values().stream()
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList());
             };
 
             EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
@@ -393,19 +395,19 @@ public class BudgetSuggestion extends NegodDialog {
 
         if (basedOnSelection.equals(baseOnOutcomeRadionBtn.getModel())) {
             if (periodSelection.equals(preYearRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusYears(1));
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusYears(ONE_YEAR_BACK));
             } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(1));
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(ONE_MONTH_BACK));
             } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(3));
+                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(ONE_QUARTER_BACK));
             }
         } else if (basedOnSelection.equals(baseOnBudgetRadioBtn.getModel())) {
             if (periodSelection.equals(preYearRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusYears(1));
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusYears(ONE_YEAR_BACK));
             } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(1));
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(ONE_MONTH_BACK));
             } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(3));
+                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(ONE_QUARTER_BACK));
             }
         }
 

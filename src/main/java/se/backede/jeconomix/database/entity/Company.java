@@ -63,7 +63,7 @@ public class Company extends GenericEntity {
     @Column(name = "originalName", insertable = true, unique = true)
     private String originalName;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
 

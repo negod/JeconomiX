@@ -9,16 +9,22 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Optional;
 import java.util.function.Consumer;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
 import se.backede.jeconomix.forms.basic.NegodPanel;
+import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.BudgetModel;
+import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
  *
@@ -49,7 +55,7 @@ public class BudgetMonth extends NegodPanel {
 
     public void setInitData(JTable table, YearMonth budgetMonth, JLabel lbl, CategoryTypeEnum category) {
         table.setModel(new BudgetModel(budgetMonth, category));
-        setUpDropDownColumn(table, table.getColumnModel().getColumn(0), category);
+        setUpDropDownColumn(table.getColumnModel().getColumn(0), category);
         BudgetModel billModel = (BudgetModel) table.getModel();
         lbl.setText(billModel.getTotalSumForColumn(1).toString());
     }
@@ -91,17 +97,18 @@ public class BudgetMonth extends NegodPanel {
 
     }
 
-    public void setUpDropDownColumn(JTable table, TableColumn column, CategoryTypeEnum type) {
-//        //Set up the editor for the sport cells.
-//        JComboBox comboBox = new JComboBox();
-//        comboBox.setModel(new CategoryComboBoxModel(type));
-//        comboBox.setRenderer(new CompanyItemRenderer(ComboBoxRenderer.SINGLE));
-//        column.setCellEditor(new DefaultCellEditor(comboBox));
-//
-//        //Set up tool tips for the sport cells.
-//        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-//        renderer.setToolTipText("Click for combo box");
-//        column.setCellRenderer(renderer);
+    public void setUpDropDownColumn(TableColumn column, CategoryTypeEnum type) {
+        //Set up the editor for the sport cells.
+        JComboBox comboBox = new JComboBox();
+
+        comboBox.setModel(new CategoryComboBoxModel(type));
+        comboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
+        column.setCellEditor(new DefaultCellEditor(comboBox));
+
+        //Set up tool tips for the sport cells.
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click for combo box");
+        column.setCellRenderer(renderer);
     }
 
     /**

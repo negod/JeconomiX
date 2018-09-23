@@ -5,14 +5,18 @@
  */
 package se.backede.jeconomix.forms.company;
 
+import java.awt.event.ItemEvent;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.dto.CategoryDto;
@@ -20,14 +24,18 @@ import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.forms.basic.NegodDialog;
+import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
 import se.backede.jeconomix.models.table.CompanyModel;
 import se.backede.jeconomix.models.table.TransactionModel;
+import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class CompanyEditor extends NegodDialog {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates new form CompanyHandler
@@ -58,6 +66,31 @@ public class CompanyEditor extends NegodDialog {
 
     }
 
+    public void setUpCategoryDropDownColumn(TableColumn column, CategoryTypeEnum type) {
+        JComboBox comboBox = new JComboBox();
+
+        comboBox.<CategoryComboBoxModel>setModel(new CategoryComboBoxModel(type));
+        comboBox.<CategoryItemRenderer>setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
+        column.setCellEditor(new DefaultCellEditor(comboBox));
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click to edit Category");
+        column.setCellRenderer(renderer);
+
+        comboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                categoryComboBoxItemStateChanged(evt);
+            }
+        });
+    }
+
+    private void categoryComboBoxItemStateChanged(ItemEvent evt) {
+        CompanyModel model = (CompanyModel) companyTable.getModel();
+        CompanyDto company = model.getCompanyAt(companyTable.getSelectedRow());
+        company.setCategory((CategoryDto) evt.getItem());
+        CompanyHandler.getInstance().setCategory(company, (CategoryDto) evt.getItem());
+    }
+
     public void setTableData(CategoryDto category, CategoryTypeEnum categoryType) {
 
         CategoryHandler.getInstance().getFilteredCategories(categoryType).map(categories -> {
@@ -79,6 +112,7 @@ public class CompanyEditor extends NegodDialog {
 
             CompanyModel companyModel = new CompanyModel(companyList.stream().collect(Collectors.toList()));
             companyTable.setModel(companyModel);
+            setUpCategoryDropDownColumn(companyTable.getColumnModel().getColumn(1), categoryType);
 
             if (!companyList.isEmpty()) {
                 companyTable.setRowSelectionInterval(0, 0);
@@ -96,6 +130,7 @@ public class CompanyEditor extends NegodDialog {
                 companyNameLabel.setText(selectedCompany.getName());
             }
             companyTable.setModel(companyModel);
+            setUpCategoryDropDownColumn(companyTable.getColumnModel().getColumn(1), categoryType);
 
         });
 
@@ -120,7 +155,9 @@ public class CompanyEditor extends NegodDialog {
         categoryChooser1 = new se.backede.jeconomix.forms.category.CategoryChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
+        transactionSumLabel.setBackground(new java.awt.Color(255, 255, 255));
         transactionSumLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         transactionSumLabel.setText("jLabel1");
 

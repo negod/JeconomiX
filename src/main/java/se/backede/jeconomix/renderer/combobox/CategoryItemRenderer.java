@@ -15,11 +15,13 @@ import se.backede.jeconomix.dto.CategoryDto;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class CompanyItemRenderer extends BasicComboBoxRenderer {
+public class CategoryItemRenderer extends BasicComboBoxRenderer {
+
+    private static final long serialVersionUID = 1L;
 
     ComboBoxRenderer renderer;
 
-    public CompanyItemRenderer(ComboBoxRenderer render) {
+    public CategoryItemRenderer(ComboBoxRenderer render) {
         this.renderer = render;
     }
 

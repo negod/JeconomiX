@@ -23,6 +23,20 @@ public class CompanyModel extends AbstractTableModel {
     }
 
     @Override
+    public boolean isCellEditable(int row, int col) {
+        switch (col) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            case 2:
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    @Override
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
