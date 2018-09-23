@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms;
 
+import se.backede.jeconomix.forms.transaction.Importer;
 import com.backede.fileutils.csv.parser.CsvExtractor;
 import java.io.File;
 import se.backede.jeconomix.forms.report.TransactionReport;

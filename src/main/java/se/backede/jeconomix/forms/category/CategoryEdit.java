@@ -5,11 +5,12 @@
  */
 package se.backede.jeconomix.forms.category;
 
-import java.util.Optional;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.CategoryTypeDto;
+import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.combobox.CategoryTypeComboBoxModel;
 import se.backede.jeconomix.models.table.CategoryModel;
@@ -74,6 +75,11 @@ public class CategoryEdit extends NegodPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        categoryTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                categoryTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(categoryTable);
 
         categoryTypeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -137,9 +143,8 @@ public class CategoryEdit extends NegodPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void categoryTypeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryTypeCBActionPerformed
-        int selectedRow = categoryTable.getSelectedRow();
         CategoryModel model = (CategoryModel) categoryTable.getModel();
-        CategoryDto expCategory = model.getCategoryAt(selectedRow);
+        CategoryDto expCategory = model.getCategoryAt(categoryTable.getSelectedRow());
 
         CategoryTypeComboBoxModel expModel = (CategoryTypeComboBoxModel) categoryTypeCB.getModel();
         CategoryTypeDto categoryType = (CategoryTypeDto) expModel.getSelectedItem();
@@ -157,6 +162,12 @@ public class CategoryEdit extends NegodPanel {
     private void expenseCategoryAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryAddActionPerformed
         new AddCategory(null, false).setVisible(true);
     }//GEN-LAST:event_expenseCategoryAddActionPerformed
+
+    private void categoryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_categoryTableMouseClicked
+        int selectedRow = categoryTable.getSelectedRow();
+        CategoryModel model = (CategoryModel) categoryTable.getModel();
+        EventController.getInstance().notifyObservers(CategoryEvent.SELECTED, () -> model.getCategoryAt(selectedRow));
+    }//GEN-LAST:event_categoryTableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable categoryTable;

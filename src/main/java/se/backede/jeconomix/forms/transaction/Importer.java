@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms;
+package se.backede.jeconomix.forms.transaction;
 
 import com.backede.fileutils.csv.parser.CsvColumn;
 import java.awt.CardLayout;
@@ -35,6 +35,7 @@ import se.backede.jeconomix.dto.ProgressDto;
 import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
 import se.backede.jeconomix.event.events.ProgressEvent;
+import se.backede.jeconomix.forms.ProgressDialog;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.importer.TransactionWrapper;
 

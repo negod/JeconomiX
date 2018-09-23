@@ -19,7 +19,7 @@ import se.backede.jeconomix.forms.importexport.ImportSummaryDialog;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-class ProgressDialog extends javax.swing.JDialog {
+public class ProgressDialog extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 1L;
 

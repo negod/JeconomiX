@@ -36,6 +36,7 @@ public class CategoryEditor extends NegodDialog {
         categoryEdit2 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.EXPENSE);
         categoryEdit3 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.BILL);
         categoryEdit4 = new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.TRANSFER);
+        companyEditTable1 = new se.backede.jeconomix.forms.company.CompanyEditTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -48,12 +49,20 @@ public class CategoryEditor extends NegodDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(companyEditTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(companyEditTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -65,6 +74,7 @@ public class CategoryEditor extends NegodDialog {
     private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit2;
     private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit3;
     private se.backede.jeconomix.forms.category.CategoryEdit categoryEdit4;
+    private se.backede.jeconomix.forms.company.CompanyEditTable companyEditTable1;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 
