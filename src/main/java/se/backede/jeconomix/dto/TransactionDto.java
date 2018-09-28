@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.dto;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import se.backede.generics.persistence.dto.GenericDto;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Month;

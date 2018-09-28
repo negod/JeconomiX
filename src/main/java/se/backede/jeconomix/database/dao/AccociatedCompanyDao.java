@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database.dao;
 
-import com.negod.generics.persistence.GenericDao;
+import se.backede.generics.persistence.GenericDao;
 import java.util.Optional;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;

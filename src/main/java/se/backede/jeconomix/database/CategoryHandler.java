@@ -5,9 +5,9 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
-import com.negod.generics.persistence.update.ObjectUpdate;
-import com.negod.generics.persistence.update.UpdateType;
+import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
+import se.backede.generics.persistence.update.ObjectUpdate;
+import se.backede.generics.persistence.update.UpdateType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

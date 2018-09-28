@@ -42,7 +42,6 @@ public class EventContainer<E extends Enum<E>, T> {
     }
 
     public void fireEvent(E event, Supplier<T> supplier) {
-
         events.getOrDefault(event, Optional.empty()).ifPresent(list
                 -> list.forEach(action -> action.accept(supplier.get()))
         );

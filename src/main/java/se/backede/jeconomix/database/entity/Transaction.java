@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database.entity;
 
-import com.negod.generics.persistence.entity.GenericEntity;
+import se.backede.generics.persistence.entity.GenericEntity;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Month;

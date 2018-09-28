@@ -5,7 +5,8 @@
  */
 package se.backede.jeconomix.dto;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import javax.xml.bind.annotation.XmlRootElement;
+import se.backede.generics.persistence.dto.GenericDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@XmlRootElement(name = "subCompany")
 public class CompanyAccociationDto extends GenericDto {
 
     private String name;
-    CompanyDto company;
+    private String originalName;
+    private CompanyDto company;
 
     public CompanyAccociationDto() {
     }

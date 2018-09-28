@@ -6,7 +6,7 @@
 package se.backede.jeconomix.dto.export;
 
 import se.backede.jeconomix.dto.*;
-import com.negod.generics.persistence.dto.GenericDto;
+import se.backede.generics.persistence.dto.GenericDto;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;

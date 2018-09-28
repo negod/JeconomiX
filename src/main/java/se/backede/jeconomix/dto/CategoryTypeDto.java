@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.dto;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import se.backede.generics.persistence.dto.GenericDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -5,8 +5,8 @@
  */
 package se.backede.jeconomix.database.entity.search;
 
-import com.negod.generics.persistence.search.GenericFilter;
-import com.negod.generics.persistence.search.SearchMatch;
+import se.backede.generics.persistence.search.GenericFilter;
+import se.backede.generics.persistence.search.SearchMatch;
 import java.util.HashSet;
 import java.util.Set;
 

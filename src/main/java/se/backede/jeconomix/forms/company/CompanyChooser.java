@@ -200,10 +200,10 @@ public class CompanyChooser extends NegodPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void companyComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyComboBoxItemStateChanged
-        Supplier<Optional<CompanyDto>> getCompany = () -> {
-            return Optional.ofNullable((CompanyDto) evt.getItem());
+        Supplier<CompanyDto> getCompany = () -> {
+            return (CompanyDto) evt.getItem();
         };
-        EventController.getInstance().notifyObservers(CompanyEvent.CREATE, getCompany);
+        EventController.getInstance().notifyObservers(CompanyEvent.SELECTED, getCompany);
     }//GEN-LAST:event_companyComboBoxItemStateChanged
 
     private void addCompanyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCompanyBtnActionPerformed
@@ -213,19 +213,19 @@ public class CompanyChooser extends NegodPanel {
     }//GEN-LAST:event_addCompanyBtnActionPerformed
 
     private void incomeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeRadioButtonActionPerformed
-        companyCB.getComboBoxModel().getAllData(CategoryTypeEnum.INCOME);
+        companyCB.getComboBoxModel().refresh(CategoryTypeEnum.INCOME);
     }//GEN-LAST:event_incomeRadioButtonActionPerformed
 
     private void transferRadionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transferRadionButtonActionPerformed
-        companyCB.getComboBoxModel().getAllData(CategoryTypeEnum.TRANSFER);
+        companyCB.getComboBoxModel().refresh(CategoryTypeEnum.TRANSFER);
     }//GEN-LAST:event_transferRadionButtonActionPerformed
 
     private void billRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_billRadioButtonActionPerformed
-        companyCB.getComboBoxModel().getAllData(CategoryTypeEnum.BILL);
+        companyCB.getComboBoxModel().refresh(CategoryTypeEnum.BILL);
     }//GEN-LAST:event_billRadioButtonActionPerformed
 
     private void expenseRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseRadioButtonActionPerformed
-        companyCB.getComboBoxModel().getAllData(CategoryTypeEnum.EXPENSE);
+        companyCB.getComboBoxModel().refresh(CategoryTypeEnum.EXPENSE);
     }//GEN-LAST:event_expenseRadioButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

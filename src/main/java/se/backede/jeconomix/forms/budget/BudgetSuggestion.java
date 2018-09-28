@@ -27,7 +27,9 @@ import se.backede.jeconomix.utils.BudgetUtils;
  */
 public class BudgetSuggestion extends NegodDialog {
 
-    private YearMonth CURRENT_BUDGET_MONTH;
+    private static final long serialVersionUID = 1L;
+
+    private final YearMonth CURRENT_BUDGET_MONTH;
 
     private final Integer ONE_YEAR_BACK = 1;
     private final Integer ONE_MONTH_BACK = 1;

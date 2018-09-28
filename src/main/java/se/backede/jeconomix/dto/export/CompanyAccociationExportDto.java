@@ -6,11 +6,9 @@
 package se.backede.jeconomix.dto.export;
 
 import java.util.Date;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.dto.CompanyAccociationDto;
 
 /**
  *
@@ -18,14 +16,12 @@ import se.backede.jeconomix.dto.CompanyAccociationDto;
  */
 @Getter
 @Setter
-@XmlRootElement(name = "company")
-public class CompanyExportDto {
+@XmlRootElement(name = "subCompany")
+public class CompanyAccociationExportDto {
 
     private String id;
     private Date updatedDate;
     private String name;
-    private String category;
     private String originalName;
-    private Set<CompanyAccociationExportDto> accociations;
 
 }

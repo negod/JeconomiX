@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.entity.EntityRegistry;
+import se.backede.generics.persistence.entity.EntityRegistry;
 import javax.persistence.EntityManager;
 
 /**

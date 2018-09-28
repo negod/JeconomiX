@@ -27,20 +27,21 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
     private T selection = null;
 
     public GenericComboBoxModel() {
+        refresh();
+    }
+
+    public GenericComboBoxModel(E... filter) {
+        refresh(filter);
+    }
+
+    public void refresh() {
         getAllData().ifPresent(list -> {
             this.items = list;
             fireContentsChanged(this, items.size(), items.size());
         });
     }
 
-    public GenericComboBoxModel(E filter) {
-        getAllData(filter).ifPresent(list -> {
-            this.items = list;
-            fireContentsChanged(this, items.size(), items.size());
-        });
-    }
-
-    public GenericComboBoxModel(E... filter) {
+    public void refresh(E... filter) {
         getAllData(filter).ifPresent(list -> {
             this.items = list;
             fireContentsChanged(this, items.size(), items.size());
@@ -79,8 +80,6 @@ public abstract class GenericComboBoxModel<T, E extends Enum> extends AbstractLi
     }
 
     public abstract Optional<List<T>> getAllData();
-
-    public abstract Optional<List<T>> getAllData(E filter);
 
     public abstract Optional<List<T>> getAllData(E... filter);
 

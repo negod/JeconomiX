@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.dto.budget;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import se.backede.generics.persistence.dto.GenericDto;
 import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;

@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
+import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.dao.AccociatedCompanyDao;

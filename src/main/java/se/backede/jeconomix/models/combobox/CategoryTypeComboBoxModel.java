@@ -28,11 +28,6 @@ public class CategoryTypeComboBoxModel extends GenericComboBoxModel<CategoryType
     }
 
     @Override
-    public Optional<List<CategoryTypeDto>> getAllData(CategoryTypeEnum filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Optional<List<CategoryTypeDto>> getAllData(CategoryTypeEnum... filter) {
         return CategoryTypeHandler.getInstance().getAllCategoryTypes().map(categoryTypes -> {
             return categoryTypes.stream()

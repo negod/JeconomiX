@@ -41,7 +41,7 @@ public class CompanyEditTable extends javax.swing.JPanel {
     }
 
     public void setUpCategoryDropDownColumn(TableColumn column, CategoryTypeEnum type) {
-        JComboBox comboBox = new JComboBox();
+        JComboBox<CategoryDto> comboBox = new JComboBox<>();
 
         comboBox.<CategoryComboBoxModel>setModel(new CategoryComboBoxModel(type));
         comboBox.<CategoryItemRenderer>setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));

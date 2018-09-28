@@ -32,16 +32,6 @@ public class CompanyComboBoxModel extends GenericComboBoxModel<CompanyDto, Categ
     }
 
     @Override
-    public Optional<List<CompanyDto>> getAllData(CategoryTypeEnum type) {
-        return CategoryHandler.getInstance().getFilteredCategories(type).map(categories -> {
-            return categories.stream()
-                    .flatMap(category -> category.getCompanies().stream())
-                    .sorted()
-                    .collect(Collectors.toList());
-        });
-    }
-
-    @Override
     public Optional<List<CompanyDto>> getAllData() {
         return CompanyHandler.getInstance().getAllCompanies().map(comp -> {
             return comp.stream()
@@ -52,7 +42,12 @@ public class CompanyComboBoxModel extends GenericComboBoxModel<CompanyDto, Categ
 
     @Override
     public Optional<List<CompanyDto>> getAllData(CategoryTypeEnum... filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return CategoryHandler.getInstance().getFilteredCategories(filter).map(categories -> {
+            return categories.stream()
+                    .flatMap(category -> category.getCompanies().stream())
+                    .sorted()
+                    .collect(Collectors.toList());
+        });
     }
 
 }

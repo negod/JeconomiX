@@ -24,6 +24,7 @@ public class CompanyMapper {
         dto.setUpdatedDate(input.getUpdatedDate());
         dto.setCategory(input.getCategory().getId());
         dto.setOriginalName(input.getOriginalName());
+        dto.setAccociations(CompanyAssociationMapper.mapToExportDto(input.getAccociations()));
         return dto;
     }
 
@@ -34,6 +35,7 @@ public class CompanyMapper {
         dto.setUpdatedDate(input.getUpdatedDate());
         CategoryDto expDto = new CategoryDto();
         expDto.setId(input.getCategory());
+        dto.setAccociations(CompanyAssociationMapper.mapToDto(input.getAccociations()));
         return dto;
     }
 

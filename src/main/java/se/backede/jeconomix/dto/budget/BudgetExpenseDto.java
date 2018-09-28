@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.dto.budget;
 
-import com.negod.generics.persistence.dto.GenericDto;
+import se.backede.generics.persistence.dto.GenericDto;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;

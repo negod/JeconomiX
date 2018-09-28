@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database.entity;
 
-import com.negod.generics.persistence.entity.GenericEntity;
+import se.backede.generics.persistence.entity.GenericEntity;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -56,7 +56,9 @@ public class CompanyAccociation extends GenericEntity {
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private String originalName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "company", referencedColumnName = "id")
     Company company;
 

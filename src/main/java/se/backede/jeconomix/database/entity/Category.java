@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database.entity;
 
-import com.negod.generics.persistence.entity.GenericEntity;
+import se.backede.generics.persistence.entity.GenericEntity;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

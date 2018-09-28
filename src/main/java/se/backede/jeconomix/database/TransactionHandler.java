@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database;
 
-import com.negod.generics.persistence.mapper.DtoEntityBaseMapper;
+import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;

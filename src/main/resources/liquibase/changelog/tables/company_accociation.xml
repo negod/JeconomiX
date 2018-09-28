@@ -35,4 +35,13 @@
 
     </changeSet>
 
+
+    <changeSet id="addOriginalNameColumn" author="Joakim Backede">
+        <addColumn tableName="company_accociation">
+            <column name="originalName"  type="varchar(255)" >
+                <constraints unique="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -5,7 +5,7 @@
  */
 package se.backede.jeconomix.database.dao;
 
-import com.negod.generics.persistence.GenericDao;
+import se.backede.generics.persistence.GenericDao;
 import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import se.backede.jeconomix.database.entity.Category;
