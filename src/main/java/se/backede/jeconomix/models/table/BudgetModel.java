@@ -29,6 +29,8 @@ import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
  */
 public class BudgetModel extends AbstractTableModel {
 
+    private static final long serialVersionUID = 1L;
+
     private BudgetDto BUDGET;
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
     private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;

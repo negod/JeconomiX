@@ -6,6 +6,8 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Optional;
@@ -45,6 +47,14 @@ public class AddBudgetLine extends javax.swing.JFrame {
         PlainDocument doc = (PlainDocument) sumTextField.getDocument();
         installNumberCharacters(doc);
 
+        this.getRootPane().setDefaultButton(okBtn);
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowOpened(WindowEvent e) {
+                sumTextField.requestFocus();
+            }
+        });
+
     }
 
     public void init(CategoryTypeEnum type) {
@@ -79,6 +89,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add budget line");
         setAlwaysOnTop(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 

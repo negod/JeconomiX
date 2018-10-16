@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.ButtonModel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
@@ -124,8 +125,8 @@ public class BudgetSuggestion extends NegodDialog {
         billTable = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         expenseTable = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        addBudgetBtn = new javax.swing.JButton();
+        cancelBtn = new javax.swing.JButton();
         budgetTotal1 = new se.backede.jeconomix.forms.budget.BudgetTotal();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -207,9 +208,19 @@ public class BudgetSuggestion extends NegodDialog {
         });
         jScrollPane3.setViewportView(expenseTable);
 
-        jButton3.setText("Add budget");
+        addBudgetBtn.setText("Add budget");
+        addBudgetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBudgetBtnActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Cancel");
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelBtnActionPerformed(evt);
+            }
+        });
 
         baseBudgetOnBtnGroup.add(baseOnBudgetRadioBtn);
         baseOnBudgetRadioBtn.setText("Base on budget");
@@ -329,12 +340,12 @@ public class BudgetSuggestion extends NegodDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton3))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))))))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(addBudgetBtn)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,13 +371,13 @@ public class BudgetSuggestion extends NegodDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(budgetTotal1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)))
+                            .addComponent(addBudgetBtn)
+                            .addComponent(cancelBtn)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -415,20 +426,49 @@ public class BudgetSuggestion extends NegodDialog {
 
     }//GEN-LAST:event_suggestBudgetBtnActionPerformed
 
+    private void addBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBudgetBtnActionPerformed
+
+        BudgetHandler.getInstance().getBudget(CURRENT_BUDGET_MONTH).ifPresent(budget -> {
+            BudgetModel incomes = (BudgetModel) incomeTable.getModel();
+            BudgetModel expenses = (BudgetModel) expenseTable.getModel();
+            BudgetModel bills = (BudgetModel) billTable.getModel();
+
+            List<BudgetExpenseDto> allBudgetExpenses = new ArrayList<>();
+            allBudgetExpenses.addAll(incomes.getAll());
+            allBudgetExpenses.addAll(expenses.getAll());
+            allBudgetExpenses.addAll(bills.getAll());
+
+            for (BudgetExpenseDto budgetExpenseDto : allBudgetExpenses) {
+                budgetExpenseDto.setBudget(budget);
+
+                BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetExpenseDto).ifPresent(budgetExpense -> {
+                    EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> budgetExpense);
+                });
+            }
+
+        });
+
+        this.dispose();
+    }//GEN-LAST:event_addBudgetBtnActionPerformed
+
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBudgetBtn;
     private javax.swing.ButtonGroup baseBudgetOnBtnGroup;
     private javax.swing.JRadioButton baseOnBudgetRadioBtn;
     private javax.swing.JRadioButton baseOnOutcomeRadionBtn;
     private javax.swing.JTable billTable;
     private se.backede.jeconomix.forms.budget.BudgetTotal budgetTotal1;
+    private javax.swing.JButton cancelBtn;
     private javax.swing.JTable expenseTable;
     private javax.swing.JTable incomeTable;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
