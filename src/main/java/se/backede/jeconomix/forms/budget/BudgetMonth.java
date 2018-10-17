@@ -7,6 +7,8 @@ package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
@@ -17,6 +19,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
+import se.backede.jeconomix.database.BudgetExpenseHandler;
+import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
@@ -33,7 +37,7 @@ public class BudgetMonth extends NegodPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private YearMonth currentYearMonth;
+    private YearMonth CURRENT_YEAR_MONTH;
 
     /**
      * Creates new form BudgetMonth
@@ -44,7 +48,7 @@ public class BudgetMonth extends NegodPanel {
     }
 
     public void setMonth(YearMonth yearMonth) {
-        this.currentYearMonth = yearMonth;
+        this.CURRENT_YEAR_MONTH = yearMonth;
         monthLabel.setText(yearMonth.getMonth().name());
 
         setInitData(billTable, yearMonth, totalBillLbl, CategoryTypeEnum.BILL);
@@ -57,15 +61,15 @@ public class BudgetMonth extends NegodPanel {
     public void setInitData(JTable table, YearMonth budgetMonth, JLabel lbl, CategoryTypeEnum category) {
         table.setModel(new BudgetModel(budgetMonth, category));
         setUpDropDownColumn(table.getColumnModel().getColumn(0), category);
-        BudgetModel billModel = (BudgetModel) table.getModel();
-        lbl.setText(billModel.getTotalSumForColumn(1).toString());
+        BudgetModel model = (BudgetModel) table.getModel();
+        lbl.setText(model.getTotalSumForColumn(1).toString());
     }
 
     public void setEvents() {
 
         Consumer<BudgetExpenseDto> createBudgetExpense = (dto) -> {
 
-            if (dto.getBudget().getMonth().equals(currentYearMonth.getMonth()) && dto.getBudget().getYear() == currentYearMonth.getYear()) {
+            if (dto.getBudget().getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getBudget().getYear() == CURRENT_YEAR_MONTH.getYear()) {
 
                 switch (dto.getCategory().getCategoryType().getType()) {
 
@@ -95,6 +99,31 @@ public class BudgetMonth extends NegodPanel {
             setTotalSumLabel();
         };
         EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
+
+        Consumer<BudgetDto> clearAllTables = (dto) -> {
+
+            if (dto.getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getYear() == CURRENT_YEAR_MONTH.getYear()) {
+
+                BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
+                BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
+                BudgetModel billModel = (BudgetModel) billTable.getModel();
+
+                List<BudgetExpenseDto> allBudgetExpenses = new ArrayList<>();
+                allBudgetExpenses.addAll(icomeModel.getAll());
+                allBudgetExpenses.addAll(expenseModel.getAll());
+                allBudgetExpenses.addAll(billModel.getAll());
+
+                allBudgetExpenses.forEach((budgetExpense) -> {
+                    BudgetExpenseHandler.getInstance().deleteBudgetExpense(budgetExpense);
+                });
+
+                icomeModel.clearAll();
+                expenseModel.clearAll();
+                billModel.clearAll();
+            }
+        };
+
+        EventController.getInstance().addObserver(BudgetEvent.CLEAR_BUDGET_LISTS, clearAllTables);
 
     }
 
@@ -355,10 +384,11 @@ public class BudgetMonth extends NegodPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(budgetSuggestionBtn)
-                    .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(totalSumLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(budgetSuggestionBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -404,7 +434,7 @@ public class BudgetMonth extends NegodPanel {
     }
 
     private void addBudgetLine(CategoryTypeEnum category, Optional<BudgetExpenseDto> budgetExpense) {
-        AddBudgetLine budgetLine = new AddBudgetLine(budgetExpense, currentYearMonth);
+        AddBudgetLine budgetLine = new AddBudgetLine(budgetExpense, CURRENT_YEAR_MONTH);
         budgetLine.init(category);
         budgetLine.setVisible(true);
     }
@@ -434,7 +464,7 @@ public class BudgetMonth extends NegodPanel {
     }//GEN-LAST:event_addExpenseBtnActionPerformed
 
     private void budgetSuggestionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_budgetSuggestionBtnActionPerformed
-        new BudgetSuggestion(null, true, currentYearMonth).setVisible(true);
+        new BudgetSuggestion(null, true, CURRENT_YEAR_MONTH).setVisible(true);
     }//GEN-LAST:event_budgetSuggestionBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

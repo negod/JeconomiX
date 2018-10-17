@@ -10,6 +10,6 @@ package se.backede.jeconomix.event.events;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public enum BudgetEvent {
-    YEAR, MONTH, TOTAL, ADD_BUDGET_ROW, SET_BUDGET_TOTAL, ADD_BUDGET_LIST;
+    YEAR, MONTH, TOTAL, ADD_BUDGET_ROW, SET_BUDGET_TOTAL, CLEAR_BUDGET_LISTS;
 
 }

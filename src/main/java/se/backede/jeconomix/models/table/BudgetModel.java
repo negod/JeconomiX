@@ -43,23 +43,23 @@ public class BudgetModel extends AbstractTableModel {
 
         this.CATEGORY_TYPE = category;
 
-        if (categorize) {
-            Map<String, BudgetExpenseDto> categorized = new HashMap<>();
-            filteredCategories.forEach((BudgetExpenseDto filteredCategory) -> {
-                if (categorized.containsKey(filteredCategory.getCategory().getId())) {
-                    BigDecimal estimatedsum = categorized.get(filteredCategory.getCategory().getId()).getEstimatedsum();
-                    BigDecimal newSum = filteredCategory.getEstimatedsum().add(estimatedsum);
-                    categorized.get(filteredCategory.getCategory().getId()).setEstimatedsum(newSum);
-                } else {
-                    categorized.put(filteredCategory.getCategory().getId(), filteredCategory);
-                }
-            });
-            categorized.forEach((key, value) -> {
-                this.filteredCategories.add(value);
-            });
-        } else {
-            this.filteredCategories = filteredCategories;
-        }
+//        if (categorize) {
+//            Map<String, BudgetExpenseDto> categorized = new HashMap<>();
+//            filteredCategories.forEach((BudgetExpenseDto filteredCategory) -> {
+//                if (categorized.containsKey(filteredCategory.getCategory().getId())) {
+//                    BigDecimal estimatedsum = categorized.get(filteredCategory.getCategory().getId()).getEstimatedsum();
+//                    BigDecimal newSum = filteredCategory.getEstimatedsum().add(estimatedsum);
+//                    categorized.get(filteredCategory.getCategory().getId()).setEstimatedsum(newSum);
+//                } else {
+//                    categorized.put(filteredCategory.getCategory().getId(), filteredCategory);
+//                }
+//            });
+//            filteredCategories.forEach((value) -> {
+//                this.filteredCategories.add(value);
+//            });
+//        } else {
+        this.filteredCategories = filteredCategories;
+//        }
     }
 
     public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {
@@ -225,6 +225,17 @@ public class BudgetModel extends AbstractTableModel {
 
     public List<BudgetExpenseDto> getAll() {
         return filteredCategories;
+    }
+
+    public void clearAll() {
+        filteredCategories.clear();
+        this.fireTableDataChanged();
+    }
+
+    public Optional<Boolean> delete(BudgetExpenseDto budget) {
+        boolean remove = filteredCategories.remove(budget);
+        this.fireTableDataChanged();
+        return Optional.ofNullable(remove);
     }
 
 }

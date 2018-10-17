@@ -9,6 +9,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.ButtonModel;
@@ -429,6 +430,9 @@ public class BudgetSuggestion extends NegodDialog {
     private void addBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBudgetBtnActionPerformed
 
         BudgetHandler.getInstance().getBudget(CURRENT_BUDGET_MONTH).ifPresent(budget -> {
+
+            EventController.getInstance().notifyObservers(BudgetEvent.CLEAR_BUDGET_LISTS, () -> budget);
+
             BudgetModel incomes = (BudgetModel) incomeTable.getModel();
             BudgetModel expenses = (BudgetModel) expenseTable.getModel();
             BudgetModel bills = (BudgetModel) billTable.getModel();
@@ -438,13 +442,15 @@ public class BudgetSuggestion extends NegodDialog {
             allBudgetExpenses.addAll(expenses.getAll());
             allBudgetExpenses.addAll(bills.getAll());
 
-            for (BudgetExpenseDto budgetExpenseDto : allBudgetExpenses) {
-                budgetExpenseDto.setBudget(budget);
-
-                BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetExpenseDto).ifPresent(budgetExpense -> {
+            allBudgetExpenses.stream().map((budgetDto) -> {
+                budgetDto.setBudget(budget);
+                budgetDto.setId(null);
+                return budgetDto;
+            }).forEachOrdered((budgetDto) -> {
+                BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetDto).ifPresent(budgetExpense -> {
                     EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> budgetExpense);
                 });
-            }
+            });
 
         });
 

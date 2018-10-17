@@ -275,7 +275,7 @@ public class MainForm extends NegodJFrame {
     }//GEN-LAST:event_importCompanyMenuItemActionPerformed
 
     private void expenseCategoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseCategoryMenuItemActionPerformed
-        new CategoryEditor(this, Boolean.TRUE).setVisible(true);
+        new CategoryEditor(this, Boolean.FALSE).setVisible(true);
     }//GEN-LAST:event_expenseCategoryMenuItemActionPerformed
 
     private void expenseReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expenseReportMenuItemActionPerformed

@@ -57,17 +57,6 @@ public class BudgetTable extends NegodPanel {
         };
         EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
 
-        Consumer<List<BudgetExpenseDto>> addBudgetRow = (dto) -> {
-            for (BudgetExpenseDto budgetExpenseDto : dto) {
-                if (budgetExpenseDto.getBudget().getMonth().equals(BUDGET_MONTH.getMonth()) && budgetExpenseDto.getBudget().getYear() == BUDGET_MONTH.getYear()) {
-                    if (budgetExpenseDto.getCategory().getCategoryType().getType().equals(CATEGORY)) {
-                        BudgetModel model = (BudgetModel) budgetTable.getModel();
-                        model.addBudgetExpence(budgetExpenseDto);
-                    }
-                }
-            }
-        };
-        EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_LIST, addBudgetRow);
     }
 
     /**
