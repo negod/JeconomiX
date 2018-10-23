@@ -37,7 +37,18 @@ public class BudgetOutcomePanel extends javax.swing.JPanel {
         valueTable.setModel(model);
         setChart(chartPanel, model, category);
 
-        totalLabel.setText(model.getTotalBudgetSum().subtract(model.getTotalOutcomeSum().abs()).toPlainString().concat(" Kr"));
+        switch (category) {
+            case INCOME:
+                totalLabel.setText(model.getTotalOutcomeSum().abs().subtract(model.getTotalBudgetSum()).toPlainString().concat(" Kr"));
+                break;
+            case EXPENSE:
+            case BILL:
+            case TRANSFER:
+                totalLabel.setText(model.getTotalBudgetSum().subtract(model.getTotalOutcomeSum().abs()).toPlainString().concat(" Kr"));
+                break;
+            default:
+                throw new AssertionError();
+        }
 
     }
 

@@ -109,7 +109,6 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companyCB.getComboBoxModel().addElement(blancCompany);
         companyCB.setSelectedItem(blancCompany);
-
     }
 
     public void addLineChart(TransactionReportDto reports) {
@@ -138,8 +137,10 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
 
         String yearString = (String) yearComboBox.getSelectedItem();
         Integer year = Integer.parseInt("0");
-        if (!yearString.equals(ALL_YEARS)) {
-            year = Integer.parseInt(yearString);
+        if (yearString != null) {
+            if (!yearString.equals(ALL_YEARS)) {
+                year = Integer.parseInt(yearString);
+            }
         }
 
         String monthString = (String) monthComboBox.getSelectedItem();

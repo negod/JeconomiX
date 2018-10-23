@@ -143,14 +143,12 @@ public class BudgetMonth extends NegodPanel {
     }
 
     public void setUpDropDownColumn(TableColumn column, CategoryTypeEnum type) {
-        //Set up the editor for the sport cells.
         JComboBox comboBox = new JComboBox();
 
         comboBox.setModel(new CategoryComboBoxModel(type));
         comboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
         column.setCellEditor(new DefaultCellEditor(comboBox));
 
-        //Set up tool tips for the sport cells.
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setToolTipText("Click for combo box");
         column.setCellRenderer(renderer);

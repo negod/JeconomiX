@@ -90,6 +90,8 @@ public class MainForm extends NegodJFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JeconomiX");
 
+        budgetQuarter1.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
@@ -249,7 +251,7 @@ public class MainForm extends NegodJFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, 742, Short.MAX_VALUE)
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();

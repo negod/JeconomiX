@@ -28,7 +28,7 @@ public class ComboBoxWrapper<T, M> implements NegodComboBox<T, M> {
     public ComboBoxWrapper(JComboBox comboBox, M model) {
         this.comboBox = comboBox;
         comboBox.setModel((ComboBoxModel) model);
-        //setComboBoxRenderer();
+        setComboBoxRenderer();
     }
 
     @Override

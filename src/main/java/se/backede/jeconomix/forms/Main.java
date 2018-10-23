@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms;
 
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,9 @@ public class Main {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            new MainForm().setVisible(true);
+            MainForm frame = new MainForm();
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setVisible(true);
         });
     }
 
