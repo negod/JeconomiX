@@ -7,10 +7,19 @@ package se.backede.jeconomix.models.table;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.table.AbstractTableModel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.BudgetExpenseHandler;
+import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.TransactionDto;
+import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.dto.budget.BudgetOutcomeDto;
 
 /**
@@ -22,15 +31,14 @@ public class BudgetOutcomeModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
 
     private List<BudgetOutcomeDto> filteredCategories = new LinkedList<>();
-    private YearMonth BUDGET_MONTH;
-    private CategoryTypeEnum category;
+    private final YearMonth BUDGET_MONTH;
+    private final CategoryTypeEnum CATEGORY;
 
-    public BudgetOutcomeModel() {
-    }
+    public BudgetOutcomeModel(CategoryTypeEnum category, YearMonth budgetMonth) {
+        this.CATEGORY = category;
+        this.BUDGET_MONTH = budgetMonth;
 
-    public BudgetOutcomeModel(List<BudgetOutcomeDto> filteredCategories, CategoryTypeEnum category) {
-        this.category = category;
-        this.filteredCategories = filteredCategories;
+        this.filteredCategories = getBudgetOutcome();
     }
 
     @Override
@@ -85,7 +93,7 @@ public class BudgetOutcomeModel extends AbstractTableModel {
                 }
                 break;
             case 3:
-                switch (category) {
+                switch (CATEGORY) {
                     case INCOME:
                         value = outcomeDto.getOutcome().abs().subtract(outcomeDto.getBudget().abs());
                         break;
@@ -132,6 +140,121 @@ public class BudgetOutcomeModel extends AbstractTableModel {
             totalSum = totalSum.add(outcome.getOutcome());
         }
         return totalSum;
+    }
+
+    private List<BudgetOutcomeDto> orderByCategoryBudget(List<BudgetOutcomeDto> outcomeList) {
+        Map<String, BudgetOutcomeDto> orderedMap = new HashMap<>();
+        for (BudgetOutcomeDto budgetOutcomeDto : outcomeList) {
+            if (orderedMap.containsKey(budgetOutcomeDto.getCategory())) {
+                BigDecimal newBudgetValue = budgetOutcomeDto.getBudget().add(orderedMap.get(budgetOutcomeDto.getCategory()).getBudget());
+                orderedMap.get(budgetOutcomeDto.getCategory()).setBudget(newBudgetValue);
+            } else {
+                orderedMap.put(budgetOutcomeDto.getCategory(), budgetOutcomeDto);
+            }
+        }
+        return new ArrayList<>(orderedMap.values());
+    }
+
+    private List<BudgetOutcomeDto> orderByCategoryOutcome(List<BudgetOutcomeDto> outcomeList) {
+        Map<String, BudgetOutcomeDto> orderedMap = new HashMap<>();
+
+        for (BudgetOutcomeDto budgetOutcomeDto : outcomeList) {
+            if (orderedMap.containsKey(budgetOutcomeDto.getCategory())) {
+                BigDecimal newOutcomeValue = budgetOutcomeDto.getOutcome().add(orderedMap.get(budgetOutcomeDto.getCategory()).getOutcome());
+                orderedMap.get(budgetOutcomeDto.getCategory()).setOutcome(newOutcomeValue);
+            } else {
+                orderedMap.put(budgetOutcomeDto.getCategory(), budgetOutcomeDto);
+            }
+        }
+        return new ArrayList<>(orderedMap.values());
+    }
+
+    private List<BudgetOutcomeDto> getBudgetOutcome() {
+
+        List<BudgetOutcomeDto> budgetOutcomeMap = getBudgetOutcomeMap();
+        List<BudgetOutcomeDto> budgetMap = getBudgetMap();
+
+        List<BudgetOutcomeDto> orderByCategoryOutcome = orderByCategoryOutcome(budgetOutcomeMap);
+        List<BudgetOutcomeDto> orderByCategoryBudget = orderByCategoryBudget(budgetMap);
+
+        List<BudgetOutcomeDto> combineLists = combineLists(orderByCategoryBudget, orderByCategoryOutcome);
+        List<BudgetOutcomeDto> combineLists2 = combineLists2(orderByCategoryBudget, orderByCategoryOutcome);
+
+        Set<BudgetOutcomeDto> test = new HashSet<>();
+        for (BudgetOutcomeDto combineList : combineLists) {
+            test.add(combineList);
+        }
+
+        for (BudgetOutcomeDto budgetOutcomeDto : combineLists2) {
+            test.add(budgetOutcomeDto);
+        }
+
+        return new ArrayList<>(test);
+    }
+
+    private List<BudgetOutcomeDto> combineLists(List<BudgetOutcomeDto> budgetList, List<BudgetOutcomeDto> budgetOutcomeList) {
+        List<BudgetOutcomeDto> combinedList = new ArrayList<>();
+        for (BudgetOutcomeDto budgetOutcome : budgetOutcomeList) {
+            for (BudgetOutcomeDto budget : budgetList) {
+                if (budget.equals(budgetOutcome)) {
+                    budgetOutcome.setBudget(budget.getBudget());
+                }
+            }
+            combinedList.add(budgetOutcome);
+        }
+        return combinedList;
+    }
+
+    private List<BudgetOutcomeDto> combineLists2(List<BudgetOutcomeDto> budgetList, List<BudgetOutcomeDto> budgetOutcomeList) {
+        List<BudgetOutcomeDto> combinedList = new ArrayList<>();
+        for (BudgetOutcomeDto budgetOutcome : budgetList) {
+            for (BudgetOutcomeDto budget : budgetOutcomeList) {
+                if (budget.equals(budgetOutcome)) {
+                    budgetOutcome.setOutcome(budget.getOutcome());
+                }
+            }
+            combinedList.add(budgetOutcome);
+        }
+        return combinedList;
+    }
+
+    private List<BudgetOutcomeDto> getBudgetMap() {
+        List<BudgetOutcomeDto> budgetMap = new ArrayList<>();
+        BudgetExpenseHandler.getInstance().getBudgetExpenseByMonthAndCategory(BUDGET_MONTH, CATEGORY).ifPresent(list -> {
+            list.forEach(budgetExpense -> {
+                budgetMap.add(finalizeBudgetOutcomeDto(budgetExpense));
+            });
+        });
+
+        return budgetMap;
+    }
+
+    private List<BudgetOutcomeDto> getBudgetOutcomeMap() {
+        List<BudgetOutcomeDto> budgetOutcomeMap = new ArrayList<>();
+        TransactionHandler.getInstance().getTransactionsByBudgetMonthAndCategory(BUDGET_MONTH, CATEGORY).ifPresent(list -> {
+            list.forEach(tranasction -> {
+                budgetOutcomeMap.add(mapTransactionToBudgetOutcomeDto(tranasction));
+            });
+        });
+        return budgetOutcomeMap;
+    }
+
+    private BudgetOutcomeDto finalizeBudgetOutcomeDto(BudgetExpenseDto expense) {
+        BudgetOutcomeDto outcome = new BudgetOutcomeDto();
+        outcome.setCategoryType(expense.getCategory().getCategoryType().getType());
+        outcome.setCategory(expense.getCategory().getName());
+        outcome.setBudget(expense.getEstimatedsum());
+        outcome.setOutcome(BigDecimal.valueOf(0.00));
+        return outcome;
+    }
+
+    private BudgetOutcomeDto mapTransactionToBudgetOutcomeDto(TransactionDto transaction) {
+        BudgetOutcomeDto outcome = new BudgetOutcomeDto();
+        outcome.setCategoryType(transaction.getCompany().getCategory().getCategoryType().getType());
+        outcome.setCategory(transaction.getCompany().getCategory().getName());
+        outcome.setOutcome(transaction.getSum());
+        outcome.setBudget(BigDecimal.valueOf(0.00));
+        return outcome;
     }
 
 }

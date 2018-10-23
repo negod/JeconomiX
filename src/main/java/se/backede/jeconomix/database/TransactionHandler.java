@@ -124,4 +124,21 @@ public class TransactionHandler extends TransactionDao {
             return MAPPER.mapToDtoList(list).get();
         });
     }
+
+    public Optional<List<TransactionDto>> getTransactionsByBudgetMonthAndCategory(YearMonth budgetMonth, CategoryTypeEnum category) {
+        return super.executeTransactionList(() -> {
+            try {
+                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_BY_BUDGETMONTH_AND_CATEGORY);
+                query.setParameter("budgetMonth", budgetMonth.getMonth());
+                query.setParameter("budgetYear", budgetMonth.getYear());
+                query.setParameter("categoryType", category);
+                return Optional.ofNullable((List<Transaction>) query.getResultList());
+            } catch (javax.persistence.NoResultException e) {
+                log.error("No result when getting transaction [Get transaction by budgetmonth and category]");
+                return Optional.empty();
+            }
+        }).map(list -> {
+            return MAPPER.mapToDtoList(list).get();
+        });
+    }
 }

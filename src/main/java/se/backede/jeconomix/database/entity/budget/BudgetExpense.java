@@ -13,11 +13,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.entity.Category;
 
 /**
@@ -29,6 +32,9 @@ import se.backede.jeconomix.database.entity.Category;
 @XmlRootElement
 @Getter
 @Setter
+@NamedQueries({
+    @NamedQuery(name = EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH_AND_CATEGORY, query = "SELECT b FROM BudgetExpense b where b.budget.year = :year AND b.budget.month = :month AND b.category.categoryType.type =:categoryType")
+})
 public class BudgetExpense extends GenericEntity {
 
     @Column(name = "ESTIMATEDSUM")

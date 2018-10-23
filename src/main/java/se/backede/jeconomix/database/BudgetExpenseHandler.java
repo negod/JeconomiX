@@ -5,9 +5,15 @@
  */
 package se.backede.jeconomix.database;
 
+import java.time.YearMonth;
+import java.util.List;
 import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.Optional;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.dao.BudgetExpenseDao;
 import se.backede.jeconomix.database.dao.CategoryDao;
@@ -25,7 +31,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
     private final BudgetDao budgetDao = new BudgetDao();
     private final CategoryDao categoryDao = new CategoryDao();
 
-    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> mapper = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
+    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> MAPPER = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
 
     private static final BudgetExpenseHandler INSTANCE = new BudgetExpenseHandler();
 
@@ -38,7 +44,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
 
     public Optional<BudgetExpenseDto> createBudgetExpense(BudgetExpenseDto dto) {
 
-        return mapper.mapFromDtoToEntity(dto).map(entity -> {
+        return MAPPER.mapFromDtoToEntity(dto).map(entity -> {
 
             budgetDao.getById(entity.getId()).ifPresent(budget -> {
                 entity.setBudget(budget);
@@ -49,7 +55,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             });
 
             return super.executeTransaction(() -> super.persist(entity)).map(persisted -> {
-                return mapper.mapFromEntityToDto(persisted).get();
+                return MAPPER.mapFromEntityToDto(persisted).get();
             });
 
         }).orElse(Optional.empty());
@@ -57,7 +63,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
     }
 
     public Optional<BudgetExpenseDto> updateBudgetExpense(BudgetExpenseDto dto) {
-        Optional<BudgetExpense> mapFromDtoToEntity = mapper.mapFromDtoToEntity(dto);
+        Optional<BudgetExpense> mapFromDtoToEntity = MAPPER.mapFromDtoToEntity(dto);
         if (mapFromDtoToEntity.isPresent()) {
             super.startTransaction();
 
@@ -72,7 +78,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
 
             BudgetExpense merge = super.getEntityManager().merge(budgetExpenseEntity.get());
-            Optional<BudgetExpenseDto> mapFromEntityToDto = mapper.mapFromEntityToDto(merge);
+            Optional<BudgetExpenseDto> mapFromEntityToDto = MAPPER.mapFromEntityToDto(merge);
             super.commitTransaction();
 
             return mapFromEntityToDto;
@@ -91,6 +97,26 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
         } else {
             return updateBudgetExpense(dto);
         }
+    }
+
+    public Optional<List<BudgetExpenseDto>> getBudgetExpenseByMonthAndCategory(YearMonth yearMonth, CategoryTypeEnum category) {
+        try {
+            this.startTransaction();
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH_AND_CATEGORY);
+            query.setParameter("month", yearMonth.getMonth());
+            query.setParameter("year", yearMonth.getYear());
+            query.setParameter("categoryType", category);
+            List<BudgetExpense> budget = query.getResultList();
+
+            if (budget != null) {
+                return MAPPER.mapToDtoList(budget);
+            }
+        } catch (NoResultException ex) {
+            log.debug("No result for query when getting Budget", ex);
+        } finally {
+            this.commitTransaction();
+        }
+        return Optional.empty();
     }
 
 }
