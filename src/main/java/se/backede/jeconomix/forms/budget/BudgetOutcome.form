@@ -54,7 +54,7 @@
                           <Component id="expenseChartPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="billChartLabel" max="32767" attributes="0"/>
+                              <Component id="billChartPanel" max="32767" attributes="0"/>
                               <Component id="jScrollPane3" min="-2" pref="333" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -79,7 +79,7 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="incomeChartPanel" max="32767" attributes="0"/>
                       <Component id="expenseChartPanel" max="32767" attributes="0"/>
-                      <Component id="billChartLabel" alignment="0" max="32767" attributes="0"/>
+                      <Component id="billChartPanel" alignment="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -179,7 +179,7 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Container class="javax.swing.JPanel" name="billChartLabel">
+        <Container class="javax.swing.JPanel" name="billChartPanel">
 
           <Layout>
             <DimensionLayout dim="0">

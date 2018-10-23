@@ -105,17 +105,16 @@ public class AddBudgetLine extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add budget line");
         setAlwaysOnTop(true);
+        setEnabled(false);
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Type:");
 
         categoryTypeLabel.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-        categoryTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         categoryTypeLabel.setText("INCOME");
 
         okBtn.setText("OK");
@@ -133,7 +132,6 @@ public class AddBudgetLine extends javax.swing.JFrame {
         });
 
         jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setLabelFor(sumTextField);
         jLabel3.setText("Sum:");
 
@@ -144,14 +142,12 @@ public class AddBudgetLine extends javax.swing.JFrame {
         jScrollPane1.setViewportView(commentTextArea);
 
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setLabelFor(commentTextArea);
         jLabel4.setText("Comment:");
 
         categoryComboBox.setEditable(true);
 
         jLabel5.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setLabelFor(categoryComboBox);
         jLabel5.setText("Category:");
 
