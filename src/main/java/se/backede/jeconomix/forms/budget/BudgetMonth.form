@@ -31,7 +31,7 @@
                       <Component id="budgetSuggestionBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="monthLabel" min="-2" pref="151" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="totalSumLabel" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -63,8 +63,9 @@
                   <Component id="addBillBtn" alignment="0" max="32767" attributes="0"/>
                   <Component id="addExpenseBtn" max="32767" attributes="0"/>
                   <Component id="removeExpenseBtn" max="32767" attributes="0"/>
+                  <Component id="outcomeButton" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,14 +73,13 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="totalSumLabel" alignment="1" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="monthLabel" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                      <Component id="budgetSuggestionBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="monthLabel" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
+                  <Component id="budgetSuggestionBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="totalSumLabel" alignment="3" max="32767" attributes="0"/>
+                  <Component id="outcomeButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="addIncomeBtn" min="-2" max="-2" attributes="0"/>
@@ -373,6 +373,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="jLabel1"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="outcomeButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="$"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="outcomeButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

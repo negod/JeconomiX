@@ -105,8 +105,7 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
     }
 
     public void setCompanyComboBox() {
-        companyCB = new ComboBoxWrapper<>(companyComboBox);
-        companyCB.setComboBoxModel(new CompanyComboBoxModel());
+        companyCB = new ComboBoxWrapper<>(companyComboBox, new CompanyComboBoxModel());
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companyCB.getComboBoxModel().addElement(blancCompany);
         companyCB.setSelectedItem(blancCompany);

@@ -244,7 +244,6 @@ public class CompanyChooser extends NegodPanel {
     @Override
     public void init() {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
-        companyCB = new ComboBoxWrapper<>(companyComboBox);
-        companyCB.setComboBoxModel(new CompanyComboBoxModel(CategoryTypeEnum.INCOME));
+        companyCB = new ComboBoxWrapper<>(companyComboBox, new CompanyComboBoxModel(CategoryTypeEnum.INCOME));
     }
 }

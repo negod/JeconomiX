@@ -266,8 +266,8 @@ public class CategoryChooser extends NegodPanel {
     @Override
     public void init() {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
-        categoryCB = new ComboBoxWrapper(categoryComboBox);
-        categoryCB.setComboBoxModel(new CategoryComboBoxModel(CategoryTypeEnum.INCOME));
+        categoryCB = new ComboBoxWrapper(categoryComboBox, new CategoryComboBoxModel(CategoryTypeEnum.INCOME));
         categoryCB.setSelectedItem(categoryCB.getComboBoxModel().getItems().get(0));
     }
+
 }

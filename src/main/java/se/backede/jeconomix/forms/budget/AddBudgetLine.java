@@ -16,15 +16,18 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxRenderer;
 import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
+import se.backede.jeconomix.database.CategoryHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
-import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
-import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
+import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
  *
@@ -34,13 +37,9 @@ public class AddBudgetLine extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    ComboBoxWrapper<CategoryDto, CategoryComboBoxModel> categoryCB;
-
     private final YearMonth BUDGET_MONTH;
-    private Optional<BudgetExpenseDto> EXPENSE = Optional.empty();
 
-    public AddBudgetLine(Optional<BudgetExpenseDto> expense, YearMonth month) {
-        this.EXPENSE = expense;
+    public AddBudgetLine(YearMonth month) {
         this.BUDGET_MONTH = month;
         initComponents();
 
@@ -51,17 +50,34 @@ public class AddBudgetLine extends javax.swing.JFrame {
 
         this.addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
-                sumTextField.requestFocus();
+                categoryComboBox.requestFocus();
             }
         });
 
     }
 
     public void init(CategoryTypeEnum type) {
-        categoryCB = new ComboBoxWrapper<>(categoryComboBox);
-        categoryCB.setComboBoxModel(new CategoryComboBoxModel(type));
-        categoryCB.setSelectedItem(categoryCB.getComboBoxModel().getItems().get(0));
         categoryTypeLabel.setText(type.name());
+
+        ObjectToStringConverter converter = new ObjectToStringConverter() {
+            @Override
+            public String getPreferredStringForItem(Object o) {
+                if (o instanceof CategoryDto) {
+                    CategoryDto dto = (CategoryDto) o;
+                    return dto.getName();
+                }
+                return o.toString();
+            }
+        };
+
+        CategoryHandler.getInstance().getFilteredCategories(type).ifPresent(categiryList -> {
+            categiryList.forEach(category -> {
+                categoryComboBox.addItem(category);
+            });
+        });
+
+        categoryComboBox.setRenderer(new CategoryItemRenderer(ComboBoxRenderer.SINGLE));
+        AutoCompleteDecorator.decorate(categoryComboBox, converter);
     }
 
     /**
@@ -132,7 +148,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
         jLabel4.setLabelFor(commentTextArea);
         jLabel4.setText("Comment:");
 
-        categoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        categoryComboBox.setEditable(true);
 
         jLabel5.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
@@ -144,26 +160,25 @@ public class AddBudgetLine extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(okBtn))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                            .addComponent(categoryTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sumTextField)
-                            .addComponent(categoryComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(categoryTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jButton2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(okBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(sumTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(categoryComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -210,7 +225,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
         BudgetHandler.getInstance().getBudget(BUDGET_MONTH).ifPresent(budget -> {
             BudgetExpenseDto dto = new BudgetExpenseDto();
             dto.setBudget(budget);
-            dto.setCategory(categoryCB.getSelectedItem());
+            dto.setCategory(categoryComboBox.getItemAt(categoryComboBox.getSelectedIndex()));
             Double valueOf = Double.valueOf(sumTextField.getText());
             dto.setEstimatedsum(BigDecimal.valueOf(valueOf));
             BudgetExpenseHandler.getInstance().upsertBudgetExpense(dto).ifPresent(budgetExpense -> {
@@ -225,7 +240,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> categoryComboBox;
+    private javax.swing.JComboBox<CategoryDto> categoryComboBox;
     private javax.swing.JLabel categoryTypeLabel;
     private javax.swing.JTextArea commentTextArea;
     private javax.swing.JButton jButton2;

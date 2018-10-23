@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -187,6 +186,7 @@ public class BudgetMonth extends NegodPanel {
         jLabel5 = new javax.swing.JLabel();
         totalExpenseLbl = new javax.swing.JLabel();
         totalSumLabel = new javax.swing.JLabel();
+        outcomeButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -339,6 +339,13 @@ public class BudgetMonth extends NegodPanel {
 
         totalSumLabel.setText("jLabel1");
 
+        outcomeButton.setText("$");
+        outcomeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outcomeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -353,7 +360,7 @@ public class BudgetMonth extends NegodPanel {
                         .addComponent(budgetSuggestionBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -377,19 +384,20 @@ public class BudgetMonth extends NegodPanel {
                     .addComponent(removeBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removeExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(removeExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(outcomeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(totalSumLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(budgetSuggestionBtn)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(budgetSuggestionBtn)
+                    .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(outcomeButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addIncomeBtn)
@@ -433,14 +441,14 @@ public class BudgetMonth extends NegodPanel {
         setTotalSumLabel();
     }
 
-    private void addBudgetLine(CategoryTypeEnum category, Optional<BudgetExpenseDto> budgetExpense) {
-        AddBudgetLine budgetLine = new AddBudgetLine(budgetExpense, CURRENT_YEAR_MONTH);
+    private void addBudgetLine(CategoryTypeEnum category) {
+        AddBudgetLine budgetLine = new AddBudgetLine(CURRENT_YEAR_MONTH);
         budgetLine.init(category);
         budgetLine.setVisible(true);
     }
 
     private void addIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIncomeBtnActionPerformed
-        addBudgetLine(CategoryTypeEnum.INCOME, Optional.empty());
+        addBudgetLine(CategoryTypeEnum.INCOME);
     }//GEN-LAST:event_addIncomeBtnActionPerformed
 
     private void removeIncomeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeIncomeBtnActionPerformed
@@ -452,7 +460,7 @@ public class BudgetMonth extends NegodPanel {
     }//GEN-LAST:event_removeExpenseBtnActionPerformed
 
     private void addBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBillBtnActionPerformed
-        addBudgetLine(CategoryTypeEnum.BILL, Optional.empty());
+        addBudgetLine(CategoryTypeEnum.BILL);
     }//GEN-LAST:event_addBillBtnActionPerformed
 
     private void removeBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBillBtnActionPerformed
@@ -460,12 +468,16 @@ public class BudgetMonth extends NegodPanel {
     }//GEN-LAST:event_removeBillBtnActionPerformed
 
     private void addExpenseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addExpenseBtnActionPerformed
-        addBudgetLine(CategoryTypeEnum.EXPENSE, Optional.empty());
+        addBudgetLine(CategoryTypeEnum.EXPENSE);
     }//GEN-LAST:event_addExpenseBtnActionPerformed
 
     private void budgetSuggestionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_budgetSuggestionBtnActionPerformed
         new BudgetSuggestion(null, true, CURRENT_YEAR_MONTH).setVisible(true);
     }//GEN-LAST:event_budgetSuggestionBtnActionPerformed
+
+    private void outcomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outcomeButtonActionPerformed
+        new BudgetOutcome(CURRENT_YEAR_MONTH).setVisible(true);
+    }//GEN-LAST:event_outcomeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBillBtn;
@@ -482,6 +494,7 @@ public class BudgetMonth extends NegodPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel monthLabel;
+    private javax.swing.JButton outcomeButton;
     private javax.swing.JButton removeBillBtn;
     private javax.swing.JButton removeExpenseBtn;
     private javax.swing.JButton removeIncomeBtn;

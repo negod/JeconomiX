@@ -40,26 +40,8 @@ public class BudgetModel extends AbstractTableModel {
     }
 
     public BudgetModel(List<BudgetExpenseDto> filteredCategories, Boolean categorize, CategoryTypeEnum category) {
-
         this.CATEGORY_TYPE = category;
-
-//        if (categorize) {
-//            Map<String, BudgetExpenseDto> categorized = new HashMap<>();
-//            filteredCategories.forEach((BudgetExpenseDto filteredCategory) -> {
-//                if (categorized.containsKey(filteredCategory.getCategory().getId())) {
-//                    BigDecimal estimatedsum = categorized.get(filteredCategory.getCategory().getId()).getEstimatedsum();
-//                    BigDecimal newSum = filteredCategory.getEstimatedsum().add(estimatedsum);
-//                    categorized.get(filteredCategory.getCategory().getId()).setEstimatedsum(newSum);
-//                } else {
-//                    categorized.put(filteredCategory.getCategory().getId(), filteredCategory);
-//                }
-//            });
-//            filteredCategories.forEach((value) -> {
-//                this.filteredCategories.add(value);
-//            });
-//        } else {
         this.filteredCategories = filteredCategories;
-//        }
     }
 
     public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {

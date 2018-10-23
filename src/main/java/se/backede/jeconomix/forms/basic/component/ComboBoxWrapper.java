@@ -7,6 +7,7 @@ package se.backede.jeconomix.forms.basic.component;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import lombok.Getter;
 import se.backede.jeconomix.forms.basic.NegodComboBox;
 
 /**
@@ -17,15 +18,17 @@ import se.backede.jeconomix.forms.basic.NegodComboBox;
  * @param <M> model that will be used for data in the DropDown
  * @param <CompanyDto>
  */
+@Getter
 public class ComboBoxWrapper<T, M> implements NegodComboBox<T, M> {
 
     private static final long serialVersionUID = 1L;
 
-    JComboBox<String> comboBox;
+    JComboBox<T> comboBox;
 
-    public ComboBoxWrapper(JComboBox comboBox) {
+    public ComboBoxWrapper(JComboBox comboBox, M model) {
         this.comboBox = comboBox;
-        setComboBoxRenderer();
+        comboBox.setModel((ComboBoxModel) model);
+        //setComboBoxRenderer();
     }
 
     @Override
