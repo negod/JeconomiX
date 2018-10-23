@@ -23,59 +23,16 @@ import se.backede.jeconomix.models.table.BudgetOutcomeModel;
  */
 public class BudgetOutcome extends javax.swing.JFrame {
 
-    private final YearMonth BUDGET_MONTH;
-
     /**
      * Creates new form BudgetOutcome
      */
-    public BudgetOutcome(YearMonth budgetMonth) {
-        this.BUDGET_MONTH = budgetMonth;
+    public BudgetOutcome(final YearMonth budgetMonth) {
         initComponents();
 
-        BudgetOutcomeModel billModel = new BudgetOutcomeModel(CategoryTypeEnum.BILL, BUDGET_MONTH);
-        BudgetOutcomeModel expenseModelModel = new BudgetOutcomeModel(CategoryTypeEnum.EXPENSE, BUDGET_MONTH);
-        BudgetOutcomeModel incomeModel = new BudgetOutcomeModel(CategoryTypeEnum.INCOME, BUDGET_MONTH);
+        billPanel.init(CategoryTypeEnum.BILL, budgetMonth);
+        expensePanel.init(CategoryTypeEnum.EXPENSE, budgetMonth);
+        incomePanel.init(CategoryTypeEnum.INCOME, budgetMonth);
 
-        billTable.setModel(billModel);
-        expenseTable.setModel(expenseModelModel);
-        incomeTable.setModel(incomeModel);
-
-        setChart(incomeChartPanel, incomeModel, CategoryTypeEnum.INCOME);
-        setChart(billChartPanel, billModel, CategoryTypeEnum.BILL);
-        setChart(expenseChartPanel, expenseModelModel, CategoryTypeEnum.EXPENSE);
-
-    }
-
-    private void setChart(JPanel panel, BudgetOutcomeModel model, CategoryTypeEnum category) {
-        JFreeChart barChart = ChartFactory.createBarChart(
-                category.name() + " budget vs outcome",
-                "Kr",
-                "Type",
-                createDataset(model),
-                PlotOrientation.HORIZONTAL,
-                true, true, false);
-
-        barChart.setTitle(
-                new org.jfree.chart.title.TextTitle(category.name() + " budget vs outcome",
-                        new java.awt.Font("Courier New", java.awt.Font.PLAIN, 12)
-                )
-        );
-
-        ChartPanel chartPanel = new ChartPanel(barChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(panel.getWidth(), panel.getHeight()));
-        panel.setLayout(new BorderLayout());
-        panel.add(chartPanel, BorderLayout.NORTH);
-    }
-
-    private CategoryDataset createDataset(BudgetOutcomeModel model) {
-        final String budget = "Budget";
-        final String outcome = "Outcome";
-        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        dataset.addValue(model.getTotalBudgetSum().abs(), budget, "Kr");
-        dataset.addValue(model.getTotalOutcomeSum().abs(), outcome, "Kr");
-
-        return dataset;
     }
 
     /**
@@ -87,152 +44,38 @@ public class BudgetOutcome extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        incomeTable = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        expenseTable = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        billTable = new javax.swing.JTable();
-        incomeChartPanel = new javax.swing.JPanel();
-        expenseChartPanel = new javax.swing.JPanel();
-        billChartPanel = new javax.swing.JPanel();
+        incomePanel = new se.backede.jeconomix.forms.budget.BudgetOutcomePanel();
+        expensePanel = new se.backede.jeconomix.forms.budget.BudgetOutcomePanel();
+        billPanel = new se.backede.jeconomix.forms.budget.BudgetOutcomePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        incomeTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(incomeTable);
-
-        expenseTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(expenseTable);
-
-        billTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane3.setViewportView(billTable);
-
-        javax.swing.GroupLayout incomeChartPanelLayout = new javax.swing.GroupLayout(incomeChartPanel);
-        incomeChartPanel.setLayout(incomeChartPanelLayout);
-        incomeChartPanelLayout.setHorizontalGroup(
-            incomeChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        incomeChartPanelLayout.setVerticalGroup(
-            incomeChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 229, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout expenseChartPanelLayout = new javax.swing.GroupLayout(expenseChartPanel);
-        expenseChartPanel.setLayout(expenseChartPanelLayout);
-        expenseChartPanelLayout.setHorizontalGroup(
-            expenseChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
-        );
-        expenseChartPanelLayout.setVerticalGroup(
-            expenseChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout billChartPanelLayout = new javax.swing.GroupLayout(billChartPanel);
-        billChartPanel.setLayout(billChartPanelLayout);
-        billChartPanelLayout.setHorizontalGroup(
-            billChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        billChartPanelLayout.setVerticalGroup(
-            billChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                    .addComponent(incomeChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(expenseChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(billChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(incomeChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(expenseChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(billChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(incomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(expensePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(billPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(billPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(expensePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(incomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel billChartPanel;
-    private javax.swing.JTable billTable;
-    private javax.swing.JPanel expenseChartPanel;
-    private javax.swing.JTable expenseTable;
-    private javax.swing.JPanel incomeChartPanel;
-    private javax.swing.JTable incomeTable;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JPanel mainPanel;
+    private se.backede.jeconomix.forms.budget.BudgetOutcomePanel billPanel;
+    private se.backede.jeconomix.forms.budget.BudgetOutcomePanel expensePanel;
+    private se.backede.jeconomix.forms.budget.BudgetOutcomePanel incomePanel;
     // End of variables declaration//GEN-END:variables
 }
