@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.database.TransactionHandler;
@@ -42,12 +44,49 @@ public class BudgetOutcome extends javax.swing.JFrame {
 
     }
 
+    private List<BudgetOutcomeDto> orderByCategoryBudget(List<BudgetOutcomeDto> outcomeList) {
+        Map<String, BudgetOutcomeDto> orderedMap = new HashMap<>();
+        for (BudgetOutcomeDto budgetOutcomeDto : outcomeList) {
+            if (orderedMap.containsKey(budgetOutcomeDto.getCategory())) {
+                BigDecimal newBudgetValue = budgetOutcomeDto.getBudget().add(orderedMap.get(budgetOutcomeDto.getCategory()).getBudget());
+                orderedMap.get(budgetOutcomeDto.getCategory()).setBudget(newBudgetValue);
+            } else {
+                orderedMap.put(budgetOutcomeDto.getCategory(), budgetOutcomeDto);
+            }
+        }
+        return new ArrayList<>(orderedMap.values());
+    }
+
+    private List<BudgetOutcomeDto> orderByCategoryOutcome(List<BudgetOutcomeDto> outcomeList) {
+        Map<String, BudgetOutcomeDto> orderedMap = new HashMap<>();
+
+        for (BudgetOutcomeDto budgetOutcomeDto : outcomeList) {
+            if (orderedMap.containsKey(budgetOutcomeDto.getCategory())) {
+                BigDecimal newOutcomeValue = budgetOutcomeDto.getOutcome().add(orderedMap.get(budgetOutcomeDto.getCategory()).getOutcome());
+                orderedMap.get(budgetOutcomeDto.getCategory()).setOutcome(newOutcomeValue);
+            } else {
+                orderedMap.put(budgetOutcomeDto.getCategory(), budgetOutcomeDto);
+            }
+        }
+        return new ArrayList<>(orderedMap.values());
+    }
+
     private Map<CategoryTypeEnum, List<BudgetOutcomeDto>> getBudgetOutcome() {
 
         Map<CategoryTypeEnum, List<BudgetOutcomeDto>> budgetOutcomeMap = getBudgetOutcomeMap();
         Map<CategoryTypeEnum, List<BudgetOutcomeDto>> budgetMap = getBudgetMap();
 
-        return combineMaps(budgetOutcomeMap, budgetMap);
+        Map<CategoryTypeEnum, List<BudgetOutcomeDto>> orderedOutcomeMap = new HashMap<>();
+        for (Map.Entry<CategoryTypeEnum, List<BudgetOutcomeDto>> entry : budgetOutcomeMap.entrySet()) {
+            orderedOutcomeMap.put(entry.getKey(), orderByCategoryOutcome(entry.getValue()));
+        }
+
+        Map<CategoryTypeEnum, List<BudgetOutcomeDto>> orderedBudgetMap = new HashMap<>();
+        for (Map.Entry<CategoryTypeEnum, List<BudgetOutcomeDto>> entry : budgetMap.entrySet()) {
+            orderedBudgetMap.put(entry.getKey(), orderByCategoryBudget(entry.getValue()));
+        }
+
+        return combineMaps(orderedOutcomeMap, orderedBudgetMap);
     }
 
     Map<CategoryTypeEnum, List<BudgetOutcomeDto>> combineMaps(
@@ -59,8 +98,20 @@ public class BudgetOutcome extends javax.swing.JFrame {
             if (budgetMap.containsKey(categoryTypeEnum)) {
                 List<BudgetOutcomeDto> budgetList = budgetMap.get(categoryTypeEnum);
                 List<BudgetOutcomeDto> budgetOutcomeList = budgetOutcomeMap.get(categoryTypeEnum);
+
                 List<BudgetOutcomeDto> combineLists = combineLists(budgetList, budgetOutcomeList);
-                finalBudgetOutcomeMap.put(categoryTypeEnum, combineLists);
+                List<BudgetOutcomeDto> combineLists2 = combineLists2(budgetList, budgetOutcomeList);
+
+                Set<BudgetOutcomeDto> test = new HashSet<>();
+                for (BudgetOutcomeDto combineList : combineLists) {
+                    test.add(combineList);
+                }
+
+                for (BudgetOutcomeDto budgetOutcomeDto : combineLists2) {
+                    test.add(budgetOutcomeDto);
+                }
+
+                finalBudgetOutcomeMap.put(categoryTypeEnum, new ArrayList<>(test));
             } else {
                 finalBudgetOutcomeMap.put(categoryTypeEnum, budgetOutcomeMap.get(categoryTypeEnum));
             }
@@ -82,6 +133,19 @@ public class BudgetOutcome extends javax.swing.JFrame {
         return combinedList;
     }
 
+    private List<BudgetOutcomeDto> combineLists2(List<BudgetOutcomeDto> budgetList, List<BudgetOutcomeDto> budgetOutcomeList) {
+        List<BudgetOutcomeDto> combinedList = new ArrayList<>();
+        for (BudgetOutcomeDto budgetOutcome : budgetList) {
+            for (BudgetOutcomeDto budget : budgetOutcomeList) {
+                if (budget.equals(budgetOutcome)) {
+                    budgetOutcome.setOutcome(budget.getOutcome());
+                }
+            }
+            combinedList.add(budgetOutcome);
+        }
+        return combinedList;
+    }
+
     private Map<CategoryTypeEnum, List<BudgetOutcomeDto>> getBudgetMap() {
         Map<CategoryTypeEnum, List<BudgetOutcomeDto>> budgetMap = new HashMap<>();
         BudgetHandler.getInstance().getBudget(BUDGET_MONTH).ifPresent(list -> {
@@ -94,6 +158,7 @@ public class BudgetOutcome extends javax.swing.JFrame {
                 }
             });
         });
+
         return budgetMap;
     }
 

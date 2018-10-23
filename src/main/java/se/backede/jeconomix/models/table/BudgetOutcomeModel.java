@@ -7,11 +7,8 @@ package se.backede.jeconomix.models.table;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.budget.BudgetOutcomeDto;
@@ -33,30 +30,11 @@ public class BudgetOutcomeModel extends AbstractTableModel {
 
     public BudgetOutcomeModel(List<BudgetOutcomeDto> filteredCategories, CategoryTypeEnum category) {
         this.category = category;
-        this.filteredCategories = orderByCategory(filteredCategories);
-    }
-
-    private List<BudgetOutcomeDto> orderByCategory(List<BudgetOutcomeDto> outcomeList) {
-        Map<String, BudgetOutcomeDto> orderedMap = new HashMap<>();
-
-        for (BudgetOutcomeDto budgetOutcomeDto : outcomeList) {
-            if (orderedMap.containsKey(budgetOutcomeDto.getCategory())) {
-                //BigDecimal newBudgetValue = budgetOutcomeDto.getBudget().add(orderedMap.get(budgetOutcomeDto.getCategory()).getBudget());
-                BigDecimal newOutcomeValue = budgetOutcomeDto.getOutcome().add(orderedMap.get(budgetOutcomeDto.getCategory()).getOutcome());
-
-                orderedMap.get(budgetOutcomeDto.getCategory()).setOutcome(newOutcomeValue);
-                //orderedMap.get(budgetOutcomeDto.getCategory()).setBudget(newBudgetValue);
-            } else {
-                orderedMap.put(budgetOutcomeDto.getCategory(), budgetOutcomeDto);
-            }
-        }
-
-        return new ArrayList<>(orderedMap.values());
+        this.filteredCategories = filteredCategories;
     }
 
     @Override
-    public String getColumnName(int columnIndex
-    ) {
+    public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
                 return "Category";
