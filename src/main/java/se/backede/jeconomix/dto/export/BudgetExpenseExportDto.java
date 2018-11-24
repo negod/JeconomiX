@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto.budget;
+package se.backede.jeconomix.dto.export;
 
-import se.backede.generics.persistence.dto.GenericDto;
-import java.time.Month;
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
@@ -18,12 +18,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BudgetDto extends GenericDto {
+@XmlRootElement
+@ToString
+public class BudgetExpenseExportDto {
 
     private static final long serialVersionUID = 1L;
 
-    private int year;
-    private Month month;
-    private Set<BudgetExpenseDto> budgetExpenseSet = new HashSet<>();
+    private String id;
+    private Date updatedDate;
+    private BigDecimal estimatedsum;
+    private CategoryExportDto category;
 
 }

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import se.backede.jeconomix.annotations.ComboBoxField;
 
 /**
@@ -33,6 +34,44 @@ public interface NegodComboBox<T, M> {
 
     public void setComboBoxRenderer();
 
+    public Class<?> getObjectClass();
+
+    default ObjectToStringConverter getStringConverterForAutoComplete() {
+        ObjectToStringConverter converter = new ObjectToStringConverter() {
+            @Override
+            public String getPreferredStringForItem(Object o) {
+                if (o != null) {
+                    String value = "";
+
+                    //if (o.getClass().isInstance(getObjectClass())) {
+                    if (o.getClass().getSimpleName().equals(getObjectClass().getSimpleName())) {
+                        T item = (T) o;
+                        if (item != null) {
+                            Field[] fields = item.getClass().getDeclaredFields();
+                            for (Field field : fields) {
+                                ComboBoxField annotation = field.getDeclaredAnnotation(ComboBoxField.class);
+                                if (annotation != null) {
+                                    try {
+                                        field.setAccessible(true);
+                                        value = (String) field.get(item);
+                                    } catch (IllegalArgumentException | IllegalAccessException ex) {
+                                        Logger.getLogger(NegodComboBox.class.getName()).log(Level.SEVERE, null, ex);
+                                    } finally {
+                                        field.setAccessible(false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return value;
+                } else {
+                    return String.valueOf(o);
+                }
+            }
+        };
+        return converter;
+    }
+
     public class NegodRenderer<T> extends BasicComboBoxRenderer {
 
         @Override
@@ -54,9 +93,7 @@ public interface NegodComboBox<T, M> {
                             setText((String) field.get(item));
                             field.setAccessible(false);
                             break;
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(NegodComboBox.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalAccessException ex) {
+                        } catch (IllegalArgumentException | IllegalAccessException ex) {
                             Logger.getLogger(NegodComboBox.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }

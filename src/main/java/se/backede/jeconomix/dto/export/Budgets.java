@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto.budget;
+package se.backede.jeconomix.dto.export;
 
-import se.backede.generics.persistence.dto.GenericDto;
-import java.math.BigDecimal;
+import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
-import se.backede.jeconomix.dto.CategoryDto;
 
 /**
  *
@@ -17,10 +16,9 @@ import se.backede.jeconomix.dto.CategoryDto;
  */
 @Getter
 @Setter
-public class BudgetExpenseDto extends GenericDto {
+@XmlRootElement(name = "budgets")
+public class Budgets {
 
-    private BigDecimal estimatedsum;
-    private CategoryDto category;
-    private BudgetDto budget;
+    List<BudgetExportDto> budget;
 
 }

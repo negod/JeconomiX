@@ -249,6 +249,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public static void installNumberCharacters(AbstractDocument document) {
+
         document.setDocumentFilter(new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {

@@ -23,6 +23,7 @@ import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.ProgressDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.ProgressEvent;
+import se.backede.jeconomix.exporter.BudgetExporter;
 import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.forms.basic.NegodJFrame;
@@ -72,10 +73,11 @@ public class MainForm extends NegodJFrame {
         importCategoriesMenuItem = new javax.swing.JMenuItem();
         importCompanyMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        exportCompanies = new javax.swing.JMenuItem();
-        exportExpenses = new javax.swing.JMenuItem();
-        exportExpenseTypes = new javax.swing.JMenuItem();
-        exportAll = new javax.swing.JMenuItem();
+        exportCompaniesMenuItem = new javax.swing.JMenuItem();
+        transactionExportMenuItem = new javax.swing.JMenuItem();
+        categoryExportMenuItem = new javax.swing.JMenuItem();
+        budgetExportMenuItem = new javax.swing.JMenuItem();
+        exportAllMenuItme = new javax.swing.JMenuItem();
         handleListMenu = new javax.swing.JMenu();
         expenseCategoryMenuItem = new javax.swing.JMenuItem();
         handleCompaniesMenuItem = new javax.swing.JMenuItem();
@@ -149,27 +151,35 @@ public class MainForm extends NegodJFrame {
 
         jMenu2.setText("Export");
 
-        exportCompanies.setText("Companies");
-        exportCompanies.addActionListener(new java.awt.event.ActionListener() {
+        exportCompaniesMenuItem.setText("Companies");
+        exportCompaniesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportCompaniesActionPerformed(evt);
+                exportCompaniesMenuItemActionPerformed(evt);
             }
         });
-        jMenu2.add(exportCompanies);
+        jMenu2.add(exportCompaniesMenuItem);
 
-        exportExpenses.setText("Transactions");
-        jMenu2.add(exportExpenses);
+        transactionExportMenuItem.setText("Transactions");
+        jMenu2.add(transactionExportMenuItem);
 
-        exportExpenseTypes.setText("Categories");
-        exportExpenseTypes.addActionListener(new java.awt.event.ActionListener() {
+        categoryExportMenuItem.setText("Categories");
+        categoryExportMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportExpenseTypesActionPerformed(evt);
+                categoryExportMenuItemActionPerformed(evt);
             }
         });
-        jMenu2.add(exportExpenseTypes);
+        jMenu2.add(categoryExportMenuItem);
 
-        exportAll.setText("All");
-        jMenu2.add(exportAll);
+        budgetExportMenuItem.setText("Budgets");
+        budgetExportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                budgetExportMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(budgetExportMenuItem);
+
+        exportAllMenuItme.setText("All");
+        jMenu2.add(exportAllMenuItme);
 
         menuBar.add(jMenu2);
 
@@ -292,7 +302,7 @@ public class MainForm extends NegodJFrame {
         new CompanyEditor(this, true).setVisible(true);
     }//GEN-LAST:event_handleCompaniesMenuItemActionPerformed
 
-    private void exportCompaniesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCompaniesActionPerformed
+    private void exportCompaniesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCompaniesMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
         if (filePath.isPresent()) {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
@@ -301,9 +311,9 @@ public class MainForm extends NegodJFrame {
 
             CompanyExporter.getInstance().exportCompanies(filePath.get() + "//companies.xml");
         }
-    }//GEN-LAST:event_exportCompaniesActionPerformed
+    }//GEN-LAST:event_exportCompaniesMenuItemActionPerformed
 
-    private void exportExpenseTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportExpenseTypesActionPerformed
+    private void categoryExportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryExportMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
         if (filePath.isPresent()) {
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
@@ -312,7 +322,7 @@ public class MainForm extends NegodJFrame {
 
             CategoryExporter.getInstance().exportCategories(filePath.get() + "//categories.xml");
         }
-    }//GEN-LAST:event_exportExpenseTypesActionPerformed
+    }//GEN-LAST:event_categoryExportMenuItemActionPerformed
 
     private void importTransactionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importTransactionMenuItemActionPerformed
         importTransactions(JFileChooser.FILES_AND_DIRECTORIES);
@@ -400,16 +410,27 @@ public class MainForm extends NegodJFrame {
         importTransactions(JFileChooser.DIRECTORIES_ONLY);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void budgetExportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_budgetExportMenuItemActionPerformed
+        Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
+        if (filePath.isPresent()) {
+            ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
+            progressBar.setLocationRelativeTo(this);
+            progressBar.setVisible(true);
+
+            BudgetExporter.getInstance().exportBudgets(filePath.get() + "//budgets.xml");
+        }
+    }//GEN-LAST:event_budgetExportMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem billReportMenuItem;
+    private javax.swing.JMenuItem budgetExportMenuItem;
     private se.backede.jeconomix.forms.budget.BudgetQuarter budgetQuarter1;
+    private javax.swing.JMenuItem categoryExportMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
-    private javax.swing.JMenuItem exportAll;
-    private javax.swing.JMenuItem exportCompanies;
-    private javax.swing.JMenuItem exportExpenseTypes;
-    private javax.swing.JMenuItem exportExpenses;
+    private javax.swing.JMenuItem exportAllMenuItme;
+    private javax.swing.JMenuItem exportCompaniesMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem handleCompaniesMenuItem;
     private javax.swing.JMenu handleListMenu;
@@ -426,6 +447,7 @@ public class MainForm extends NegodJFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;
+    private javax.swing.JMenuItem transactionExportMenuItem;
     // End of variables declaration//GEN-END:variables
 
 }

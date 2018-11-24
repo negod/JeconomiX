@@ -9,7 +9,6 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.ButtonModel;
@@ -74,6 +73,14 @@ public class BudgetSuggestion extends NegodDialog {
                     throw new AssertionError(key.name());
             }
         });
+
+        Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
+            return map.values().stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+        };
+
+        EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
     }
 
     private void clearTables() {
@@ -85,23 +92,16 @@ public class BudgetSuggestion extends NegodDialog {
     private void setBudgetFromActualOutcome(YearMonth yearMonth) {
         BudgetUtils.getInstance().createBudgetFromTransaction(yearMonth).ifPresent(map -> {
 
-            Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
-                return map.values().stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList());
-            };
-
-            EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
             setBudgetTables(map);
         });
     }
 
     private void setBudgetFromBudget(YearMonth yearMonth) {
         BudgetHandler.getInstance().getBudget(yearMonth).ifPresent(budget -> {
-            Map<CategoryTypeEnum, List<BudgetExpenseDto>> mapPersons = budget.getBudgetExpenseSet()
+            Map<CategoryTypeEnum, List<BudgetExpenseDto>> mapBudgetExpenses = budget.getBudgetExpenseSet()
                     .stream()
                     .collect(Collectors.groupingBy(dto -> dto.getCategory().getCategoryType().getType()));
-            setBudgetTables(mapPersons);
+            setBudgetTables(mapBudgetExpenses);
         });
     }
 

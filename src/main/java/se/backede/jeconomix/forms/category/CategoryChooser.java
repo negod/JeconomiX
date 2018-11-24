@@ -8,6 +8,7 @@ package se.backede.jeconomix.forms.category;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxOptions;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.CategoryEvent;
@@ -266,7 +267,7 @@ public class CategoryChooser extends NegodPanel {
     @Override
     public void init() {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
-        categoryCB = new ComboBoxWrapper(categoryComboBox, new CategoryComboBoxModel(CategoryTypeEnum.INCOME));
+        categoryCB = new ComboBoxWrapper(categoryComboBox, new CategoryComboBoxModel(CategoryTypeEnum.INCOME), ComboBoxOptions.RENDRER);
         categoryCB.setSelectedItem(categoryCB.getComboBoxModel().getItems().get(0));
     }
 

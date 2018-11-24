@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
@@ -35,7 +36,7 @@ public class BudgetUtils {
         return INSTANCE;
     }
 
-    public Optional<List<BudgetExpenseDto>> createBudgetFromBudget(YearMonth budgetMonth) {
+    public Optional<Set<BudgetExpenseDto>> createBudgetFromBudget(YearMonth budgetMonth) {
         return BudgetHandler.getInstance().getBudget(budgetMonth).map(budget -> {
             return budget.getBudgetExpenseSet();
         });

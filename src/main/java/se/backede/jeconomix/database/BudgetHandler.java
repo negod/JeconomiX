@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.backede.jeconomix.database;
 
 import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -14,21 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.entity.budget.Budget;
-import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 import se.backede.jeconomix.dto.budget.BudgetDto;
-import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class BudgetHandler {
-
-    BudgetDao dao = new BudgetDao();
+public class BudgetHandler extends BudgetDao {
 
     DtoEntityBaseMapper<BudgetDto, Budget> MAPPER = new DtoEntityBaseMapper<>(BudgetDto.class, Budget.class);
-    DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> EXPENSE_MAPPER = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
 
     private static final BudgetHandler INSTANCE = new BudgetHandler();
 
@@ -40,20 +31,23 @@ public class BudgetHandler {
     }
 
     public Optional<BudgetDto> createBudget(BudgetDto budget) {
-        Optional<Budget> mapFromDtoToEntity = MAPPER.mapFromDtoToEntity(budget);
-        if (mapFromDtoToEntity.isPresent()) {
-            dao.startTransaction();
-            Optional<Budget> persist = dao.persist(mapFromDtoToEntity.get());
-            dao.commitTransaction();
-            return MAPPER.mapFromEntityToDto(persist.get());
-        }
-        return Optional.empty();
+        return MAPPER.mapFromDtoToEntity(budget).map(budgetEntity -> {
+            return super.executeTransaction(() -> super.persist(budgetEntity)).map(persisted -> {
+                return MAPPER.mapFromEntityToDto(persisted).get();
+            });
+        }).orElse(Optional.empty());
+    }
+
+    public Optional<List<BudgetDto>> getAllAsDto() {
+        return this.getAll().map(budgets -> {
+            return MAPPER.mapToDtoList(budgets);
+        }).orElse(Optional.empty());
     }
 
     public Optional<BudgetDto> getBudget(YearMonth yearMonth) {
         try {
-            dao.startTransaction();
-            Query query = dao.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH);
+            this.startTransaction();
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH);
             query.setParameter("month", yearMonth.getMonth());
             query.setParameter("year", yearMonth.getYear());
             Budget budget = (Budget) query.getSingleResult();
@@ -64,7 +58,7 @@ public class BudgetHandler {
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
         } finally {
-            dao.commitTransaction();
+            this.commitTransaction();
         }
         return Optional.empty();
     }

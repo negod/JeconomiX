@@ -8,6 +8,8 @@ package se.backede.jeconomix.forms.basic.component;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import lombok.Getter;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import se.backede.jeconomix.constants.ComboBoxOptions;
 import se.backede.jeconomix.forms.basic.NegodComboBox;
 
 /**
@@ -23,12 +25,34 @@ public class ComboBoxWrapper<T, M> implements NegodComboBox<T, M> {
 
     private static final long serialVersionUID = 1L;
 
+    Class<?> objectClass;
+
     JComboBox<T> comboBox;
 
-    public ComboBoxWrapper(JComboBox comboBox, M model) {
+    public ComboBoxWrapper(JComboBox comboBox, M model, ComboBoxOptions options) {
         this.comboBox = comboBox;
         comboBox.setModel((ComboBoxModel) model);
-        setComboBoxRenderer();
+        objectClass = getParameterizedClass();
+
+        switch (options) {
+            case AUTOCOMPLETE:
+                AutoCompleteDecorator.decorate(comboBox, getStringConverterForAutoComplete());
+                break;
+            case RENDRER:
+                setComboBoxRenderer();
+                break;
+            case AUTOCOMPLETE_AND_RENDERER:
+                setComboBoxRenderer();
+                AutoCompleteDecorator.decorate(comboBox, getStringConverterForAutoComplete());
+                break;
+            default:
+                throw new AssertionError();
+        }
+
+    }
+
+    public Class<?> getParameterizedClass() {
+        return comboBox.getItemAt(0).getClass();
     }
 
     @Override
@@ -59,6 +83,11 @@ public class ComboBoxWrapper<T, M> implements NegodComboBox<T, M> {
     @Override
     public M getComboBoxModel() {
         return (M) comboBox.getModel();
+    }
+
+    @Override
+    public Class<?> getObjectClass() {
+        return objectClass;
     }
 
 }

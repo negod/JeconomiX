@@ -73,28 +73,36 @@
             <Property name="text" type="java.lang.String" value="Export"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="exportCompanies">
+            <MenuItem class="javax.swing.JMenuItem" name="exportCompaniesMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Companies"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportCompaniesActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportCompaniesMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportExpenses">
+            <MenuItem class="javax.swing.JMenuItem" name="transactionExportMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Transactions"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportExpenseTypes">
+            <MenuItem class="javax.swing.JMenuItem" name="categoryExportMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Categories"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportExpenseTypesActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="categoryExportMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportAll">
+            <MenuItem class="javax.swing.JMenuItem" name="budgetExportMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Budgets"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="budgetExportMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exportAllMenuItme">
               <Properties>
                 <Property name="text" type="java.lang.String" value="All"/>
               </Properties>

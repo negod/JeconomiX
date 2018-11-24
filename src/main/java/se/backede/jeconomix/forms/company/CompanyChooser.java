@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.constants.ComboBoxOptions;
 import se.backede.jeconomix.dto.CompanyDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.CompanyEvent;
@@ -244,6 +245,6 @@ public class CompanyChooser extends NegodPanel {
     @Override
     public void init() {
         categoryButtonGroup.setSelected(incomeRadioButton.getModel(), true);
-        companyCB = new ComboBoxWrapper<>(companyComboBox, new CompanyComboBoxModel(CategoryTypeEnum.INCOME));
+        companyCB = new ComboBoxWrapper<>(companyComboBox, new CompanyComboBoxModel(CategoryTypeEnum.INCOME), ComboBoxOptions.RENDRER);
     }
 }

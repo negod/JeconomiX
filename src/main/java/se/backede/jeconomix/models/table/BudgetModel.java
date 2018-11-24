@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+import org.apache.commons.lang3.text.WordUtils;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
@@ -86,7 +87,7 @@ public class BudgetModel extends AbstractTableModel {
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return CATEGORY_TYPE.name();
+                return WordUtils.capitalizeFully(CATEGORY_TYPE.name());
             case 1:
                 return "Estimated sum";
         }
