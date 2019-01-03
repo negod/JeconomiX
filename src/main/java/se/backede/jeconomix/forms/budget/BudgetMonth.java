@@ -53,6 +53,9 @@ public class BudgetMonth extends NegodPanel {
         setInitData(billTable, yearMonth, totalBillLbl, CategoryTypeEnum.BILL);
         setInitData(expenseTable, yearMonth, totalExpenseLbl, CategoryTypeEnum.EXPENSE);
         setInitData(incomeTable, yearMonth, totalIncomeLbl, CategoryTypeEnum.INCOME);
+        setInitData(creditCardTable, yearMonth, totalIncomeLbl, CategoryTypeEnum.CREDIT_CARD);
+        setInitData(loanTable, yearMonth, totalIncomeLbl, CategoryTypeEnum.LOAN);
+        setInitData(savingsTable, yearMonth, totalIncomeLbl, CategoryTypeEnum.SAVING);
 
         setTotalSumLabel();
     }
@@ -61,7 +64,7 @@ public class BudgetMonth extends NegodPanel {
         table.setModel(new BudgetModel(budgetMonth, category));
         setUpDropDownColumn(table.getColumnModel().getColumn(0), category);
         BudgetModel model = (BudgetModel) table.getModel();
-        lbl.setText(model.getTotalSumForColumn(1).toString());
+        lbl.setText(model.getTotalSum().toString());
     }
 
     public void setEvents() {
@@ -75,19 +78,36 @@ public class BudgetMonth extends NegodPanel {
                     case INCOME:
                         BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
                         icomeModel.addBudgetExpence(dto);
-                        totalIncomeLbl.setText(icomeModel.getTotalSumForColumn(1).toString());
+                        totalIncomeLbl.setText(icomeModel.getTotalSum().toString());
                         break;
                     case EXPENSE:
                         BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
                         expenseModel.addBudgetExpence(dto);
-                        totalExpenseLbl.setText(expenseModel.getTotalSumForColumn(1).toString());
+                        totalExpenseLbl.setText(expenseModel.getTotalSum().toString());
                         break;
                     case BILL:
                         BudgetModel billModel = (BudgetModel) billTable.getModel();
                         billModel.addBudgetExpence(dto);
-                        totalBillLbl.setText(billModel.getTotalSumForColumn(1).toString());
+                        totalBillLbl.setText(billModel.getTotalSum().toString());
                         break;
                     case TRANSFER:
+                        break;
+                    case LOAN:
+                        BudgetModel loanModel = (BudgetModel) loanTable.getModel();
+                        loanModel.addBudgetExpence(dto);
+                        totalBillLbl.setText(loanModel.getTotalSum().toString());
+                        break;
+                    case SAVING:
+                        BudgetModel savingsModel = (BudgetModel) savingsTable.getModel();
+                        savingsModel.addBudgetExpence(dto);
+                        totalBillLbl.setText(savingsModel.getTotalSum().toString());
+                        break;
+                    case CREDIT_CARD:
+                        BudgetModel creditCardModel = (BudgetModel) creditCardTable.getModel();
+                        creditCardModel.addBudgetExpence(dto);
+                        totalBillLbl.setText(creditCardModel.getTotalSum().toString());
+                        break;
+                    case POCKET_MONEY:
                         break;
                     default:
                         throw new AssertionError(dto.getCategory().getCategoryType().getType().name());
@@ -130,15 +150,24 @@ public class BudgetMonth extends NegodPanel {
         BudgetModel icomeModel = (BudgetModel) incomeTable.getModel();
         BudgetModel expenseModel = (BudgetModel) expenseTable.getModel();
         BudgetModel billModel = (BudgetModel) billTable.getModel();
+        BudgetModel loanModel = (BudgetModel) loanTable.getModel();
+        BudgetModel creditModel = (BudgetModel) creditCardTable.getModel();
+        BudgetModel savingsModel = (BudgetModel) savingsTable.getModel();
 
-        BigDecimal incomeSum = icomeModel.getTotalSumForColumn(1);
-        BigDecimal expenseSum = expenseModel.getTotalSumForColumn(1);
-        BigDecimal billSum = billModel.getTotalSumForColumn(1);
+        BigDecimal incomeSum = icomeModel.getTotalSum();
+        BigDecimal expenseSum = expenseModel.getTotalSum();
+        BigDecimal billSum = billModel.getTotalSum();
+        BigDecimal loanSum = loanModel.getTotalSum();
+        BigDecimal creditSum = creditModel.getTotalSum();
+        BigDecimal savingsSum = savingsModel.getTotalSum();
 
         BigDecimal subtract = incomeSum.subtract(expenseSum);
         BigDecimal subtract1 = subtract.subtract(billSum);
+        BigDecimal subtract2 = subtract1.subtract(loanSum);
+        BigDecimal subtract3 = subtract2.subtract(creditSum);
+        BigDecimal subtract4 = subtract3.subtract(savingsSum);
 
-        totalSumLabel.setText(subtract1.toString());
+        totalSumLabel.setText(subtract4.toString());
 
     }
 
@@ -163,6 +192,12 @@ public class BudgetMonth extends NegodPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane6 = new javax.swing.JScrollPane();
+        savingsTable = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        creditCardTable = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        loanTable = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         incomeTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -178,17 +213,85 @@ public class BudgetMonth extends NegodPanel {
         removeExpenseBtn = new javax.swing.JButton();
         budgetSuggestionBtn = new javax.swing.JButton();
         totalIncomeLbl = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         totalBillLbl = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         totalExpenseLbl = new javax.swing.JLabel();
         totalSumLabel = new javax.swing.JLabel();
         outcomeButton = new javax.swing.JButton();
+        addLoanBtn = new javax.swing.JButton();
+        removeLoanBtn = new javax.swing.JButton();
+        addSavingBtn = new javax.swing.JButton();
+        removeSavingBtn = new javax.swing.JButton();
+        totalLoanLbl = new javax.swing.JLabel();
+        totalSAvingLbl = new javax.swing.JLabel();
+        addCreditCardBtn = new javax.swing.JButton();
+        removeCreditCardBtn = new javax.swing.JButton();
+        totalCreditCardLbl = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        incomeTable.setBackground(new java.awt.Color(255, 255, 255));
+        savingsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Savings", "Sum"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(savingsTable);
+        if (savingsTable.getColumnModel().getColumnCount() > 0) {
+            savingsTable.getColumnModel().getColumn(0).setResizable(false);
+        }
+
+        creditCardTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Credit card", "Sum"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane5.setViewportView(creditCardTable);
+        if (creditCardTable.getColumnModel().getColumnCount() > 0) {
+            creditCardTable.getColumnModel().getColumn(0).setResizable(false);
+        }
+
+        loanTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Loan", "Sum"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(loanTable);
+        if (loanTable.getColumnModel().getColumnCount() > 0) {
+            loanTable.getColumnModel().getColumn(0).setResizable(false);
+        }
+
         incomeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -212,7 +315,6 @@ public class BudgetMonth extends NegodPanel {
             incomeTable.getColumnModel().getColumn(1).setResizable(false);
         }
 
-        billTable.setBackground(new java.awt.Color(255, 255, 255));
         billTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -320,17 +422,8 @@ public class BudgetMonth extends NegodPanel {
         totalIncomeLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalIncomeLbl.setText("0.00");
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Total:");
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Total:");
-
         totalBillLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalBillLbl.setText("0.00");
-
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Total:");
 
         totalExpenseLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalExpenseLbl.setText("0.00");
@@ -344,46 +437,118 @@ public class BudgetMonth extends NegodPanel {
             }
         });
 
+        addLoanBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addLoanBtn.setText("+");
+        addLoanBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addLoanBtnActionPerformed(evt);
+            }
+        });
+
+        removeLoanBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeLoanBtn.setText("-");
+        removeLoanBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeLoanBtnActionPerformed(evt);
+            }
+        });
+
+        addSavingBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addSavingBtn.setText("+");
+        addSavingBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSavingBtnActionPerformed(evt);
+            }
+        });
+
+        removeSavingBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeSavingBtn.setText("-");
+        removeSavingBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeSavingBtnActionPerformed(evt);
+            }
+        });
+
+        totalLoanLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalLoanLbl.setText("0.00");
+
+        totalSAvingLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalSAvingLbl.setText("0.00");
+
+        addCreditCardBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addCreditCardBtn.setText("+");
+        addCreditCardBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addCreditCardBtnActionPerformed(evt);
+            }
+        });
+
+        removeCreditCardBtn.setBackground(new java.awt.Color(255, 255, 255));
+        removeCreditCardBtn.setText("-");
+        removeCreditCardBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeCreditCardBtnActionPerformed(evt);
+            }
+        });
+
+        totalCreditCardLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalCreditCardLbl.setText("0.00");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(budgetSuggestionBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalExpenseLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalBillLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalIncomeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(addIncomeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removeIncomeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removeBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removeExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(outcomeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(totalBillLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(totalCreditCardLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(totalSAvingLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(addIncomeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(addBillBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(outcomeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(removeIncomeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(removeBillBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addCreditCardBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeCreditCardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addSavingBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeSavingBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addLoanBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeLoanBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(totalLoanLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(totalIncomeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(totalExpenseLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addExpenseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeExpenseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -395,40 +560,62 @@ public class BudgetMonth extends NegodPanel {
                     .addComponent(budgetSuggestionBtn)
                     .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(outcomeButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addIncomeBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeIncomeBtn))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(totalIncomeLbl)
-                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(totalBillLbl)
-                            .addComponent(jLabel3)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addBillBtn)
+                            .addComponent(addIncomeBtn)
+                            .addComponent(removeIncomeBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeBillBtn)))
+                        .addComponent(totalIncomeLbl))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addExpenseBtn)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addBillBtn)
+                            .addComponent(removeBillBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeExpenseBtn))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(totalBillLbl))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(totalExpenseLbl)
-                    .addComponent(jLabel5))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addExpenseBtn)
+                            .addComponent(removeExpenseBtn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalExpenseLbl)
+                        .addGap(94, 94, 94)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(addLoanBtn)
+                                    .addComponent(removeLoanBtn))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalLoanLbl))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(addSavingBtn)
+                                    .addComponent(removeSavingBtn))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalSAvingLbl)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(addCreditCardBtn)
+                                    .addComponent(removeCreditCardBtn))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalCreditCardLbl))
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -477,28 +664,64 @@ public class BudgetMonth extends NegodPanel {
         new BudgetOutcome(CURRENT_YEAR_MONTH).setVisible(true);
     }//GEN-LAST:event_outcomeButtonActionPerformed
 
+    private void addLoanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLoanBtnActionPerformed
+        addBudgetLine(CategoryTypeEnum.LOAN);
+    }//GEN-LAST:event_addLoanBtnActionPerformed
+
+    private void removeLoanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeLoanBtnActionPerformed
+        removeBudgetExpense(loanTable);
+    }//GEN-LAST:event_removeLoanBtnActionPerformed
+
+    private void addSavingBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSavingBtnActionPerformed
+        addBudgetLine(CategoryTypeEnum.SAVING);
+    }//GEN-LAST:event_addSavingBtnActionPerformed
+
+    private void removeSavingBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSavingBtnActionPerformed
+        removeBudgetExpense(savingsTable);
+    }//GEN-LAST:event_removeSavingBtnActionPerformed
+
+    private void addCreditCardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCreditCardBtnActionPerformed
+        addBudgetLine(CategoryTypeEnum.CREDIT_CARD);
+    }//GEN-LAST:event_addCreditCardBtnActionPerformed
+
+    private void removeCreditCardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeCreditCardBtnActionPerformed
+        removeBudgetExpense(creditCardTable);
+    }//GEN-LAST:event_removeCreditCardBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBillBtn;
+    private javax.swing.JButton addCreditCardBtn;
     private javax.swing.JButton addExpenseBtn;
     private javax.swing.JButton addIncomeBtn;
+    private javax.swing.JButton addLoanBtn;
+    private javax.swing.JButton addSavingBtn;
     private javax.swing.JTable billTable;
     private javax.swing.JButton budgetSuggestionBtn;
+    private javax.swing.JTable creditCardTable;
     private javax.swing.JTable expenseTable;
     private javax.swing.JTable incomeTable;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTable loanTable;
     private javax.swing.JLabel monthLabel;
     private javax.swing.JButton outcomeButton;
     private javax.swing.JButton removeBillBtn;
+    private javax.swing.JButton removeCreditCardBtn;
     private javax.swing.JButton removeExpenseBtn;
     private javax.swing.JButton removeIncomeBtn;
+    private javax.swing.JButton removeLoanBtn;
+    private javax.swing.JButton removeSavingBtn;
+    private javax.swing.JTable savingsTable;
     private javax.swing.JLabel totalBillLbl;
+    private javax.swing.JLabel totalCreditCardLbl;
     private javax.swing.JLabel totalExpenseLbl;
     private javax.swing.JLabel totalIncomeLbl;
+    private javax.swing.JLabel totalLoanLbl;
+    private javax.swing.JLabel totalSAvingLbl;
     private javax.swing.JLabel totalSumLabel;
     // End of variables declaration//GEN-END:variables
 

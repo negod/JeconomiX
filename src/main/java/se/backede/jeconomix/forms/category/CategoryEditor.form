@@ -35,7 +35,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane1" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="432" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="companyEditTable1" max="32767" attributes="0"/>
@@ -51,7 +51,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit1">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="incomeTab">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.INCOME)"/>
           </AuxValues>
@@ -63,7 +63,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit2">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="expenseTab">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.EXPENSE)"/>
           </AuxValues>
@@ -75,7 +75,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit3">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="billTab">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.BILL)"/>
           </AuxValues>
@@ -87,7 +87,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="categoryEdit4">
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="transferTab">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.TRANSFER)"/>
           </AuxValues>
@@ -95,6 +95,54 @@
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Transfer">
                 <Property name="tabTitle" type="java.lang.String" value="Transfer"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="loanTab">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.LOAN)"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Loan">
+                <Property name="tabTitle" type="java.lang.String" value="Loan"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="creditCardTab">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.CREDIT_CARD)"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Credit card">
+                <Property name="tabTitle" type="java.lang.String" value="Credit card"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="savingsTab">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.SAVING)"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Savings">
+                <Property name="tabTitle" type="java.lang.String" value="Savings"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="se.backede.jeconomix.forms.category.CategoryEdit" name="pocketMoneyTab">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new se.backede.jeconomix.forms.category.CategoryEdit(CategoryTypeEnum.POCKET_MONEY)"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Pocket money">
+                <Property name="tabTitle" type="java.lang.String" value="Pocket money"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

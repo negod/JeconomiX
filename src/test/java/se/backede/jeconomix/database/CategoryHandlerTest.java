@@ -66,7 +66,7 @@ public class CategoryHandlerTest {
 
         Optional<List<CategoryTypeDto>> allCategoryTypes = CategoryTypeHandler.getInstance().getAllCategoryTypes();
         Assert.assertTrue("There should be Categorytypes from createion of DB", allCategoryTypes.isPresent());
-        Assert.assertEquals("Categorytype list should be of size 4", 4, allCategoryTypes.get().size());
+        Assert.assertEquals("Categorytype list should be of size 8", 8, allCategoryTypes.get().size());
 
         Optional<CategoryDto> newCategory = CategoryTypeHandler.getInstance().getAllCategoryTypes().map(type -> {
             CategoryDto category = TestMock.getCategory("NewCategory");
@@ -95,7 +95,7 @@ public class CategoryHandlerTest {
 
         Optional<List<CategoryTypeDto>> allCategoryTypes = CategoryTypeHandler.getInstance().getAllCategoryTypes();
         Assert.assertTrue("There should be Categorytypes from createion of DB", allCategoryTypes.isPresent());
-        Assert.assertEquals("Categorytype list should be of size 4", 4, allCategoryTypes.get().size());
+        Assert.assertEquals("Categorytype list should be of size 8", 8, allCategoryTypes.get().size());
 
         for (int i = 0; i < numberOfCategories; i++) {
             final int current = i;

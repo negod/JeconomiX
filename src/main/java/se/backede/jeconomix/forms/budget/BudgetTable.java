@@ -6,7 +6,6 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.time.YearMonth;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -37,17 +36,14 @@ public class BudgetTable extends NegodPanel {
         this.BUDGET_MONTH = currentYearMonth;
         this.CATEGORY = category;
         initComponents();
-    }
 
-    private void setUpTable(JTable table, YearMonth budgetMonth, JLabel lbl, CategoryTypeEnum category) {
-        budgetTable.setModel(new BudgetModel(budgetMonth, category));
-        //setUpDropDownColumn(table, table.getColumnModel().getColumn(0), category);
-        BudgetModel billModel = (BudgetModel) table.getModel();
+        budgetTable.setModel(new BudgetModel(BUDGET_MONTH, CATEGORY));
     }
 
     public void setEvents() {
 
         Consumer<BudgetExpenseDto> createBudgetExpense = (dto) -> {
+
             if (dto.getBudget().getMonth().equals(BUDGET_MONTH.getMonth()) && dto.getBudget().getYear() == BUDGET_MONTH.getYear()) {
                 if (dto.getCategory().getCategoryType().getType().equals(CATEGORY)) {
                     BudgetModel icomeModel = (BudgetModel) budgetTable.getModel();
@@ -55,8 +51,8 @@ public class BudgetTable extends NegodPanel {
                 }
             }
         };
-        EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
 
+        EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
     }
 
     /**

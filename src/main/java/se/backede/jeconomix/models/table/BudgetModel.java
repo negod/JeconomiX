@@ -175,7 +175,7 @@ public class BudgetModel extends AbstractTableModel {
 
     }
 
-    public BigDecimal getTotalSumForColumn(int column) {
+    public BigDecimal getTotalSum() {
         BigDecimal totalSum = BigDecimal.ZERO;
         for (BudgetExpenseDto filteredCategory : filteredCategories) {
             totalSum = totalSum.add(filteredCategory.getEstimatedsum());

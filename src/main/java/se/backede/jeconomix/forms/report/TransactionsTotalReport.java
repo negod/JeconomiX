@@ -45,10 +45,14 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL, currentYear);
         List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE, currentYear);
         List<TransactionReportDto> calculatedIncomeReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.INCOME, currentYear);
+        List<TransactionReportDto> calculatedCreditCardReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.CREDIT_CARD, currentYear);
+        List<TransactionReportDto> calculatedLoanReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.LOAN, currentYear);
 
         List<TransactionReportDto> aggregatedExpenseReport = new LinkedList<>();
         aggregatedExpenseReport.addAll(calculatedBillReport);
         aggregatedExpenseReport.addAll(calculatedExpenseReport);
+        aggregatedExpenseReport.addAll(calculatedCreditCardReport);
+        aggregatedExpenseReport.addAll(calculatedLoanReport);
 
         Map<String, List<TransactionReportDto>> reports = new HashMap<>();
         reports.put("Income", calculatedIncomeReport);

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.constants;
+package se.backede.jeconomix.event.events;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public enum CategoryTypeEnum {
-    INCOME, EXPENSE, BILL, TRANSFER, LOAN, SAVING, CREDIT_CARD, POCKET_MONEY;
+public enum UiEvent {
+    SHOW, HIDE;
 }

@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.event;
 
+import java.time.Month;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import se.backede.jeconomix.event.events.CategoryEvent;
 import se.backede.jeconomix.event.events.CompanyEvent;
 import se.backede.jeconomix.event.events.ProgressEvent;
 import se.backede.jeconomix.event.events.TransactionEvent;
+import se.backede.jeconomix.event.events.UiEvent;
 
 /**
  *
@@ -37,6 +39,8 @@ public class EventController {
         events.put(CompanyEvent.class, Optional.ofNullable(new EventContainer<>(CompanyEvent.class)));
         events.put(ProgressEvent.class, Optional.ofNullable(new EventContainer<>(ProgressEvent.class)));
         events.put(TransactionEvent.class, Optional.ofNullable(new EventContainer<>(TransactionEvent.class)));
+        events.put(Month.class, Optional.ofNullable(new EventContainer<>(Month.class)));
+        events.put(UiEvent.class, Optional.ofNullable(new EventContainer<>(UiEvent.class)));
 
         syncedEventMap = Collections.unmodifiableMap(events);
     }

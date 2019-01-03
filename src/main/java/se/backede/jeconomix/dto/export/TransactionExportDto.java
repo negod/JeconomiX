@@ -5,12 +5,9 @@
  */
 package se.backede.jeconomix.dto.export;
 
-import se.backede.jeconomix.dto.*;
 import se.backede.generics.persistence.dto.GenericDto;
 import java.math.BigDecimal;
 import java.sql.Date;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,13 +20,9 @@ import lombok.Setter;
 public class TransactionExportDto extends GenericDto {
 
     private Date transDate;
-
     private BigDecimal sum;
-
     private BigDecimal saldo;
-
     private String company;
-
     private String transactionType;
 
 }

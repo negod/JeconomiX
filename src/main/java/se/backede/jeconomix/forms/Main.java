@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms;
 
+import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -25,14 +26,20 @@ public class Main {
         CacheInitializer cache = new CacheInitializer();
 
         try {
-            // Set System L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             log.error("Error in startup when setting look and feel", e);
         }
 
+        Font font = UIManager.getFont("TableHeader.font");
+        font = font.deriveFont(11f);
+
+        UIManager.put("TableHeader.font", font);
+
         java.awt.EventQueue.invokeLater(() -> {
-            MainForm frame = new MainForm();
+//            MainForm frame = new MainForm();
+
+            MonthOverview frame = new MonthOverview();
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         });

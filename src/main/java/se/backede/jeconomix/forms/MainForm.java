@@ -29,7 +29,7 @@ import se.backede.jeconomix.exporter.CompanyExporter;
 import se.backede.jeconomix.forms.basic.NegodJFrame;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
-import se.backede.jeconomix.forms.company.CompanyImporter;
+import se.backede.jeconomix.importer.CompanyImporter;
 import se.backede.jeconomix.importer.NordeaCsvTransactionImporter;
 import se.backede.jeconomix.importer.TransactionWrapper;
 import se.backede.jeconomix.importer.Transactions;
@@ -85,7 +85,10 @@ public class MainForm extends NegodJFrame {
         expenseReportMenuItem = new javax.swing.JMenuItem();
         billReportMenuItem = new javax.swing.JMenuItem();
         incomeReportMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        creditCardReportMenuItem = new javax.swing.JMenuItem();
+        loanReportMenuItem = new javax.swing.JMenuItem();
+        savingsReportMenuItem = new javax.swing.JMenuItem();
+        totalReportMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         reindecLuceneMenuItem = new javax.swing.JMenuItem();
 
@@ -229,13 +232,37 @@ public class MainForm extends NegodJFrame {
         });
         reportMenu.add(incomeReportMenuItem);
 
-        jMenuItem1.setText("Total report");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        creditCardReportMenuItem.setText("Credit card report");
+        creditCardReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                creditCardReportMenuItemActionPerformed(evt);
             }
         });
-        reportMenu.add(jMenuItem1);
+        reportMenu.add(creditCardReportMenuItem);
+
+        loanReportMenuItem.setText("Loan report");
+        loanReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loanReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(loanReportMenuItem);
+
+        savingsReportMenuItem.setText("Savings report");
+        savingsReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                savingsReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(savingsReportMenuItem);
+
+        totalReportMenuItem.setText("Total report");
+        totalReportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                totalReportMenuItemActionPerformed(evt);
+            }
+        });
+        reportMenu.add(totalReportMenuItem);
 
         menuBar.add(reportMenu);
 
@@ -257,11 +284,11 @@ public class MainForm extends NegodJFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(budgetQuarter1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -402,9 +429,9 @@ public class MainForm extends NegodJFrame {
         new TransactionReport(this, true, CategoryTypeEnum.INCOME, Boolean.TRUE).setVisible(true);
     }//GEN-LAST:event_incomeReportMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void totalReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalReportMenuItemActionPerformed
         new TransactionsTotalReport(this, true).setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_totalReportMenuItemActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         importTransactions(JFileChooser.DIRECTORIES_ONLY);
@@ -421,11 +448,24 @@ public class MainForm extends NegodJFrame {
         }
     }//GEN-LAST:event_budgetExportMenuItemActionPerformed
 
+    private void loanReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loanReportMenuItemActionPerformed
+        new TransactionReport(this, true, CategoryTypeEnum.LOAN, Boolean.TRUE).setVisible(true);
+    }//GEN-LAST:event_loanReportMenuItemActionPerformed
+
+    private void creditCardReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditCardReportMenuItemActionPerformed
+        new TransactionReport(this, true, CategoryTypeEnum.CREDIT_CARD, Boolean.TRUE).setVisible(true);
+    }//GEN-LAST:event_creditCardReportMenuItemActionPerformed
+
+    private void savingsReportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savingsReportMenuItemActionPerformed
+        new TransactionReport(this, true, CategoryTypeEnum.SAVING, Boolean.TRUE).setVisible(true);
+    }//GEN-LAST:event_savingsReportMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem billReportMenuItem;
     private javax.swing.JMenuItem budgetExportMenuItem;
     private se.backede.jeconomix.forms.budget.BudgetQuarter budgetQuarter1;
     private javax.swing.JMenuItem categoryExportMenuItem;
+    private javax.swing.JMenuItem creditCardReportMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem expenseCategoryMenuItem;
     private javax.swing.JMenuItem expenseReportMenuItem;
@@ -442,11 +482,13 @@ public class MainForm extends NegodJFrame {
     private javax.swing.JMenuItem incomeReportMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem loanReportMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem reindecLuceneMenuItem;
     private javax.swing.JMenu reportMenu;
+    private javax.swing.JMenuItem savingsReportMenuItem;
+    private javax.swing.JMenuItem totalReportMenuItem;
     private javax.swing.JMenuItem transactionExportMenuItem;
     // End of variables declaration//GEN-END:variables
 

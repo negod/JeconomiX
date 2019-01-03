@@ -3,19 +3,20 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    
+
     <!-- tables -->
-    
+
     <!-- Bill and expenses -->
     <include file="tables/category_type.xml" relativeToChangelogFile="true"/>
     <include file="tables/category.xml" relativeToChangelogFile="true"/>
     <include file="tables/company.xml" relativeToChangelogFile="true"/>
     <include file="tables/company_accociation.xml" relativeToChangelogFile="true"/>
     <include file="tables/transaction.xml" relativeToChangelogFile="true"/>
-    
+    <include file="tables/account.xml" relativeToChangelogFile="true"/>
+
     <include file="tables/budget/budget.xml" relativeToChangelogFile="true"/>
     <include file="tables/budget/budget_expense.xml" relativeToChangelogFile="true"/>
-    
+
     <include file="script/script_init.xml" relativeToChangelogFile="true"/>
-    
+
 </databaseChangeLog>
