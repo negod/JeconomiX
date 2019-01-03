@@ -100,7 +100,7 @@ public class SummaryWidget extends javax.swing.JPanel {
         });
         titlePanel.setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         titleLabel.setText("jLabel1");
         titleLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -125,7 +125,7 @@ public class SummaryWidget extends javax.swing.JPanel {
         });
         sumPanel.setLayout(new java.awt.GridBagLayout());
 
-        sumLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        sumLabel.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         sumLabel.setText("jLabel2");
         sumLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

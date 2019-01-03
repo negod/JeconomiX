@@ -41,9 +41,10 @@ public class MonthWidget extends javax.swing.JPanel {
 
         Consumer<YearMonth> setVisible = (dto) -> {
             if (dto.getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getYear() == CURRENT_YEAR_MONTH.getYear()) {
-                this.add(budgetTable1);
-                this.revalidate();
-                // this.repaint();
+//                this.add(budgetTable1);
+//                this.revalidate();
+                //this.repaint();
+                budgetTable1.setVisible(true);
                 log.error("SHOWING - CurrentSize = {}", this.getSize().toString());
             }
         };
@@ -51,10 +52,11 @@ public class MonthWidget extends javax.swing.JPanel {
 
         Consumer<YearMonth> hide = (dto) -> {
             if (dto.getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getYear() == CURRENT_YEAR_MONTH.getYear()) {
-                this.remove(budgetTable1);
-                this.setSize(new Dimension(600, 100));
-                this.revalidate();
+//                this.remove(budgetTable1);
+                //this.setSize(new Dimension(600, 100));
+//                this.revalidate();
                 //this.repaint();
+                budgetTable1.setVisible(false);
                 log.error("HIDING - CurrentSize = {}", this.getSize().toString());
             }
         };
@@ -81,15 +83,30 @@ public class MonthWidget extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         summaryWidget1 = new se.backede.jeconomix.forms.basic.component.SummaryWidget();
         budgetTable1 = new se.backede.jeconomix.forms.budget.BudgetTable();
 
-        setMaximumSize(new java.awt.Dimension(600, 400));
-        setMinimumSize(new java.awt.Dimension(0, 0));
-        setPreferredSize(new java.awt.Dimension(600, 400));
-        add(summaryWidget1);
-        add(budgetTable1);
+        setMinimumSize(new java.awt.Dimension(600, 375));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWidths = new int[] {1, 2};
+        layout.rowHeights = new int[] {1, 2};
+        setLayout(layout);
+
+        summaryWidget1.setPreferredSize(new java.awt.Dimension(600, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        add(summaryWidget1, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(budgetTable1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,11 +6,8 @@
 package se.backede.jeconomix.forms;
 
 import java.time.YearMonth;
-import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.data.time.Month;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.events.UiEvent;
 
 /**
  *
@@ -52,9 +49,6 @@ public class MonthOverview extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(600, 400));
         setPreferredSize(new java.awt.Dimension(600, 400));
 
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING, 2, 2);
-        flowLayout1.setAlignOnBaseline(true);
-        jPanel1.setLayout(flowLayout1);
         jPanel1.add(monthWidget4);
         jPanel1.add(monthWidget3);
         jPanel1.add(monthWidget2);
@@ -71,7 +65,7 @@ public class MonthOverview extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1215, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
