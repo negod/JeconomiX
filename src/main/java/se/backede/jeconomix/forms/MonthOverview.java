@@ -6,8 +6,12 @@
 package se.backede.jeconomix.forms;
 
 import java.time.YearMonth;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.CharSetUtils.count;
 import org.jfree.data.time.Month;
+import se.backede.jeconomix.forms.basic.component.MonthWidget;
 
 /**
  *
@@ -15,6 +19,8 @@ import org.jfree.data.time.Month;
  */
 @Slf4j
 public class MonthOverview extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = 1L;
 
     YearMonth CURRENT = YearMonth.of(2018, Month.MARCH);
     YearMonth CURRENT2 = YearMonth.of(2019, Month.MARCH);
@@ -25,9 +31,13 @@ public class MonthOverview extends javax.swing.JFrame {
      */
     public MonthOverview() {
         initComponents();
-        monthWidget2.init(CURRENT);
-        monthWidget3.init(CURRENT2);
-        monthWidget4.init(CURRENT3);
+
+        JPanel view = ((JPanel) jScrollPane1.getViewport().getView());
+        view.add(new MonthWidget(CURRENT));
+        view.add(new MonthWidget(CURRENT2));
+        view.add(new MonthWidget(CURRENT3));
+        view.validate();
+
     }
 
     /**
@@ -39,34 +49,30 @@ public class MonthOverview extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
-        monthWidget4 = new se.backede.jeconomix.forms.basic.component.MonthWidget();
-        monthWidget3 = new se.backede.jeconomix.forms.basic.component.MonthWidget();
-        monthWidget2 = new se.backede.jeconomix.forms.basic.component.MonthWidget();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(600, 400));
         setMinimumSize(new java.awt.Dimension(600, 400));
-        setPreferredSize(new java.awt.Dimension(600, 400));
+        setPreferredSize(new java.awt.Dimension(500, 700));
 
-        jPanel1.add(monthWidget4);
-        jPanel1.add(monthWidget3);
-        jPanel1.add(monthWidget2);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 700));
+
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
+        flowLayout1.setAlignOnBaseline(true);
+        jPanel1.setLayout(flowLayout1);
+        jScrollPane1.setViewportView(jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 2, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1215, Short.MAX_VALUE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -74,8 +80,6 @@ public class MonthOverview extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private se.backede.jeconomix.forms.basic.component.MonthWidget monthWidget2;
-    private se.backede.jeconomix.forms.basic.component.MonthWidget monthWidget3;
-    private se.backede.jeconomix.forms.basic.component.MonthWidget monthWidget4;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

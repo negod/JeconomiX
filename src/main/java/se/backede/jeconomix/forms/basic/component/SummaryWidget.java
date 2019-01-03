@@ -84,15 +84,19 @@ public class SummaryWidget extends javax.swing.JPanel {
         progressPanel = new javax.swing.JPanel();
         budgetProgressBar = new javax.swing.JProgressBar();
 
-        setPreferredSize(new java.awt.Dimension(600, 75));
+        setMinimumSize(new java.awt.Dimension(500, 25));
+        setPreferredSize(new java.awt.Dimension(500, 25));
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);
             }
         });
-        setLayout(new java.awt.GridLayout(1, 3, -1, -1));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWidths = new int[] {20};
+        layout.rowHeights = new int[] {1};
+        setLayout(layout);
 
-        titlePanel.setPreferredSize(new java.awt.Dimension(200, 75));
+        titlePanel.setPreferredSize(new java.awt.Dimension(100, 25));
         titlePanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 titlePanelMouseClicked(evt);
@@ -107,17 +111,16 @@ public class SummaryWidget extends javax.swing.JPanel {
                 titleLabelMouseClicked(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(41, 45, 45, 57);
-        titlePanel.add(titleLabel, gridBagConstraints);
+        titlePanel.add(titleLabel, new java.awt.GridBagConstraints());
 
-        add(titlePanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        add(titlePanel, gridBagConstraints);
 
         sumPanel.setBackground(new java.awt.Color(255, 255, 255));
-        sumPanel.setPreferredSize(new java.awt.Dimension(200, 75));
+        sumPanel.setPreferredSize(new java.awt.Dimension(225, 25));
         sumPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 sumPanelMouseClicked(evt);
@@ -132,17 +135,16 @@ public class SummaryWidget extends javax.swing.JPanel {
                 sumLabelMouseClicked(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(46, 89, 48, 106);
-        sumPanel.add(sumLabel, gridBagConstraints);
+        sumPanel.add(sumLabel, new java.awt.GridBagConstraints());
 
-        add(sumPanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        add(sumPanel, gridBagConstraints);
 
         progressPanel.setBackground(new java.awt.Color(255, 255, 255));
-        progressPanel.setPreferredSize(new java.awt.Dimension(200, 75));
+        progressPanel.setPreferredSize(new java.awt.Dimension(175, 25));
         progressPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 SummaryWidget.this.mouseClicked(evt);
@@ -153,21 +155,18 @@ public class SummaryWidget extends javax.swing.JPanel {
         budgetProgressBar.setBorderPainted(false);
         budgetProgressBar.setMaximumSize(new java.awt.Dimension(32767, 32767));
         budgetProgressBar.setMinimumSize(new java.awt.Dimension(0, 0));
-        budgetProgressBar.setPreferredSize(new java.awt.Dimension(200, 75));
+        budgetProgressBar.setPreferredSize(new java.awt.Dimension(175, 25));
         budgetProgressBar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 budgetProgressBarMouseClicked(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 210;
-        gridBagConstraints.ipady = 75;
-        gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 8);
-        progressPanel.add(budgetProgressBar, gridBagConstraints);
+        progressPanel.add(budgetProgressBar, new java.awt.GridBagConstraints());
 
-        add(progressPanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        add(progressPanel, gridBagConstraints);
         progressPanel.getAccessibleContext().setAccessibleDescription("");
         progressPanel.getAccessibleContext().setAccessibleParent(progressPanel);
     }// </editor-fold>//GEN-END:initComponents

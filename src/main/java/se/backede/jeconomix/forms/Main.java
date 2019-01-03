@@ -40,7 +40,7 @@ public class Main {
 //            MainForm frame = new MainForm();
 
             MonthOverview frame = new MonthOverview();
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         });
     }

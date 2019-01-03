@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.forms.basic.component;
 
-import java.awt.Dimension;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.function.Consumer;
@@ -21,8 +20,6 @@ import se.backede.jeconomix.event.events.UiEvent;
 @Slf4j
 public class MonthWidget extends javax.swing.JPanel {
 
-    YearMonth CURRENT_YEAR_MONTH;
-
     /**
      * Creates new form MonthWidget
      */
@@ -30,34 +27,27 @@ public class MonthWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setVisible() {
-
+    public MonthWidget(YearMonth currentYearMonth) {
+        initComponents();
+        startUp(currentYearMonth);
     }
 
-    public void init(YearMonth currentYearMonth) {
-        CURRENT_YEAR_MONTH = currentYearMonth;
+    public void startUp(YearMonth currentYearMonth) {
 
         summaryWidget1.init(CategoryTypeEnum.BILL, BigDecimal.ONE, BigDecimal.TEN, currentYearMonth);
 
         Consumer<YearMonth> setVisible = (dto) -> {
-            if (dto.getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getYear() == CURRENT_YEAR_MONTH.getYear()) {
-//                this.add(budgetTable1);
-//                this.revalidate();
-                //this.repaint();
+            if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
                 budgetTable1.setVisible(true);
-                log.error("SHOWING - CurrentSize = {}", this.getSize().toString());
+                this.validate();
             }
         };
         EventController.getInstance().addObserver(UiEvent.SHOW, setVisible);
 
         Consumer<YearMonth> hide = (dto) -> {
-            if (dto.getMonth().equals(CURRENT_YEAR_MONTH.getMonth()) && dto.getYear() == CURRENT_YEAR_MONTH.getYear()) {
-//                this.remove(budgetTable1);
-                //this.setSize(new Dimension(600, 100));
-//                this.revalidate();
-                //this.repaint();
+            if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
                 budgetTable1.setVisible(false);
-                log.error("HIDING - CurrentSize = {}", this.getSize().toString());
+                this.validate();
             }
         };
         EventController.getInstance().addObserver(UiEvent.HIDE, hide);
@@ -72,7 +62,7 @@ public class MonthWidget extends javax.swing.JPanel {
 //
 //    private void addBudgetLine(CategoryTypeEnum category) {
 //        AddBudgetLine budgetLine = new AddBudgetLine(CURRENT_YEAR_MONTH);
-//        budgetLine.init(category);
+//        budgetLine.startUp(category);
 //        budgetLine.setVisible(true);
 //    }
     /**
@@ -93,8 +83,6 @@ public class MonthWidget extends javax.swing.JPanel {
         layout.columnWidths = new int[] {1, 2};
         layout.rowHeights = new int[] {1, 2};
         setLayout(layout);
-
-        summaryWidget1.setPreferredSize(new java.awt.Dimension(600, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridwidth = 2;
