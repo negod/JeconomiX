@@ -102,7 +102,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
     public Optional<List<BudgetExpenseDto>> getBudgetExpenseByMonthAndCategory(YearMonth yearMonth, CategoryTypeEnum category) {
         try {
             this.startTransaction();
-            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH_AND_CATEGORY);
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.GET_BUDGET_EXPENSE_SUM_BY_MONTH_AND_YEAR);
             query.setParameter("month", yearMonth.getMonth());
             query.setParameter("year", yearMonth.getYear());
             query.setParameter("categoryType", category);

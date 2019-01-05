@@ -33,8 +33,7 @@ import se.backede.jeconomix.database.entity.Category;
 @Getter
 @Setter
 @NamedQueries({
-    @NamedQuery(name = EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH_AND_CATEGORY, query = "SELECT b FROM BudgetExpense b where b.budget.year = :year AND b.budget.month = :month AND b.category.categoryType.type =:categoryType")
-})
+    @NamedQuery(name = EntityQueries.GET_BUDGET_EXPENSE_SUM_BY_MONTH_AND_YEAR, query = "SELECT b FROM BudgetExpense b where b.budget.year = :year AND b.budget.month = :month AND b.category.categoryType.type =:categoryType"),})
 public class BudgetExpense extends GenericEntity {
 
     @Column(name = "ESTIMATEDSUM")

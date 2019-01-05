@@ -26,6 +26,8 @@ import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
+import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
 import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
@@ -223,7 +225,18 @@ public class AddBudgetLine extends javax.swing.JFrame {
             Double valueOf = Double.valueOf(sumTextField.getText());
             dto.setEstimatedsum(BigDecimal.valueOf(valueOf));
             BudgetExpenseHandler.getInstance().upsertBudgetExpense(dto).ifPresent(budgetExpense -> {
-                EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> budgetExpense);
+
+                BudgetExpenseEventDto build = BudgetExpenseEventDto.builder()
+                        .budgetExpense(budgetExpense)
+                        .budgetEvent(
+                                BudgetEventDto.builder()
+                                        .category(budgetExpense.getCategory().getCategoryType().getType())
+                                        .yearMonth(BUDGET_MONTH)
+                                        .build()
+                        )
+                        .build();
+
+                EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> build);
                 this.dispose();
             });
         });

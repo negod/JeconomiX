@@ -9,9 +9,7 @@ import java.time.YearMonth;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import static se.backede.jeconomix.database.entity.budget.Budget_.year;
 import se.backede.jeconomix.event.events.dto.BudgetEventDto;
-import se.backede.jeconomix.forms.basic.component.MonthWidget;
 
 /**
  *
@@ -42,7 +40,7 @@ public class BudgetList extends javax.swing.JPanel {
                     .yearMonth(yearMonth)
                     .category(category)
                     .build();
-            verticalBox1.add(new MonthWidget(dto));
+            verticalBox1.add(new BudgetMonthWidget(dto));
         }
 
         view.add(verticalBox1);

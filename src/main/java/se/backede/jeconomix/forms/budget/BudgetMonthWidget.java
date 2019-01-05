@@ -3,14 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.basic.component;
+package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
-import java.time.Year;
-import java.time.YearMonth;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
 import se.backede.jeconomix.event.events.dto.BudgetEventDto;
@@ -20,26 +17,29 @@ import se.backede.jeconomix.event.events.dto.BudgetEventDto;
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Slf4j
-public class MonthWidget extends javax.swing.JPanel {
+public class BudgetMonthWidget extends javax.swing.JPanel {
 
     /**
      * Creates new form MonthWidget
      */
-    public MonthWidget() {
+    public BudgetMonthWidget() {
         initComponents();
     }
 
-    public MonthWidget(BudgetEventDto budgetEvent) {
+    public BudgetMonthWidget(BudgetEventDto currentBudget) {
         initComponents();
 
-        startUp(budgetEvent);
+        budgetTable1.init(currentBudget);
+
         budgetTable1.setVisible(false);
         this.validate();
+
+        startUp(currentBudget);
     }
 
     public void startUp(BudgetEventDto budgetEvent) {
 
-        summaryWidget1.init(budgetEvent, BigDecimal.ONE, BigDecimal.TEN);
+        summaryWidget1.init(budgetEvent, BigDecimal.TEN, budgetTable1.getTotalSum());
 
         Consumer<BudgetEventDto> setVisible = (dto) -> {
             if (dto.equals(budgetEvent)) {
@@ -80,7 +80,7 @@ public class MonthWidget extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        summaryWidget1 = new se.backede.jeconomix.forms.basic.component.SummaryWidget();
+        summaryWidget1 = new se.backede.jeconomix.forms.budget.BudgetSummaryWidget();
         budgetTable1 = new se.backede.jeconomix.forms.budget.BudgetTable();
 
         setLayout(new java.awt.GridBagLayout());
@@ -101,6 +101,6 @@ public class MonthWidget extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.backede.jeconomix.forms.budget.BudgetTable budgetTable1;
-    private se.backede.jeconomix.forms.basic.component.SummaryWidget summaryWidget1;
+    private se.backede.jeconomix.forms.budget.BudgetSummaryWidget summaryWidget1;
     // End of variables declaration//GEN-END:variables
 }

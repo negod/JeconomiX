@@ -5,14 +5,14 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.time.YearMonth;
+import java.math.BigDecimal;
 import java.util.function.Consumer;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
+import static se.backede.jeconomix.database.entity.Transaction_.BUDGET_MONTH;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
+import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.table.BudgetModel;
 
@@ -22,8 +22,7 @@ import se.backede.jeconomix.models.table.BudgetModel;
  */
 public class BudgetTable extends NegodPanel {
 
-    private YearMonth BUDGET_MONTH = YearMonth.now();
-    private CategoryTypeEnum CATEGORY = CategoryTypeEnum.INCOME;
+    BudgetEventDto CURRENT_BUDGET;
 
     /**
      * Creates new form BudgetTable
@@ -32,26 +31,25 @@ public class BudgetTable extends NegodPanel {
         initComponents();
     }
 
-    public BudgetTable(YearMonth currentYearMonth, CategoryTypeEnum category) {
-        this.BUDGET_MONTH = currentYearMonth;
-        this.CATEGORY = category;
-        initComponents();
+    public void init(BudgetEventDto currentBudget) {
+        this.CURRENT_BUDGET = currentBudget;
+        budgetTable.setModel(new BudgetModel(CURRENT_BUDGET));
+        setEvents();
+    }
 
-        budgetTable.setModel(new BudgetModel(BUDGET_MONTH, CATEGORY));
+    public BigDecimal getTotalSum() {
+        BudgetModel icomeModel = (BudgetModel) budgetTable.getModel();
+        return icomeModel.getTotalSum();
     }
 
     public void setEvents() {
 
-        Consumer<BudgetExpenseDto> createBudgetExpense = (dto) -> {
-
-            if (dto.getBudget().getMonth().equals(BUDGET_MONTH.getMonth()) && dto.getBudget().getYear() == BUDGET_MONTH.getYear()) {
-                if (dto.getCategory().getCategoryType().getType().equals(CATEGORY)) {
-                    BudgetModel icomeModel = (BudgetModel) budgetTable.getModel();
-                    icomeModel.addBudgetExpence(dto);
-                }
+        Consumer<BudgetExpenseEventDto> createBudgetExpense = (dto) -> {
+            if (dto.getBudgetEvent().equals(CURRENT_BUDGET)) {
+                BudgetModel icomeModel = (BudgetModel) budgetTable.getModel();
+                icomeModel.addBudgetExpence(dto.getBudgetExpense());
             }
         };
-
         EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, createBudgetExpense);
     }
 
@@ -67,8 +65,8 @@ public class BudgetTable extends NegodPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         budgetTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        removeBudgetRow = new javax.swing.JButton();
+        addBudgetRow = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(400, 350));
@@ -91,9 +89,19 @@ public class BudgetTable extends NegodPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton2.setText("-");
+        removeBudgetRow.setText("-");
+        removeBudgetRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBudgetRowActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("+");
+        addBudgetRow.setText("+");
+        addBudgetRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBudgetRowActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,17 +110,17 @@ public class BudgetTable extends NegodPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(removeBudgetRow, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addBudgetRow))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jButton1)
+                .addComponent(addBudgetRow)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(removeBudgetRow)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -132,12 +140,32 @@ public class BudgetTable extends NegodPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addBudgetRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBudgetRowActionPerformed
+        AddBudgetLine budgetLine = new AddBudgetLine(CURRENT_BUDGET.getYearMonth());
+        budgetLine.init(CURRENT_BUDGET.getCategory());
+        budgetLine.setVisible(true);
+    }//GEN-LAST:event_addBudgetRowActionPerformed
+
+    private void removeBudgetRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBudgetRowActionPerformed
+        BudgetModel model = (BudgetModel) budgetTable.getModel();
+        BudgetExpenseDto budgetExpenceAt = model.getBudgetExpenceAt(budgetTable.getSelectedRow());
+
+        BudgetExpenseEventDto budgetEvent = BudgetExpenseEventDto.builder()
+                .budgetEvent(CURRENT_BUDGET)
+                .budgetExpense(budgetExpenceAt)
+                .build();
+
+        EventController.getInstance().notifyObservers(BudgetEvent.DELETE_BUDGET_ROW, () -> budgetEvent);
+
+        model.removeBudgetExpenseAt(budgetTable.getSelectedRow());
+    }//GEN-LAST:event_removeBudgetRowActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBudgetRow;
     private javax.swing.JTable budgetTable;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton removeBudgetRow;
     // End of variables declaration//GEN-END:variables
 
     @Override

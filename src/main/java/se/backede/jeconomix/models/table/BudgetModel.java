@@ -7,10 +7,8 @@ package se.backede.jeconomix.models.table;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,6 +21,7 @@ import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 
 /**
  *
@@ -35,7 +34,7 @@ public class BudgetModel extends AbstractTableModel {
     private BudgetDto BUDGET;
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
     private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;
-    private YearMonth BUDGET_MONTH;
+    BudgetEventDto BUDGET_EVENT;
 
     public BudgetModel() {
     }
@@ -45,12 +44,12 @@ public class BudgetModel extends AbstractTableModel {
         this.filteredCategories = filteredCategories;
     }
 
-    public BudgetModel(YearMonth yearMonth, CategoryTypeEnum category) {
+    public BudgetModel(BudgetEventDto currentBudget) {
 
-        this.BUDGET_MONTH = yearMonth;
-        this.CATEGORY_TYPE = category;
+        this.BUDGET_EVENT = currentBudget;
+        this.CATEGORY_TYPE = BUDGET_EVENT.getCategory();
 
-        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(yearMonth);
+        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(currentBudget.getYearMonth());
 
         if (retrievedBudget.isPresent()) {
             setFilteredCategories(retrievedBudget.get());
@@ -61,8 +60,8 @@ public class BudgetModel extends AbstractTableModel {
             this.BUDGET = retrievedBudget.get();
         } else {
             this.BUDGET = new BudgetDto();
-            this.BUDGET.setMonth(yearMonth.getMonth());
-            this.BUDGET.setYear(yearMonth.getYear());
+            this.BUDGET.setMonth(currentBudget.getYearMonth().getMonth());
+            this.BUDGET.setYear(currentBudget.getYearMonth().getYear());
             Optional<BudgetDto> createBudget = BudgetHandler.getInstance().createBudget(BUDGET);
 
             if (createBudget.isPresent()) {

@@ -18,6 +18,8 @@ import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
+import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
 import se.backede.jeconomix.forms.basic.NegodDialog;
 import se.backede.jeconomix.models.table.BudgetModel;
 import se.backede.jeconomix.utils.BudgetUtils;
@@ -448,7 +450,16 @@ public class BudgetSuggestion extends NegodDialog {
                 return budgetDto;
             }).forEachOrdered((budgetDto) -> {
                 BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetDto).ifPresent(budgetExpense -> {
-                    EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> budgetExpense);
+                    BudgetExpenseEventDto build = BudgetExpenseEventDto.builder()
+                            .budgetExpense(budgetExpense)
+                            .budgetEvent(
+                                    BudgetEventDto.builder()
+                                            .category(budgetExpense.getCategory().getCategoryType().getType())
+                                            .yearMonth(YearMonth.of(budgetDto.getBudget().getYear(), budgetDto.getBudget().getMonth()))
+                                            .build()
+                            )
+                            .build();
+                    EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> build);
                 });
             });
 

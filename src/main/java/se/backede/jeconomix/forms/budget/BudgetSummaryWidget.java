@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.forms.basic.component;
+package se.backede.jeconomix.forms.budget;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.time.YearMonth;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.BILL;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.CREDIT_CARD;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.EXPENSE;
@@ -18,16 +17,17 @@ import static se.backede.jeconomix.constants.CategoryTypeEnum.LOAN;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.POCKET_MONEY;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.SAVING;
 import static se.backede.jeconomix.constants.CategoryTypeEnum.TRANSFER;
-import static se.backede.jeconomix.database.entity.Company_.category;
 import se.backede.jeconomix.event.EventController;
+import se.backede.jeconomix.event.events.BudgetEvent;
 import se.backede.jeconomix.event.events.UiEvent;
 import se.backede.jeconomix.event.events.dto.BudgetEventDto;
+import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-public class SummaryWidget extends javax.swing.JPanel {
+public class BudgetSummaryWidget extends javax.swing.JPanel {
 
     boolean hidden = true;
     BudgetEventDto CURRENT_BUDGET;
@@ -35,8 +35,34 @@ public class SummaryWidget extends javax.swing.JPanel {
     /**
      * Creates new form SummaryWidget
      */
-    public SummaryWidget() {
+    public BudgetSummaryWidget() {
         initComponents();
+    }
+
+    public void setEvents() {
+        Consumer<BudgetExpenseEventDto> addToTotal = (dto) -> {
+            if (dto.getBudgetEvent().equals(CURRENT_BUDGET)) {
+                addToSum(dto.getBudgetExpense().getEstimatedsum());
+            }
+        };
+        EventController.getInstance().addObserver(BudgetEvent.ADD_BUDGET_ROW, addToTotal);
+
+        Consumer<BudgetExpenseEventDto> removeFromTotal = (dto) -> {
+            if (dto.getBudgetEvent().equals(CURRENT_BUDGET)) {
+                subtractFromSum(dto.getBudgetExpense().getEstimatedsum());
+            }
+        };
+        EventController.getInstance().addObserver(BudgetEvent.DELETE_BUDGET_ROW, removeFromTotal);
+    }
+
+    public void addToSum(BigDecimal value) {
+        budgetProgressBar.setMaximum(budgetProgressBar.getMaximum() + value.intValueExact());
+        sumLabel.setText(String.valueOf(budgetProgressBar.getMaximum()).concat(" Kr"));
+    }
+
+    public void subtractFromSum(BigDecimal value) {
+        budgetProgressBar.setMaximum(budgetProgressBar.getMaximum() - value.intValueExact());
+        sumLabel.setText(String.valueOf(budgetProgressBar.getMaximum()).concat(" Kr"));
     }
 
     public void init(BudgetEventDto dto, BigDecimal sum, BigDecimal budget) {
@@ -48,7 +74,7 @@ public class SummaryWidget extends javax.swing.JPanel {
         budgetProgressBar.setString(String.valueOf(sum.intValueExact()).concat(" Kr"));
 
         titleLabel.setText(StringUtils.capitalize(dto.getCategory().name().toLowerCase()));
-        sumLabel.setText(sum.toPlainString());
+        sumLabel.setText(budget.toPlainString().concat(" Kr"));
 
         switch (dto.getCategory()) {
             case INCOME:
@@ -71,6 +97,8 @@ public class SummaryWidget extends javax.swing.JPanel {
             default:
                 throw new AssertionError();
         }
+
+        setEvents();
 
     }
 
@@ -143,7 +171,7 @@ public class SummaryWidget extends javax.swing.JPanel {
         sumPanel.setLayout(new java.awt.GridBagLayout());
 
         sumLabel.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        sumLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        sumLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         sumLabel.setText("Budget sum");
         sumLabel.setPreferredSize(new java.awt.Dimension(100, 25));
         sumLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -163,7 +191,7 @@ public class SummaryWidget extends javax.swing.JPanel {
         progressPanel.setPreferredSize(new java.awt.Dimension(150, 25));
         progressPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SummaryWidget.this.mouseClicked(evt);
+                BudgetSummaryWidget.this.mouseClicked(evt);
             }
         });
         progressPanel.setLayout(new java.awt.GridBagLayout());
