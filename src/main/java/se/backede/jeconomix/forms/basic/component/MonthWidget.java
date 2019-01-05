@@ -30,6 +30,8 @@ public class MonthWidget extends javax.swing.JPanel {
     public MonthWidget(YearMonth currentYearMonth) {
         initComponents();
         startUp(currentYearMonth);
+        budgetTable1.setVisible(false);
+        this.validate();
     }
 
     public void startUp(YearMonth currentYearMonth) {
@@ -39,6 +41,7 @@ public class MonthWidget extends javax.swing.JPanel {
         Consumer<YearMonth> setVisible = (dto) -> {
             if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
                 budgetTable1.setVisible(true);
+                System.out.println(budgetTable1.size());
                 this.validate();
             }
         };
@@ -47,6 +50,7 @@ public class MonthWidget extends javax.swing.JPanel {
         Consumer<YearMonth> hide = (dto) -> {
             if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
                 budgetTable1.setVisible(false);
+                System.out.println(budgetTable1.size());
                 this.validate();
             }
         };
@@ -78,21 +82,16 @@ public class MonthWidget extends javax.swing.JPanel {
         summaryWidget1 = new se.backede.jeconomix.forms.basic.component.SummaryWidget();
         budgetTable1 = new se.backede.jeconomix.forms.budget.BudgetTable();
 
-        setMinimumSize(new java.awt.Dimension(600, 375));
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {1, 2};
-        layout.rowHeights = new int[] {1, 2};
-        setLayout(layout);
+        setLayout(new java.awt.GridBagLayout());
+
+        summaryWidget1.setPreferredSize(new java.awt.Dimension(400, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(summaryWidget1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(budgetTable1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents

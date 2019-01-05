@@ -6,10 +6,9 @@
 package se.backede.jeconomix.forms;
 
 import java.time.YearMonth;
-import javax.swing.JLabel;
+import javax.swing.Box;
 import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
-import static org.apache.commons.lang3.CharSetUtils.count;
 import org.jfree.data.time.Month;
 import se.backede.jeconomix.forms.basic.component.MonthWidget;
 
@@ -32,11 +31,40 @@ public class MonthOverview extends javax.swing.JFrame {
     public MonthOverview() {
         initComponents();
 
-        JPanel view = ((JPanel) jScrollPane1.getViewport().getView());
-        view.add(new MonthWidget(CURRENT));
-        view.add(new MonthWidget(CURRENT2));
-        view.add(new MonthWidget(CURRENT3));
-        view.validate();
+        //Panel1
+        JPanel view = ((JPanel) month1ScrollPane.getViewport().getView());
+        Box verticalBox1 = Box.createVerticalBox();
+        verticalBox1.add(Box.createGlue());
+
+        verticalBox1.add(new MonthWidget(CURRENT));
+        verticalBox1.add(new MonthWidget(CURRENT2));
+        verticalBox1.add(new MonthWidget(CURRENT3));
+
+        view.add(verticalBox1);
+
+        //Panel2
+        JPanel view2 = ((JPanel) month2ScrollPane.getViewport().getView());
+        Box verticalBox2 = Box.createVerticalBox();
+        verticalBox2.add(Box.createGlue());
+
+        verticalBox2.add(new MonthWidget(CURRENT));
+        verticalBox2.add(new MonthWidget(CURRENT2));
+        verticalBox2.add(new MonthWidget(CURRENT3));
+
+        view2.add(verticalBox2);
+
+        //Panel3
+        JPanel view3 = ((JPanel) month3ScrollPane.getViewport().getView());
+        Box verticalBox3 = Box.createVerticalBox();
+        verticalBox3.add(Box.createGlue());
+
+        verticalBox3.add(new MonthWidget(CURRENT));
+        verticalBox3.add(new MonthWidget(CURRENT2));
+        verticalBox3.add(new MonthWidget(CURRENT3));
+
+        view3.add(verticalBox3);
+
+        this.validate();
 
     }
 
@@ -49,37 +77,77 @@ public class MonthOverview extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
+        summaryPanel = new javax.swing.JPanel();
+        month1ScrollPane = new javax.swing.JScrollPane();
+        month1Panel = new javax.swing.JPanel();
+        month2ScrollPane = new javax.swing.JScrollPane();
+        month2Panel = new javax.swing.JPanel();
+        month3ScrollPane = new javax.swing.JScrollPane();
+        month3Panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 400));
-        setPreferredSize(new java.awt.Dimension(500, 700));
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 700));
+        summaryPanel.setPreferredSize(new java.awt.Dimension(1200, 300));
+        summaryPanel.setLayout(new java.awt.GridLayout(1, 3));
 
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
-        flowLayout1.setAlignOnBaseline(true);
-        jPanel1.setLayout(flowLayout1);
-        jScrollPane1.setViewportView(jPanel1);
+        month1ScrollPane.setBorder(null);
+        month1ScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        month1ScrollPane.setPreferredSize(new java.awt.Dimension(425, 75));
+        month1ScrollPane.setViewportView(month1Panel);
+
+        month1Panel.setBackground(new java.awt.Color(255, 255, 255));
+        month1ScrollPane.setViewportView(month1Panel);
+
+        summaryPanel.add(month1ScrollPane);
+
+        month2ScrollPane.setBorder(null);
+        month2ScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        month2ScrollPane.setPreferredSize(new java.awt.Dimension(425, 75));
+        month2ScrollPane.setViewportView(month2Panel);
+
+        month2Panel.setBackground(new java.awt.Color(255, 255, 255));
+        month2ScrollPane.setViewportView(month2Panel);
+
+        summaryPanel.add(month2ScrollPane);
+
+        month3ScrollPane.setBorder(null);
+        month3ScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        month3ScrollPane.setAutoscrolls(true);
+        month3ScrollPane.setPreferredSize(new java.awt.Dimension(425, 75));
+        month3ScrollPane.setViewportView(month3Panel);
+
+        month3Panel.setBackground(new java.awt.Color(255, 255, 255));
+        month3ScrollPane.setViewportView(month3Panel);
+
+        summaryPanel.add(month3ScrollPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(summaryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(summaryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel month1Panel;
+    private javax.swing.JScrollPane month1ScrollPane;
+    private javax.swing.JPanel month2Panel;
+    private javax.swing.JScrollPane month2ScrollPane;
+    private javax.swing.JPanel month3Panel;
+    private javax.swing.JScrollPane month3ScrollPane;
+    private javax.swing.JPanel summaryPanel;
     // End of variables declaration//GEN-END:variables
 }
