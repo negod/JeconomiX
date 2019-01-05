@@ -6,12 +6,14 @@
 package se.backede.jeconomix.forms.basic.component;
 
 import java.math.BigDecimal;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 
 /**
  *
@@ -27,30 +29,29 @@ public class MonthWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    public MonthWidget(YearMonth currentYearMonth) {
+    public MonthWidget(BudgetEventDto budgetEvent) {
         initComponents();
-        startUp(currentYearMonth);
+
+        startUp(budgetEvent);
         budgetTable1.setVisible(false);
         this.validate();
     }
 
-    public void startUp(YearMonth currentYearMonth) {
+    public void startUp(BudgetEventDto budgetEvent) {
 
-        summaryWidget1.init(CategoryTypeEnum.BILL, BigDecimal.ONE, BigDecimal.TEN, currentYearMonth);
+        summaryWidget1.init(budgetEvent, BigDecimal.ONE, BigDecimal.TEN);
 
-        Consumer<YearMonth> setVisible = (dto) -> {
-            if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
+        Consumer<BudgetEventDto> setVisible = (dto) -> {
+            if (dto.equals(budgetEvent)) {
                 budgetTable1.setVisible(true);
-                System.out.println(budgetTable1.size());
                 this.validate();
             }
         };
         EventController.getInstance().addObserver(UiEvent.SHOW, setVisible);
 
-        Consumer<YearMonth> hide = (dto) -> {
-            if (dto.getMonth().equals(currentYearMonth.getMonth()) && dto.getYear() == currentYearMonth.getYear()) {
+        Consumer<BudgetEventDto> hide = (dto) -> {
+            if (dto.equals(budgetEvent)) {
                 budgetTable1.setVisible(false);
-                System.out.println(budgetTable1.size());
                 this.validate();
             }
         };
@@ -86,6 +87,8 @@ public class MonthWidget extends javax.swing.JPanel {
 
         summaryWidget1.setPreferredSize(new java.awt.Dimension(400, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(summaryWidget1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();

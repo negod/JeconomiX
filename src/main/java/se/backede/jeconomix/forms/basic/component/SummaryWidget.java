@@ -10,8 +10,18 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import org.apache.commons.lang3.StringUtils;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.BILL;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.CREDIT_CARD;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.EXPENSE;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.INCOME;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.LOAN;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.POCKET_MONEY;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.SAVING;
+import static se.backede.jeconomix.constants.CategoryTypeEnum.TRANSFER;
+import static se.backede.jeconomix.database.entity.Company_.category;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 
 /**
  *
@@ -19,8 +29,8 @@ import se.backede.jeconomix.event.events.UiEvent;
  */
 public class SummaryWidget extends javax.swing.JPanel {
 
-    boolean hidden = false;
-    YearMonth CURRENT = YearMonth.now();
+    boolean hidden = true;
+    BudgetEventDto CURRENT_BUDGET;
 
     /**
      * Creates new form SummaryWidget
@@ -29,17 +39,18 @@ public class SummaryWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void init(CategoryTypeEnum category, BigDecimal sum, BigDecimal budget, YearMonth current) {
+    public void init(BudgetEventDto dto, BigDecimal sum, BigDecimal budget) {
 
-        this.CURRENT = current;
+        CURRENT_BUDGET = dto;
+
         budgetProgressBar.setMaximum(budget.intValueExact());
         budgetProgressBar.setValue(sum.intValueExact());
         budgetProgressBar.setString(String.valueOf(sum.intValueExact()).concat(" Kr"));
 
-        titleLabel.setText(StringUtils.capitalize(category.name().toLowerCase()));
+        titleLabel.setText(StringUtils.capitalize(dto.getCategory().name().toLowerCase()));
         sumLabel.setText(sum.toPlainString());
 
-        switch (category) {
+        switch (dto.getCategory()) {
             case INCOME:
             case SAVING:
                 titlePanel.setBackground(Color.GREEN);
@@ -64,7 +75,7 @@ public class SummaryWidget extends javax.swing.JPanel {
     }
 
     public void showOrHide() {
-        EventController.getInstance().notifyObservers(hidden ? UiEvent.SHOW : UiEvent.HIDE, () -> CURRENT);
+        EventController.getInstance().notifyObservers(hidden ? UiEvent.SHOW : UiEvent.HIDE, () -> CURRENT_BUDGET);
         hidden = !hidden;
     }
 

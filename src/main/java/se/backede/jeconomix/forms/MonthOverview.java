@@ -5,11 +5,16 @@
  */
 package se.backede.jeconomix.forms;
 
-import java.time.YearMonth;
+import java.time.Month;
+import java.time.Year;
+import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import lombok.extern.slf4j.Slf4j;
-import org.jfree.data.time.Month;
+import se.backede.jeconomix.constants.BudgetQuarterEnum;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 import se.backede.jeconomix.forms.basic.component.MonthWidget;
 
 /**
@@ -21,51 +26,33 @@ public class MonthOverview extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    YearMonth CURRENT = YearMonth.of(2018, Month.MARCH);
-    YearMonth CURRENT2 = YearMonth.of(2019, Month.MARCH);
-    YearMonth CURRENT3 = YearMonth.of(2020, Month.MARCH);
-
-    /**
-     * Creates new form Test
-     */
     public MonthOverview() {
         initComponents();
+    }
 
-        //Panel1
-        JPanel view = ((JPanel) month1ScrollPane.getViewport().getView());
+    public void init(BudgetQuarterEnum quarter, Year year, CategoryTypeEnum... categories) {
+
+        addBox(month1ScrollPane, quarter, quarter.firstMonth(), year, categories);
+        addBox(month2ScrollPane, quarter, quarter.secondMonth(), year, categories);
+        addBox(month3ScrollPane, quarter, quarter.thirdMonth(), year, categories);
+    }
+
+    private void addBox(JScrollPane pane, BudgetQuarterEnum quarter, Month month, Year year, CategoryTypeEnum... categories) {
+        JPanel view = ((JPanel) pane.getViewport().getView());
         Box verticalBox1 = Box.createVerticalBox();
         verticalBox1.add(Box.createGlue());
 
-        verticalBox1.add(new MonthWidget(CURRENT));
-        verticalBox1.add(new MonthWidget(CURRENT2));
-        verticalBox1.add(new MonthWidget(CURRENT3));
+        for (CategoryTypeEnum category : categories) {
+            BudgetEventDto dto = BudgetEventDto.builder()
+                    .month(month)
+                    .year(year)
+                    .quarter(quarter)
+                    .category(category)
+                    .build();
+            verticalBox1.add(new MonthWidget(dto));
+        }
 
         view.add(verticalBox1);
-
-        //Panel2
-        JPanel view2 = ((JPanel) month2ScrollPane.getViewport().getView());
-        Box verticalBox2 = Box.createVerticalBox();
-        verticalBox2.add(Box.createGlue());
-
-        verticalBox2.add(new MonthWidget(CURRENT));
-        verticalBox2.add(new MonthWidget(CURRENT2));
-        verticalBox2.add(new MonthWidget(CURRENT3));
-
-        view2.add(verticalBox2);
-
-        //Panel3
-        JPanel view3 = ((JPanel) month3ScrollPane.getViewport().getView());
-        Box verticalBox3 = Box.createVerticalBox();
-        verticalBox3.add(Box.createGlue());
-
-        verticalBox3.add(new MonthWidget(CURRENT));
-        verticalBox3.add(new MonthWidget(CURRENT2));
-        verticalBox3.add(new MonthWidget(CURRENT3));
-
-        view3.add(verticalBox3);
-
-        this.validate();
-
     }
 
     /**
@@ -112,7 +99,7 @@ public class MonthOverview extends javax.swing.JFrame {
         summaryPanel.add(month2ScrollPane);
 
         month3ScrollPane.setBorder(null);
-        month3ScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        month3ScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         month3ScrollPane.setAutoscrolls(true);
         month3ScrollPane.setPreferredSize(new java.awt.Dimension(425, 75));
         month3ScrollPane.setViewportView(month3Panel);

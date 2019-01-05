@@ -22,6 +22,8 @@ public class BudgetQuarter extends NegodPanel {
     BudgetQuarterEnum currentQuarter = TimeDecider.getCurrenQuarter();
     Integer currentYear = TimeDecider.getCurrentYear();
 
+    Month[] month = new Month[]{Month.JANUARY, Month.FEBRUARY};
+
     /**
      * Creates new form BudgetQuarter
      */
