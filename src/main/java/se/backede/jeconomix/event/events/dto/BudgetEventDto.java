@@ -5,12 +5,10 @@
  */
 package se.backede.jeconomix.event.events.dto;
 
-import java.time.Month;
-import java.time.Year;
+import java.time.YearMonth;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 
 /**
@@ -22,9 +20,7 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 @EqualsAndHashCode
 public class BudgetEventDto {
 
-    BudgetQuarterEnum quarter;
-    Month month;
-    Year year;
+    YearMonth yearMonth;
     CategoryTypeEnum category;
 
 }

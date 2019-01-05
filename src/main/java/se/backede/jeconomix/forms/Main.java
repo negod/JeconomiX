@@ -6,12 +6,10 @@
 package se.backede.jeconomix.forms;
 
 import java.awt.Font;
-import java.time.Year;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.CacheInitializer;
 import se.backede.jeconomix.database.LiquibaseHandler;
@@ -46,11 +44,8 @@ public class Main {
         UIManager.put("TableHeader.font", font);
 
         java.awt.EventQueue.invokeLater(() -> {
-//            MainForm frame = new MainForm();
-
-            MonthOverview frame = new MonthOverview();
-            frame.init(BudgetQuarterEnum.QUARTER1, Year.now(), CATEGORIES);
-            //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            MainForm frame = new MainForm();
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         });
     }

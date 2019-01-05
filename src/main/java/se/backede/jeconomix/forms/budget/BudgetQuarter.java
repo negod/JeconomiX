@@ -5,11 +5,10 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.time.Month;
 import java.time.YearMonth;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.forms.basic.NegodPanel;
-import se.backede.jeconomix.utils.TimeDecider;
 
 /**
  *
@@ -19,10 +18,14 @@ public class BudgetQuarter extends NegodPanel {
 
     private static final long serialVersionUID = 1L;
 
-    BudgetQuarterEnum currentQuarter = TimeDecider.getCurrenQuarter();
-    Integer currentYear = TimeDecider.getCurrentYear();
+    BudgetQuarterEnum CURRENT_QUARTER;
+    Integer CURRENT_YEAR;
 
-    Month[] month = new Month[]{Month.JANUARY, Month.FEBRUARY};
+    static CategoryTypeEnum[] CATEGORIES = {
+        CategoryTypeEnum.INCOME,
+        CategoryTypeEnum.BILL,
+        CategoryTypeEnum.EXPENSE
+    };
 
     /**
      * Creates new form BudgetQuarter
@@ -32,35 +35,15 @@ public class BudgetQuarter extends NegodPanel {
     }
 
     public void setData(BudgetQuarterEnum quarter, Integer year) {
+
+        CURRENT_QUARTER = quarter;
+        CURRENT_YEAR = year;
+
         yearLabel.setText(year.toString());
-        switch (quarter) {
-            case QUARTER1:
-                budgetMonth1.setMonth(YearMonth.of(year, Month.JANUARY));
-                budgetMonth2.setMonth(YearMonth.of(year, Month.FEBRUARY));
-                budgetMonth3.setMonth(YearMonth.of(year, Month.MARCH));
-                quarterLabel.setText("Quarter 1");
-                break;
-            case QUARTER2:
-                budgetMonth1.setMonth(YearMonth.of(year, Month.APRIL));
-                budgetMonth2.setMonth(YearMonth.of(year, Month.MAY));
-                budgetMonth3.setMonth(YearMonth.of(year, Month.JUNE));
-                quarterLabel.setText("Quarter 2");
-                break;
-            case QUARTER3:
-                budgetMonth1.setMonth(YearMonth.of(year, Month.JULY));
-                budgetMonth2.setMonth(YearMonth.of(year, Month.AUGUST));
-                budgetMonth3.setMonth(YearMonth.of(year, Month.SEPTEMBER));
-                quarterLabel.setText("Quarter 3");
-                break;
-            case QUARTER4:
-                budgetMonth1.setMonth(YearMonth.of(year, Month.OCTOBER));
-                budgetMonth2.setMonth(YearMonth.of(year, Month.NOVEMBER));
-                budgetMonth3.setMonth(YearMonth.of(year, Month.DECEMBER));
-                quarterLabel.setText("Quarter 4");
-                break;
-            default:
-                throw new AssertionError();
-        }
+        budgetMonth1.setMonth(YearMonth.of(year, quarter.firstMonth()), CATEGORIES);
+        budgetMonth2.setMonth(YearMonth.of(year, quarter.secondMonth()), CATEGORIES);
+        budgetMonth3.setMonth(YearMonth.of(year, quarter.thirdMonth()), CATEGORIES);
+        quarterLabel.setText(quarter.name());
     }
 
     /**
@@ -180,45 +163,45 @@ public class BudgetQuarter extends NegodPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void quarterBackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quarterBackBtnActionPerformed
-        switch (currentQuarter) {
+        switch (CURRENT_QUARTER) {
             case QUARTER1:
-                currentQuarter = BudgetQuarterEnum.QUARTER4;
-                currentYear = currentYear - 1;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER4;
+                CURRENT_YEAR = CURRENT_YEAR - 1;
                 break;
             case QUARTER2:
-                currentQuarter = BudgetQuarterEnum.QUARTER1;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER1;
                 break;
             case QUARTER3:
-                currentQuarter = BudgetQuarterEnum.QUARTER2;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER2;
                 break;
             case QUARTER4:
-                currentQuarter = BudgetQuarterEnum.QUARTER3;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER3;
                 break;
             default:
                 throw new AssertionError();
         }
-        setData(currentQuarter, currentYear);
+        setData(CURRENT_QUARTER, CURRENT_YEAR);
     }//GEN-LAST:event_quarterBackBtnActionPerformed
 
     private void quarterFwrdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quarterFwrdBtnActionPerformed
-        switch (currentQuarter) {
+        switch (CURRENT_QUARTER) {
             case QUARTER1:
-                currentQuarter = BudgetQuarterEnum.QUARTER2;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER2;
                 break;
             case QUARTER2:
-                currentQuarter = BudgetQuarterEnum.QUARTER3;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER3;
                 break;
             case QUARTER3:
-                currentQuarter = BudgetQuarterEnum.QUARTER4;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER4;
                 break;
             case QUARTER4:
-                currentQuarter = BudgetQuarterEnum.QUARTER1;
-                currentYear = currentYear + 1;
+                CURRENT_QUARTER = BudgetQuarterEnum.QUARTER1;
+                CURRENT_YEAR = CURRENT_YEAR + 1;
                 break;
             default:
                 throw new AssertionError();
         }
-        setData(currentQuarter, currentYear);
+        setData(CURRENT_QUARTER, CURRENT_YEAR);
     }//GEN-LAST:event_quarterFwrdBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
