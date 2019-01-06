@@ -25,7 +25,7 @@ import se.backede.jeconomix.database.dao.TransactionDao;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.mappers.TransactionMapperImpl;
+import se.backede.jeconomix.dto.mappers.TransactionMapper;
 import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
@@ -36,7 +36,6 @@ import se.backede.jeconomix.utils.TransactionUtils;
 public class TransactionHandler extends TransactionDao {
 
     CompanyDao companyDao = new CompanyDao();
-    TransactionMapperImpl MAPPER = new TransactionMapperImpl();
     DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper<>(CompanyDto.class, Company.class);
 
     private static final TransactionHandler INSTANCE = new TransactionHandler();
@@ -96,19 +95,19 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public Optional<TransactionDto> createTransaction(TransactionDto transaction) {
-        Transaction mapToTransaction = MAPPER.mapToTransaction(transaction);
+        Transaction mapToTransaction = TransactionMapper.INSTANCE.mapToTransaction(transaction);
         return companyDao.getById(transaction.getCompany().getId()).map(company -> {
             CategoryTypeEnum type = company.getCategory().getCategoryType().getType();
             Transaction decideBudgetMonth = decideBudgetMonth(mapToTransaction, type);
             return super.executeTransaction(() -> super.persist(mapToTransaction)).map(persisted -> {
-                return MAPPER.mapToTransactionDto(persisted);
+                return TransactionMapper.INSTANCE.mapToTransactionDto(persisted);
             });
         }).get();
     }
 
     public Optional<List<TransactionDto>> getAllTransactions() {
         return super.getAll().map(transactionList -> {
-            return MAPPER.mapToTransactionDtoList(transactionList);
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(transactionList);
         });
     }
 
@@ -124,7 +123,7 @@ public class TransactionHandler extends TransactionDao {
                 return Optional.empty();
             }
         }).map(list -> {
-            return MAPPER.mapToTransactionDtoList(list);
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(list);
         });
     }
 
@@ -141,7 +140,7 @@ public class TransactionHandler extends TransactionDao {
                 return Optional.empty();
             }
         }).map(list -> {
-            return MAPPER.mapToTransactionDtoList(list);
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(list);
         });
     }
 
@@ -169,7 +168,7 @@ public class TransactionHandler extends TransactionDao {
                 return Optional.empty();
             }
         }).map(list -> {
-            return MAPPER.mapToTransactionDtoList(list);
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(list);
         });
     }
 }

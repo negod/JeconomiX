@@ -6,7 +6,11 @@
 package se.backede.jeconomix.dto.mappers;
 
 import java.util.List;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.dto.TransactionDto;
 
@@ -14,14 +18,17 @@ import se.backede.jeconomix.dto.TransactionDto;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-@Mapper
+@Mapper(uses = {CompanyMapper.class})
 public interface TransactionMapper {
+
+    TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
     List<Transaction> mapToTransactionList(List<TransactionDto> transactions);
 
     List<TransactionDto> mapToTransactionDtoList(List<Transaction> transactions);
 
-    Transaction mapToTransaction(TransactionDto source);
+    Transaction mapToTransaction(TransactionDto transaction);
 
-    TransactionDto mapToTransactionDto(Transaction destination);
+    @InheritInverseConfiguration
+    TransactionDto mapToTransactionDto(Transaction transaction);
 }
