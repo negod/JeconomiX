@@ -39,8 +39,8 @@ public class TimeDecider {
         }
     }
 
-    public static Integer getCurrentYear() {
-        return YearMonth.now().getYear();
+    public static Year getCurrentYear() {
+        return Year.of(YearMonth.now().getYear());
     }
 
 }

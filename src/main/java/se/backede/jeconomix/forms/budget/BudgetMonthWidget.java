@@ -6,8 +6,11 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
+import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
 import se.backede.jeconomix.event.events.dto.BudgetEventDto;
@@ -26,10 +29,10 @@ public class BudgetMonthWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    public BudgetMonthWidget(BudgetEventDto currentBudget) {
+    public BudgetMonthWidget(BudgetEventDto currentBudget, List<BudgetExpenseDto> expenses) {
         initComponents();
 
-        budgetTable1.init(currentBudget);
+        budgetTable1.init(currentBudget, expenses);
 
         budgetTable1.setVisible(false);
         this.validate();

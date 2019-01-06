@@ -33,49 +33,14 @@ public class BudgetModel extends AbstractTableModel {
 
     private BudgetDto BUDGET;
     private List<BudgetExpenseDto> filteredCategories = new LinkedList<>();
-    private CategoryTypeEnum CATEGORY_TYPE = CategoryTypeEnum.BILL;
-    BudgetEventDto BUDGET_EVENT;
+    private BudgetEventDto BUDGET_EVENT;
 
     public BudgetModel() {
     }
 
-    public BudgetModel(List<BudgetExpenseDto> filteredCategories, Boolean categorize, CategoryTypeEnum category) {
-        this.CATEGORY_TYPE = category;
-        this.filteredCategories = filteredCategories;
-    }
-
-    public BudgetModel(BudgetEventDto currentBudget) {
-
+    public BudgetModel(BudgetEventDto currentBudget, List<BudgetExpenseDto> filteredCategories) {
         this.BUDGET_EVENT = currentBudget;
-        this.CATEGORY_TYPE = BUDGET_EVENT.getCategory();
-
-        Optional<BudgetDto> retrievedBudget = BudgetHandler.getInstance().getBudget(currentBudget.getYearMonth());
-
-        if (retrievedBudget.isPresent()) {
-            setFilteredCategories(retrievedBudget.get());
-        }
-
-        //Set budget
-        if (retrievedBudget.isPresent()) {
-            this.BUDGET = retrievedBudget.get();
-        } else {
-            this.BUDGET = new BudgetDto();
-            this.BUDGET.setMonth(currentBudget.getYearMonth().getMonth());
-            this.BUDGET.setYear(currentBudget.getYearMonth().getYear());
-            Optional<BudgetDto> createBudget = BudgetHandler.getInstance().createBudget(BUDGET);
-
-            if (createBudget.isPresent()) {
-                this.BUDGET = createBudget.get();
-            }
-        }
-
-    }
-
-    public void setFilteredCategories(BudgetDto budget) {
-        filteredCategories = budget.getBudgetExpenseSet()
-                .stream()
-                .filter(isCategoryType(CATEGORY_TYPE))
-                .collect(Collectors.<BudgetExpenseDto>toList());
+        this.filteredCategories = filteredCategories;
     }
 
     private Predicate<BudgetExpenseDto> isCategoryType(CategoryTypeEnum type) {
@@ -86,7 +51,7 @@ public class BudgetModel extends AbstractTableModel {
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return WordUtils.capitalizeFully(CATEGORY_TYPE.name());
+                return WordUtils.capitalizeFully(BUDGET_EVENT.getCategory().name());
             case 1:
                 return "Estimated sum";
         }

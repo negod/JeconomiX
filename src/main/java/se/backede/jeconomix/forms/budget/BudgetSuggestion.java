@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.ButtonModel;
+import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
@@ -28,6 +29,7 @@ import se.backede.jeconomix.utils.BudgetUtils;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
+@Slf4j
 public class BudgetSuggestion extends NegodDialog {
 
     private static final long serialVersionUID = 1L;
@@ -59,21 +61,29 @@ public class BudgetSuggestion extends NegodDialog {
 
     private void setBudgetTables(Map<CategoryTypeEnum, List<BudgetExpenseDto>> map) {
         map.forEach((key, dtoList) -> {
-            switch (key) {
-                case INCOME:
-                    incomeTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.INCOME));
-                    break;
-                case EXPENSE:
-                    expenseTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.EXPENSE));
-                    break;
-                case BILL:
-                    billTable.setModel(new BudgetModel(dtoList, true, CategoryTypeEnum.BILL));
-                    break;
-                case TRANSFER:
-                    break;
-                default:
-                    throw new AssertionError(key.name());
-            }
+//            switch (key) {
+//                case INCOME:
+//                    incomeTable.setModel(new BudgetModel(dtoList));
+//                    break;
+//                case EXPENSE:
+//                    expenseTable.setModel(new BudgetModel(dtoList));
+//                    break;
+//                case BILL:
+//                    billTable.setModel(new BudgetModel(dtoList));
+//                    break;
+//                case TRANSFER:
+//                    break;
+//                case LOAN:
+//                    break;
+//                case SAVING:
+//                    break;
+//                case CREDIT_CARD:
+//                    break;
+//                case POCKET_MONEY:
+//                    break;
+//                default:
+//                    log.info("Key {} not handeled", key.name());
+//            }
         });
 
         Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
@@ -86,9 +96,9 @@ public class BudgetSuggestion extends NegodDialog {
     }
 
     private void clearTables() {
-        incomeTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.INCOME));
-        expenseTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.EXPENSE));
-        billTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.BILL));
+//        incomeTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.INCOME));
+//        expenseTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.EXPENSE));
+//        billTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.BILL));
     }
 
     private void setBudgetFromActualOutcome(YearMonth yearMonth) {

@@ -6,8 +6,8 @@
 package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.Consumer;
-import static se.backede.jeconomix.database.entity.Transaction_.BUDGET_MONTH;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
@@ -31,9 +31,9 @@ public class BudgetTable extends NegodPanel {
         initComponents();
     }
 
-    public void init(BudgetEventDto currentBudget) {
+    public void init(BudgetEventDto currentBudget, List<BudgetExpenseDto> budgetList) {
         this.CURRENT_BUDGET = currentBudget;
-        budgetTable.setModel(new BudgetModel(CURRENT_BUDGET));
+        budgetTable.setModel(new BudgetModel(CURRENT_BUDGET, budgetList));
         setEvents();
     }
 

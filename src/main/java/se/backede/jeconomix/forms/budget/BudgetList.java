@@ -5,10 +5,10 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.time.YearMonth;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 
 /**
@@ -26,7 +26,7 @@ public class BudgetList extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void init(YearMonth yearMonth, CategoryTypeEnum... categories) {
+    public void init(BudgetCalculationDto budget) {
 
         JPanel view = ((JPanel) scrollPane.getViewport().getView());
 
@@ -35,13 +35,16 @@ public class BudgetList extends javax.swing.JPanel {
         Box verticalBox1 = Box.createVerticalBox();
         verticalBox1.add(Box.createGlue());
 
-        for (CategoryTypeEnum category : categories) {
+        budget.getBudgetExpense().forEach((category, expenseList) -> {
+
             BudgetEventDto dto = BudgetEventDto.builder()
-                    .yearMonth(yearMonth)
+                    .yearMonth(budget.getYearMonth())
                     .category(category)
                     .build();
-            verticalBox1.add(new BudgetMonthWidget(dto));
-        }
+
+            verticalBox1.add(new BudgetMonthWidget(dto, expenseList));
+
+        });
 
         view.add(verticalBox1);
 

@@ -5,13 +5,17 @@
  */
 package se.backede.jeconomix.database;
 
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.util.Optional;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.database.dao.BudgetDao;
@@ -20,6 +24,7 @@ import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
 import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.utils.BudgetUtils;
 
 /**
  *
@@ -102,7 +107,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
     public Optional<List<BudgetExpenseDto>> getBudgetExpenseByMonthAndCategory(YearMonth yearMonth, CategoryTypeEnum category) {
         try {
             this.startTransaction();
-            Query query = this.getEntityManager().createNamedQuery(EntityQueries.GET_BUDGET_EXPENSE_SUM_BY_MONTH_AND_YEAR);
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH_AND_CATEGORY);
             query.setParameter("month", yearMonth.getMonth());
             query.setParameter("year", yearMonth.getYear());
             query.setParameter("categoryType", category);
@@ -117,6 +122,56 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             this.commitTransaction();
         }
         return Optional.empty();
+    }
+
+    public Optional<List<BudgetExpenseDto>> getBudgetExpenseByYearMonth(YearMonth yearMonth) {
+        try {
+            this.startTransaction();
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_EXPENSE_BY_YEARMONTH);
+            query.setParameter("month", yearMonth.getMonth());
+            query.setParameter("year", yearMonth.getYear());
+            List<BudgetExpense> budget = query.getResultList();
+
+            if (budget != null) {
+                return MAPPER.mapToDtoList(budget);
+            }
+        } catch (NoResultException ex) {
+            log.debug("No result for query when getting Budget", ex);
+        } finally {
+            this.commitTransaction();
+        }
+        return Optional.empty();
+    }
+
+    public Optional<List<BudgetExpenseDto>> getBudgetExpenseByQuarter(BudgetQuarterEnum quarter, Year year) {
+        try {
+            this.startTransaction();
+            Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_EXPENSE_BY_QUARTER);
+            query.setParameter("months", quarter.months());
+            query.setParameter("year", year.getValue());
+            List<BudgetExpense> budget = query.getResultList();
+
+            if (budget != null) {
+                return MAPPER.mapToDtoList(budget);
+            }
+        } catch (NoResultException ex) {
+            log.debug("No result for query when getting Budget", ex);
+        } finally {
+            this.commitTransaction();
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Map<CategoryTypeEnum, List<BudgetExpenseDto>>> getFilteredBudgetExpenseByYearAndMonth(YearMonth yearMonth) {
+        return getBudgetExpenseByYearMonth(yearMonth).map(expenseList -> {
+            return BudgetUtils.getCategoryFilteredBudgetExpense(new HashSet<>(expenseList));
+        });
+    }
+
+    public Optional<Map<CategoryTypeEnum, List<BudgetExpenseDto>>> getFilteredBudgetExpenseByQuarter(BudgetQuarterEnum quarter, Year year) {
+        return getBudgetExpenseByQuarter(quarter, year).map(expenseList -> {
+            return BudgetUtils.getCategoryFilteredBudgetExpense(new HashSet<>(expenseList));
+        });
     }
 
 }

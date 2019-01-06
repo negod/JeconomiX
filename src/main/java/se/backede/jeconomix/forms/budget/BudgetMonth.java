@@ -8,14 +8,13 @@ package se.backede.jeconomix.forms.budget;
 import java.time.YearMonth;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.ComboBoxRenderer;
+import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 import se.backede.jeconomix.models.combobox.CategoryComboBoxModel;
-import se.backede.jeconomix.models.table.BudgetModel;
 import se.backede.jeconomix.renderer.combobox.CategoryItemRenderer;
 
 /**
@@ -35,10 +34,10 @@ public class BudgetMonth extends NegodPanel {
         initComponents();
     }
 
-    public void setMonth(YearMonth yearMonth, CategoryTypeEnum... categories) {
-        this.CURRENT_YEAR_MONTH = yearMonth;
-        monthLabel.setText(yearMonth.getMonth().name());
-        budgetList.init(yearMonth, categories);
+    public void setMonth(BudgetCalculationDto budget) {
+        this.CURRENT_YEAR_MONTH = budget.getYearMonth();
+        monthLabel.setText(budget.getYearMonth().getMonth().name());
+        budgetList.init(budget);
     }
 
     public void setUpDropDownColumn(TableColumn column, CategoryTypeEnum type) {

@@ -32,7 +32,8 @@ import se.backede.jeconomix.constants.EntityQueries;
 @Getter
 @Setter
 @NamedQueries({
-    @NamedQuery(name = EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH, query = "SELECT b FROM Budget b where b.year = :year AND b.month = :month")})
+    @NamedQuery(name = EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH, query = "SELECT b FROM Budget b where b.year = :year AND b.month = :month"),
+    @NamedQuery(name = EntityQueries.FIND_BUDGET_BY_QARTER, query = "SELECT b FROM Budget b where b.year = :year AND b.month IN :months")})
 public class Budget extends GenericEntity {
 
     @Column(name = "YEAR")

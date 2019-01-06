@@ -5,9 +5,15 @@
  */
 package se.backede.jeconomix.forms.budget;
 
+import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.Map;
+import java.util.Optional;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.BudgetHandler;
+import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 
 /**
@@ -19,13 +25,9 @@ public class BudgetQuarter extends NegodPanel {
     private static final long serialVersionUID = 1L;
 
     BudgetQuarterEnum CURRENT_QUARTER;
-    Integer CURRENT_YEAR;
+    Year CURRENT_YEAR;
 
-    static CategoryTypeEnum[] CATEGORIES = {
-        CategoryTypeEnum.INCOME,
-        CategoryTypeEnum.BILL,
-        CategoryTypeEnum.EXPENSE
-    };
+    static CategoryTypeEnum[] CATEGORIES = CategoryTypeEnum.values();
 
     /**
      * Creates new form BudgetQuarter
@@ -34,15 +36,18 @@ public class BudgetQuarter extends NegodPanel {
         initComponents();
     }
 
-    public void setData(BudgetQuarterEnum quarter, Integer year) {
+    public void setData(BudgetQuarterEnum quarter, Year year) {
 
         CURRENT_QUARTER = quarter;
         CURRENT_YEAR = year;
 
+        BudgetHandler.getInstance().getCalculatedBudgetByQuarter(quarter, year).ifPresent(map -> {
+            budgetMonth1.setMonth(map.get(quarter.firstMonth()));
+            budgetMonth2.setMonth(map.get(quarter.secondMonth()));
+            budgetMonth3.setMonth(map.get(quarter.thirdMonth()));
+        });
+
         yearLabel.setText(year.toString());
-        budgetMonth1.setMonth(YearMonth.of(year, quarter.firstMonth()), CATEGORIES);
-        budgetMonth2.setMonth(YearMonth.of(year, quarter.secondMonth()), CATEGORIES);
-        budgetMonth3.setMonth(YearMonth.of(year, quarter.thirdMonth()), CATEGORIES);
         quarterLabel.setText(quarter.name());
     }
 
@@ -166,7 +171,7 @@ public class BudgetQuarter extends NegodPanel {
         switch (CURRENT_QUARTER) {
             case QUARTER1:
                 CURRENT_QUARTER = BudgetQuarterEnum.QUARTER4;
-                CURRENT_YEAR = CURRENT_YEAR - 1;
+                CURRENT_YEAR = CURRENT_YEAR.minusYears(1);
                 break;
             case QUARTER2:
                 CURRENT_QUARTER = BudgetQuarterEnum.QUARTER1;
@@ -196,7 +201,7 @@ public class BudgetQuarter extends NegodPanel {
                 break;
             case QUARTER4:
                 CURRENT_QUARTER = BudgetQuarterEnum.QUARTER1;
-                CURRENT_YEAR = CURRENT_YEAR + 1;
+                CURRENT_YEAR = CURRENT_YEAR.plusYears(1);
                 break;
             default:
                 throw new AssertionError();
