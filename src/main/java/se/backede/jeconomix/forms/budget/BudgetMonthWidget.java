@@ -7,9 +7,10 @@ package se.backede.jeconomix.forms.budget;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
+import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
@@ -29,7 +30,7 @@ public class BudgetMonthWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    public BudgetMonthWidget(BudgetEventDto currentBudget, List<BudgetExpenseDto> expenses) {
+    public BudgetMonthWidget(BudgetEventDto currentBudget, List<BudgetExpenseDto> expenses, Integer currentTransactionSums) {
         initComponents();
 
         budgetTable1.init(currentBudget, expenses);
@@ -37,12 +38,12 @@ public class BudgetMonthWidget extends javax.swing.JPanel {
         budgetTable1.setVisible(false);
         this.validate();
 
-        startUp(currentBudget);
+        startUp(currentBudget, currentTransactionSums);
     }
 
-    public void startUp(BudgetEventDto budgetEvent) {
+    public void startUp(BudgetEventDto budgetEvent, Integer currentTransactionSums) {
 
-        summaryWidget1.init(budgetEvent, BigDecimal.TEN, budgetTable1.getTotalSum());
+        summaryWidget1.init(budgetEvent, currentTransactionSums, budgetTable1.getTotalSum());
 
         Consumer<BudgetEventDto> setVisible = (dto) -> {
             if (dto.equals(budgetEvent)) {

@@ -71,6 +71,10 @@ public class BudgetUtils {
         return dto;
     }
 
+    public static BigDecimal roundBigDecimal(Double number, int precision, RoundingMode roundingMode) {
+        return BigDecimal.valueOf(round(number, precision, roundingMode));
+    }
+
     public static double round(Double number, int precision, RoundingMode roundingMode) {
         BigDecimal bd = null;
         try {
@@ -107,7 +111,7 @@ public class BudgetUtils {
             BudgetCalculationDto build = BudgetCalculationDto.builder()
                     .yearMonth(YearMonth.of(dto.getYear(), month))
                     .budgetExpense(categoryFilteredBudgetExpense)
-                    .budgetSums(getSumsFromBudgetExpense(categoryFilteredBudgetExpense))
+                    .budgetSums(getSumsIntegerFromBudgetExpense(categoryFilteredBudgetExpense))
                     .build();
             calculated.put(month, build);
         });
@@ -121,6 +125,20 @@ public class BudgetUtils {
             sums.put(category, getSumsFromBudgetExpense(list));
         });
         return sums;
+    }
+
+    public static Map<CategoryTypeEnum, Integer> getSumsIntegerFromBudgetExpense(Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetLines) {
+        Map<CategoryTypeEnum, Integer> sums = new HashMap<>();
+        budgetLines.forEach((category, list) -> {
+            sums.put(category, getSumsIntegerFromBudgetExpense(list));
+        });
+        return sums;
+    }
+
+    public static Integer getSumsIntegerFromBudgetExpense(List<BudgetExpenseDto> budgetLines) {
+        return budgetLines.stream()
+                .map((dto) -> dto.getEstimatedsum().abs().intValueExact())
+                .reduce((dto, y) -> dto + y).get();
     }
 
     public static BigDecimal getSumsFromBudgetExpense(List<BudgetExpenseDto> budgetLines) {

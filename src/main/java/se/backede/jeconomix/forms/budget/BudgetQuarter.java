@@ -5,14 +5,11 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.time.Month;
 import java.time.Year;
-import java.time.YearMonth;
-import java.util.Map;
-import java.util.Optional;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetHandler;
+import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.forms.basic.NegodPanel;
 
@@ -42,9 +39,28 @@ public class BudgetQuarter extends NegodPanel {
         CURRENT_YEAR = year;
 
         BudgetHandler.getInstance().getCalculatedBudgetByQuarter(quarter, year).ifPresent(map -> {
-            budgetMonth1.setMonth(map.get(quarter.firstMonth()));
-            budgetMonth2.setMonth(map.get(quarter.secondMonth()));
-            budgetMonth3.setMonth(map.get(quarter.thirdMonth()));
+            TransactionHandler.getInstance().getCalculatedTransactionSumsByQuarter(quarter, year).ifPresent(transactions -> {
+
+                BudgetCalculationDto month1 = map.get(quarter.firstMonth());
+                if (transactions.get(quarter.firstMonth()) != null) {
+                    month1.getBudgetSums().putAll(transactions.get(quarter.firstMonth()));
+                }
+                budgetMonth1.setMonth(month1);
+
+                BudgetCalculationDto month2 = map.get(quarter.secondMonth());
+                if (transactions.get(quarter.secondMonth()) != null) {
+                    month1.getBudgetSums().putAll(transactions.get(quarter.secondMonth()));
+                }
+                budgetMonth2.setMonth(month2);
+
+                BudgetCalculationDto month3 = map.get(quarter.thirdMonth());
+                if (transactions.get(quarter.thirdMonth()) != null) {
+
+                    month1.getBudgetSums().putAll(transactions.get(quarter.thirdMonth()));
+                }
+                budgetMonth3.setMonth(month3);
+
+            });
         });
 
         yearLabel.setText(year.toString());

@@ -35,7 +35,8 @@ import se.backede.jeconomix.constants.EntityQueries;
 @NamedQueries({
     @NamedQuery(name = EntityQueries.TRANSACTION_EXISTS, query = "select t from Transaction t where t.company =:company  AND t.transDate =:date and t.saldo=:saldo and t.sum=:sum and t.originalValue=:originalValue"),
     @NamedQuery(name = EntityQueries.TRANSACTION_BY_BUDGETMONTH, query = "select t from Transaction t where t.budgetMonth =:budgetMonth AND t.budgetYear =:budgetYear"),
-    @NamedQuery(name = EntityQueries.TRANSACTION_BY_BUDGETMONTH_AND_CATEGORY, query = "select t from Transaction t where t.budgetMonth =:budgetMonth AND t.budgetYear =:budgetYear AND t.company.category.categoryType.type =:categoryType")
+    @NamedQuery(name = EntityQueries.TRANSACTION_BY_BUDGETMONTH_AND_CATEGORY, query = "select t from Transaction t where t.budgetMonth =:budgetMonth AND t.budgetYear =:budgetYear AND t.company.category.categoryType.type =:categoryType"),
+    @NamedQuery(name = EntityQueries.TRANSACTION_BY_QUARTER, query = "select t from Transaction t where t.budgetYear =:budgetYear AND t.budgetMonth IN :budgetMonths")
 })
 @EqualsAndHashCode(exclude = {"company", "ascociatedCompany"})
 public class Transaction extends GenericEntity {

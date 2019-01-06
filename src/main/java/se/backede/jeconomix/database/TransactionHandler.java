@@ -7,12 +7,16 @@ package se.backede.jeconomix.database;
 
 import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
+import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.dto.TransactionDto;
@@ -21,6 +25,8 @@ import se.backede.jeconomix.database.dao.TransactionDao;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.dto.CompanyDto;
+import se.backede.jeconomix.dto.mappers.TransactionMapperImpl;
+import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
  *
@@ -30,7 +36,7 @@ import se.backede.jeconomix.dto.CompanyDto;
 public class TransactionHandler extends TransactionDao {
 
     CompanyDao companyDao = new CompanyDao();
-    DtoEntityBaseMapper<TransactionDto, Transaction> MAPPER = new DtoEntityBaseMapper<>(TransactionDto.class, Transaction.class);
+    TransactionMapperImpl MAPPER = new TransactionMapperImpl();
     DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper<>(CompanyDto.class, Company.class);
 
     private static final TransactionHandler INSTANCE = new TransactionHandler();
@@ -90,23 +96,20 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public Optional<TransactionDto> createTransaction(TransactionDto transaction) {
-        return MAPPER.mapFromDtoToEntity(transaction).map(transactionEntity -> {
-            return companyDao.getById(transaction.getCompany().getId()).map(company -> {
-                CategoryTypeEnum type = company.getCategory().getCategoryType().getType();
-                Transaction decideBudgetMonth = decideBudgetMonth(transactionEntity, type);
-                return super.executeTransaction(() -> super.persist(transactionEntity)).map(persisted -> {
-                    return MAPPER.mapFromEntityToDto(persisted);
-                }).get();
-            }).get();
+        Transaction mapToTransaction = MAPPER.mapToTransaction(transaction);
+        return companyDao.getById(transaction.getCompany().getId()).map(company -> {
+            CategoryTypeEnum type = company.getCategory().getCategoryType().getType();
+            Transaction decideBudgetMonth = decideBudgetMonth(mapToTransaction, type);
+            return super.executeTransaction(() -> super.persist(mapToTransaction)).map(persisted -> {
+                return MAPPER.mapToTransactionDto(persisted);
+            });
         }).get();
     }
 
     public Optional<List<TransactionDto>> getAllTransactions() {
-        Optional<List<Transaction>> all = super.getAll();
-        if (all.isPresent()) {
-            return MAPPER.mapToDtoList(all.get());
-        }
-        return Optional.empty();
+        return super.getAll().map(transactionList -> {
+            return MAPPER.mapToTransactionDtoList(transactionList);
+        });
     }
 
     public Optional<List<TransactionDto>> getTransactionsByBudgetMonth(YearMonth budgetMonth) {
@@ -121,8 +124,36 @@ public class TransactionHandler extends TransactionDao {
                 return Optional.empty();
             }
         }).map(list -> {
-            return MAPPER.mapToDtoList(list).get();
+            return MAPPER.mapToTransactionDtoList(list);
         });
+    }
+
+    public Optional<List<TransactionDto>> getTransactionsByQuarter(BudgetQuarterEnum quarter, Year year) {
+
+        return super.executeTransactionList(() -> {
+            try {
+                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_BY_QUARTER);
+                query.setParameter("budgetMonths", Arrays.asList(quarter.months()));
+                query.setParameter("budgetYear", year.getValue());
+                return Optional.ofNullable((List<Transaction>) query.getResultList());
+            } catch (javax.persistence.NoResultException e) {
+                log.error("No result when getting transaction [Transaction exists?]");
+                return Optional.empty();
+            }
+        }).map(list -> {
+            return MAPPER.mapToTransactionDtoList(list);
+        });
+    }
+
+    public Optional<Map<Month, Map<CategoryTypeEnum, Integer>>> getCalculatedTransactionSumsByQuarter(BudgetQuarterEnum quarter, Year year) {
+
+        long currentTimeMillis = System.currentTimeMillis();
+        return getTransactionsByQuarter(quarter, year).map(transactions -> {
+            return TransactionUtils.getTransactionsFilteredByMonth(transactions).map(filteredTransactions -> {
+                return TransactionUtils.getCalculatedTransactionsByMonth(filteredTransactions);
+            }).get();
+        }).get();
+
     }
 
     public Optional<List<TransactionDto>> getTransactionsByBudgetMonthAndCategory(YearMonth budgetMonth, CategoryTypeEnum category) {
@@ -138,7 +169,7 @@ public class TransactionHandler extends TransactionDao {
                 return Optional.empty();
             }
         }).map(list -> {
-            return MAPPER.mapToDtoList(list).get();
+            return MAPPER.mapToTransactionDtoList(list);
         });
     }
 }

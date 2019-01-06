@@ -25,7 +25,7 @@ public class BudgetCalculationDto {
 
     YearMonth yearMonth;
     Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetExpense = new EnumMap<>(CategoryTypeEnum.class);
-    Map<CategoryTypeEnum, BigDecimal> budgetSums = new EnumMap<>(CategoryTypeEnum.class);
+    Map<CategoryTypeEnum, Integer> budgetSums = new EnumMap<>(CategoryTypeEnum.class);
     //HashMap<CategoryTypeEnum, BigDecimal> accumulatedSum = new HashMap<>();
 
 }

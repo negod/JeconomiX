@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms.budget;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -40,13 +41,14 @@ public class BudgetList extends javax.swing.JPanel {
         for (CategoryTypeEnum value : CategoryTypeEnum.values()) {
 
             List<BudgetExpenseDto> expenseList = budget.getBudgetExpense().get(value);
+            Integer totalSumUsed = budget.getBudgetSums().get(value);
 
             BudgetEventDto dto = BudgetEventDto.builder()
                     .yearMonth(budget.getYearMonth())
                     .category(value)
                     .build();
 
-            verticalBox1.add(new BudgetMonthWidget(dto, expenseList));
+            verticalBox1.add(new BudgetMonthWidget(dto, expenseList, totalSumUsed));
 
         }
 

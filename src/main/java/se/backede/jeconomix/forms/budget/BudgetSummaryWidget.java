@@ -65,13 +65,18 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
         sumLabel.setText(String.valueOf(budgetProgressBar.getMaximum()).concat(" Kr"));
     }
 
-    public void init(BudgetEventDto dto, BigDecimal sum, BigDecimal budget) {
+    public void init(BudgetEventDto dto, Integer sum, BigDecimal budget) {
 
         CURRENT_BUDGET = dto;
 
         budgetProgressBar.setMaximum(budget.intValueExact());
-        budgetProgressBar.setValue(sum.intValueExact());
-        budgetProgressBar.setString(String.valueOf(sum.intValueExact()).concat(" Kr"));
+
+        if (sum != null) {
+            budgetProgressBar.setValue(sum);
+            budgetProgressBar.setString(String.valueOf(sum).concat(" Kr"));
+        } else {
+            budgetProgressBar.setString("0 Kr");
+        }
 
         titleLabel.setText(StringUtils.capitalize(dto.getCategory().name().toLowerCase()));
         sumLabel.setText(budget.toPlainString().concat(" Kr"));

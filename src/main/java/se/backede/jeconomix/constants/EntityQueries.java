@@ -20,6 +20,7 @@ public class EntityQueries {
     public static final String TRANSACTION_EXISTS = "Transaction.transactionExists";
     public static final String TRANSACTION_BY_BUDGETMONTH = "Transaction.byBudgetMonth";
     public static final String TRANSACTION_BY_BUDGETMONTH_AND_CATEGORY = "Transaction.byBudgetMonthAndCategory";
+    public static final String TRANSACTION_BY_QUARTER = "Transaction.byBudgetQuarter";
     public static final String FILTERED_CATEGORIES = "Category.byCategoryType";
     public static final String FILTERED_CATEGORIES_BY_YEAR = "Category.byTypeAndYear";
 
