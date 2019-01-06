@@ -40,7 +40,11 @@ public class BudgetModel extends AbstractTableModel {
 
     public BudgetModel(BudgetEventDto currentBudget, List<BudgetExpenseDto> filteredCategories) {
         this.BUDGET_EVENT = currentBudget;
-        this.filteredCategories = filteredCategories;
+
+        if (filteredCategories != null) {
+            this.filteredCategories = filteredCategories;
+        }
+
     }
 
     private Predicate<BudgetExpenseDto> isCategoryType(CategoryTypeEnum type) {

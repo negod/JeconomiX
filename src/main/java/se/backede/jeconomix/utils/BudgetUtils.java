@@ -90,11 +90,13 @@ public class BudgetUtils {
     }
 
     public static Map<CategoryTypeEnum, List<BudgetExpenseDto>> getCategoryFilteredBudgetExpense(Set<BudgetExpenseDto> budgetLines) {
-        return budgetLines.stream().collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryType().getType()));
+        return budgetLines.stream()
+                .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryType().getType()));
     }
 
     public static Optional<Map<Month, BudgetDto>> getBUdgetFilteredByMonth(List<BudgetDto> budgetLines) {
-        return Optional.ofNullable(budgetLines.stream().collect(Collectors.toMap(BudgetDto::getMonth, c -> c)));
+        return Optional.ofNullable(budgetLines.stream()
+                .collect(Collectors.toMap(BudgetDto::getMonth, c -> c)));
     }
 
     public static Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetsByMonth(Map<Month, BudgetDto> budgets) {
