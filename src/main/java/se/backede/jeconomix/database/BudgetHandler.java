@@ -18,7 +18,6 @@ import se.backede.jeconomix.database.entity.budget.Budget;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.utils.BudgetUtils;
-import se.backede.jeconomix.dto.mappers.*;
 
 /**
  *
@@ -93,7 +92,7 @@ public class BudgetHandler extends BudgetDao {
 
     public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(BudgetQuarterEnum quarter, Year year) {
         return getBudgetByQuarter(quarter, year).map(budgetList -> {
-            return BudgetUtils.getBUdgetFilteredByMonth(budgetList).map(filteredByMonth -> {
+            return BudgetUtils.getBudgetFilteredByMonth(budgetList).map(filteredByMonth -> {
                 return BudgetUtils.getCalculatedBudgetsByMonth(filteredByMonth);
             }).get();
         }).get();

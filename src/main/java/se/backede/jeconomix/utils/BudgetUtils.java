@@ -98,7 +98,7 @@ public class BudgetUtils {
                 .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryType().getType()));
     }
 
-    public static Optional<Map<Month, BudgetDto>> getBUdgetFilteredByMonth(List<BudgetDto> budgetLines) {
+    public static Optional<Map<Month, BudgetDto>> getBudgetFilteredByMonth(List<BudgetDto> budgetLines) {
         return Optional.ofNullable(budgetLines.stream()
                 .collect(Collectors.toMap(BudgetDto::getMonth, c -> c)));
     }
@@ -111,7 +111,7 @@ public class BudgetUtils {
             BudgetCalculationDto build = BudgetCalculationDto.builder()
                     .yearMonth(YearMonth.of(dto.getYear(), month))
                     .budgetExpense(categoryFilteredBudgetExpense)
-                    .budgetSums(getSumsIntegerFromBudgetExpense(categoryFilteredBudgetExpense))
+                    .budgetSums(BudgetUtils.getSumsFromBudgetExpense(categoryFilteredBudgetExpense))
                     .build();
             calculated.put(month, build);
         });
@@ -119,32 +119,18 @@ public class BudgetUtils {
         return Optional.ofNullable(calculated);
     }
 
-    public static Map<CategoryTypeEnum, BigDecimal> getSumsFromBudgetExpense(Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetLines) {
-        Map<CategoryTypeEnum, BigDecimal> sums = new HashMap<>();
+    public static Map<CategoryTypeEnum, Integer> getSumsFromBudgetExpense(Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetLines) {
+        Map<CategoryTypeEnum, Integer> sums = new HashMap<>();
         budgetLines.forEach((category, list) -> {
             sums.put(category, getSumsFromBudgetExpense(list));
         });
         return sums;
     }
 
-    public static Map<CategoryTypeEnum, Integer> getSumsIntegerFromBudgetExpense(Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetLines) {
-        Map<CategoryTypeEnum, Integer> sums = new HashMap<>();
-        budgetLines.forEach((category, list) -> {
-            sums.put(category, getSumsIntegerFromBudgetExpense(list));
-        });
-        return sums;
-    }
-
-    public static Integer getSumsIntegerFromBudgetExpense(List<BudgetExpenseDto> budgetLines) {
+    public static Integer getSumsFromBudgetExpense(List<BudgetExpenseDto> budgetLines) {
         return budgetLines.stream()
                 .map((dto) -> dto.getEstimatedsum().abs().intValueExact())
                 .reduce((dto, y) -> dto + y).get();
-    }
-
-    public static BigDecimal getSumsFromBudgetExpense(List<BudgetExpenseDto> budgetLines) {
-        return budgetLines.stream()
-                .map((dto) -> dto.getEstimatedsum())
-                .reduce((dto, y) -> dto.add(y)).get();
     }
 
 }

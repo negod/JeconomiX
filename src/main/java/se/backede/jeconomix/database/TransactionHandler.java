@@ -145,14 +145,11 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public Optional<Map<Month, Map<CategoryTypeEnum, Integer>>> getCalculatedTransactionSumsByQuarter(BudgetQuarterEnum quarter, Year year) {
-
-        long currentTimeMillis = System.currentTimeMillis();
         return getTransactionsByQuarter(quarter, year).map(transactions -> {
             return TransactionUtils.getTransactionsFilteredByMonth(transactions).map(filteredTransactions -> {
                 return TransactionUtils.getCalculatedTransactionsByMonth(filteredTransactions);
             }).get();
         }).get();
-
     }
 
     public Optional<List<TransactionDto>> getTransactionsByBudgetMonthAndCategory(YearMonth budgetMonth, CategoryTypeEnum category) {

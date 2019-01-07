@@ -5,13 +5,11 @@
  */
 package se.backede.jeconomix.utils;
 
-import java.math.BigDecimal;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.TransactionDto;
@@ -33,7 +31,6 @@ public class TransactionUtils {
             Map<CategoryTypeEnum, List<TransactionDto>> categoryFilteredTransactions = getCategoryFilteredTransactions(dtoList);
             calculated.put(month, getSumsFromTransactions(categoryFilteredTransactions));
         });
-        System.out.println("Caclulated 3" + System.currentTimeMillis());
         return Optional.ofNullable(calculated);
     }
 

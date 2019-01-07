@@ -5,17 +5,8 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.awt.BorderLayout;
 import java.time.YearMonth;
-import javax.swing.JPanel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.models.table.BudgetOutcomeModel;
 
 /**
  *

@@ -24,6 +24,7 @@ import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
 import se.backede.jeconomix.database.entity.budget.BudgetExpense;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
+import se.backede.jeconomix.dto.mappers.BudgetExpenseMapper;
 import se.backede.jeconomix.utils.BudgetUtils;
 
 /**
@@ -36,8 +37,6 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
     private final BudgetDao budgetDao = new BudgetDao();
     private final CategoryDao categoryDao = new CategoryDao();
 
-    private final DtoEntityBaseMapper<BudgetExpenseDto, BudgetExpense> MAPPER = new DtoEntityBaseMapper<>(BudgetExpenseDto.class, BudgetExpense.class);
-
     private static final BudgetExpenseHandler INSTANCE = new BudgetExpenseHandler();
 
     protected BudgetExpenseHandler() {
@@ -49,47 +48,42 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
 
     public Optional<BudgetExpenseDto> createBudgetExpense(BudgetExpenseDto dto) {
 
-        return MAPPER.mapFromDtoToEntity(dto).map(entity -> {
+        BudgetExpense mapToBudgetExpense = BudgetExpenseMapper.INSTANCE.mapToBudgetExpense(dto);
 
-            budgetDao.getById(entity.getId()).ifPresent(budget -> {
-                entity.setBudget(budget);
-            });
+        budgetDao.getById(mapToBudgetExpense.getId()).ifPresent(budget -> {
+            mapToBudgetExpense.setBudget(budget);
+        });
 
-            categoryDao.getById(entity.getId()).ifPresent(category -> {
-                entity.setCategory(category);
-            });
+        categoryDao.getById(mapToBudgetExpense.getId()).ifPresent(category -> {
+            mapToBudgetExpense.setCategory(category);
+        });
 
-            return super.executeTransaction(() -> super.persist(entity)).map(persisted -> {
-                return MAPPER.mapFromEntityToDto(persisted).get();
-            });
-
-        }).orElse(Optional.empty());
+        return super.executeTransaction(() -> super.persist(mapToBudgetExpense)).map(persisted -> {
+            return BudgetExpenseMapper.INSTANCE.mapToBudgetExpenseDto(persisted);
+        });
 
     }
 
     public Optional<BudgetExpenseDto> updateBudgetExpense(BudgetExpenseDto dto) {
-        Optional<BudgetExpense> mapFromDtoToEntity = MAPPER.mapFromDtoToEntity(dto);
-        if (mapFromDtoToEntity.isPresent()) {
-            super.startTransaction();
 
-            Optional<BudgetExpense> budgetExpenseEntity = super.getById(dto.getId());
-            if (budgetExpenseEntity.isPresent()) {
-                if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
-                    Optional<Category> categoryEntity = CategoryHandler.getInstance().getById(dto.getCategory().getId());
-                    budgetExpenseEntity.get().setCategory(categoryEntity.get());
-                }
+        super.startTransaction();
+
+        Optional<BudgetExpense> budgetExpenseEntity = super.getById(dto.getId());
+        if (budgetExpenseEntity.isPresent()) {
+            if (!budgetExpenseEntity.get().getCategory().getId().equals(dto.getCategory().getId())) {
+                Optional<Category> categoryEntity = CategoryHandler.getInstance().getById(dto.getCategory().getId());
+                budgetExpenseEntity.get().setCategory(categoryEntity.get());
             }
-
-            budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
-
-            BudgetExpense merge = super.getEntityManager().merge(budgetExpenseEntity.get());
-            Optional<BudgetExpenseDto> mapFromEntityToDto = MAPPER.mapFromEntityToDto(merge);
-            super.commitTransaction();
-
-            return mapFromEntityToDto;
-
         }
-        return Optional.empty();
+
+        budgetExpenseEntity.get().setEstimatedsum(dto.getEstimatedsum());
+
+        BudgetExpense merge = super.getEntityManager().merge(budgetExpenseEntity.get());
+
+        super.commitTransaction();
+
+        return Optional.ofNullable(BudgetExpenseMapper.INSTANCE.mapToBudgetExpenseDto(merge));
+
     }
 
     public Optional<Boolean> deleteBudgetExpense(BudgetExpenseDto dto) {
@@ -114,7 +108,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             List<BudgetExpense> budget = query.getResultList();
 
             if (budget != null) {
-                return MAPPER.mapToDtoList(budget);
+                return Optional.ofNullable(BudgetExpenseMapper.INSTANCE.mapToBudgetExpenseDtoList(budget));
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
@@ -133,7 +127,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             List<BudgetExpense> budget = query.getResultList();
 
             if (budget != null) {
-                return MAPPER.mapToDtoList(budget);
+                return Optional.ofNullable(BudgetExpenseMapper.INSTANCE.mapToBudgetExpenseDtoList(budget));
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
@@ -152,7 +146,7 @@ public class BudgetExpenseHandler extends BudgetExpenseDao {
             List<BudgetExpense> budget = query.getResultList();
 
             if (budget != null) {
-                return MAPPER.mapToDtoList(budget);
+                return Optional.ofNullable(BudgetExpenseMapper.INSTANCE.mapToBudgetExpenseDtoList(budget));
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);

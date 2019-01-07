@@ -49,14 +49,13 @@ public class BudgetQuarter extends NegodPanel {
 
                 BudgetCalculationDto month2 = map.get(quarter.secondMonth());
                 if (transactions.get(quarter.secondMonth()) != null) {
-                    month1.getBudgetSums().putAll(transactions.get(quarter.secondMonth()));
+                    month2.getBudgetSums().putAll(transactions.get(quarter.secondMonth()));
                 }
                 budgetMonth2.setMonth(month2);
 
                 BudgetCalculationDto month3 = map.get(quarter.thirdMonth());
                 if (transactions.get(quarter.thirdMonth()) != null) {
-
-                    month1.getBudgetSums().putAll(transactions.get(quarter.thirdMonth()));
+                    month3.getBudgetSums().putAll(transactions.get(quarter.thirdMonth()));
                 }
                 budgetMonth3.setMonth(month3);
 

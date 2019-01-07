@@ -11,7 +11,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import se.backede.jeconomix.database.entity.Category;
-import se.backede.jeconomix.database.entity.Category;
 import se.backede.jeconomix.dto.CategoryDto;
 
 /**
@@ -23,6 +22,9 @@ public interface CategoryMapper {
 
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
+    @Mappings({
+        @Mapping(target = "companies", ignore = true)
+    })
     Category mapToCategory(CategoryDto category);
 
     @Mappings({
