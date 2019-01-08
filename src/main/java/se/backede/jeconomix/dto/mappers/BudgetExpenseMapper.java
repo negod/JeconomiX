@@ -17,7 +17,7 @@ import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-@Mapper(uses = {BudgetMapper.class, CategoryMapper.class})
+@Mapper(uses = {BudgetExpenseBudgetMapper.class, CategoryMapper.class})
 public interface BudgetExpenseMapper {
 
     BudgetExpenseMapper INSTANCE = Mappers.getMapper(BudgetExpenseMapper.class);
