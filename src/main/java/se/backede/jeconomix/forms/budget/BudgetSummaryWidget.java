@@ -137,8 +137,10 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
             }
         });
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {20};
+        layout.columnWidths = new int[] {2};
         layout.rowHeights = new int[] {1};
+        layout.columnWeights = new double[] {1.0};
+        layout.rowWeights = new double[] {3.0};
         setLayout(layout);
 
         titlePanel.setPreferredSize(new java.awt.Dimension(150, 25));
@@ -158,13 +160,12 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
                 titleLabelMouseClicked(evt);
             }
         });
-        titlePanel.add(titleLabel, new java.awt.GridBagConstraints());
-
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(titlePanel, gridBagConstraints);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        titlePanel.add(titleLabel, gridBagConstraints);
+
+        add(titlePanel, new java.awt.GridBagConstraints());
 
         sumPanel.setBackground(new java.awt.Color(255, 255, 255));
         sumPanel.setPreferredSize(new java.awt.Dimension(100, 25));
@@ -175,24 +176,24 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
         });
         sumPanel.setLayout(new java.awt.GridBagLayout());
 
-        sumLabel.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        sumLabel.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         sumLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         sumLabel.setText("Budget sum");
+        sumLabel.setAlignmentY(0.0F);
         sumLabel.setPreferredSize(new java.awt.Dimension(100, 25));
         sumLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 sumLabelMouseClicked(evt);
             }
         });
-        sumPanel.add(sumLabel, new java.awt.GridBagConstraints());
-
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 8;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(sumPanel, gridBagConstraints);
+        gridBagConstraints.ipadx = 1;
+        sumPanel.add(sumLabel, gridBagConstraints);
+
+        add(sumPanel, new java.awt.GridBagConstraints());
 
         progressPanel.setBackground(new java.awt.Color(255, 255, 255));
-        progressPanel.setMinimumSize(new java.awt.Dimension(175, 25));
+        progressPanel.setMinimumSize(new java.awt.Dimension(150, 25));
         progressPanel.setPreferredSize(new java.awt.Dimension(150, 25));
         progressPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -214,10 +215,7 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
         });
         progressPanel.add(budgetProgressBar, new java.awt.GridBagConstraints());
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        add(progressPanel, gridBagConstraints);
+        add(progressPanel, new java.awt.GridBagConstraints());
         progressPanel.getAccessibleContext().setAccessibleDescription("");
         progressPanel.getAccessibleContext().setAccessibleParent(progressPanel);
     }// </editor-fold>//GEN-END:initComponents

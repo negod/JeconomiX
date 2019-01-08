@@ -61,18 +61,16 @@ public class BudgetMonth extends NegodPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        monthLabel = new javax.swing.JLabel();
-        budgetSuggestionBtn = new javax.swing.JButton();
-        totalSumLabel = new javax.swing.JLabel();
-        outcomeButton = new javax.swing.JButton();
         budgetList = new se.backede.jeconomix.forms.budget.BudgetList();
+        jPanel1 = new javax.swing.JPanel();
+        budgetSuggestionBtn = new javax.swing.JButton();
+        monthLabel = new javax.swing.JLabel();
+        outcomeButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        monthLabel.setBackground(new java.awt.Color(255, 255, 255));
-        monthLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        monthLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        monthLabel.setText("JANUARY");
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 25));
+        jPanel1.setLayout(new java.awt.GridLayout());
 
         budgetSuggestionBtn.setBackground(new java.awt.Color(255, 255, 255));
         budgetSuggestionBtn.setText("Create budget");
@@ -81,8 +79,13 @@ public class BudgetMonth extends NegodPanel {
                 budgetSuggestionBtnActionPerformed(evt);
             }
         });
+        jPanel1.add(budgetSuggestionBtn);
 
-        totalSumLabel.setText("jLabel1");
+        monthLabel.setBackground(new java.awt.Color(255, 255, 255));
+        monthLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        monthLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        monthLabel.setText("JANUARY");
+        jPanel1.add(monthLabel);
 
         outcomeButton.setText("$");
         outcomeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -90,6 +93,7 @@ public class BudgetMonth extends NegodPanel {
                 outcomeButtonActionPerformed(evt);
             }
         });
+        jPanel1.add(outcomeButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -99,27 +103,18 @@ public class BudgetMonth extends NegodPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(budgetSuggestionBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(outcomeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(budgetSuggestionBtn)
-                    .addComponent(totalSumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(outcomeButton))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -135,9 +130,9 @@ public class BudgetMonth extends NegodPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.backede.jeconomix.forms.budget.BudgetList budgetList;
     private javax.swing.JButton budgetSuggestionBtn;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel monthLabel;
     private javax.swing.JButton outcomeButton;
-    private javax.swing.JLabel totalSumLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override
