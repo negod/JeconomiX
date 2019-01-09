@@ -17,6 +17,7 @@ import se.backede.jeconomix.database.dao.BudgetDao;
 import se.backede.jeconomix.database.entity.budget.Budget;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
+import se.backede.jeconomix.dto.mappers.BudgetMapper;
 import se.backede.jeconomix.utils.BudgetUtils;
 
 /**
@@ -25,8 +26,6 @@ import se.backede.jeconomix.utils.BudgetUtils;
  */
 @Slf4j
 public class BudgetHandler extends BudgetDao {
-
-    DtoEntityBaseMapper<BudgetDto, Budget> MAPPER = new DtoEntityBaseMapper<>(BudgetDto.class, Budget.class);
 
     private static final BudgetHandler INSTANCE = new BudgetHandler();
 
@@ -38,17 +37,16 @@ public class BudgetHandler extends BudgetDao {
     }
 
     public Optional<BudgetDto> createBudget(BudgetDto budget) {
-        return MAPPER.mapFromDtoToEntity(budget).map(budgetEntity -> {
-            return super.executeTransaction(() -> super.persist(budgetEntity)).map(persisted -> {
-                return MAPPER.mapFromEntityToDto(persisted).get();
-            });
-        }).orElse(Optional.empty());
+        Budget mapToBudget = BudgetMapper.INSTANCE.mapToBudget(budget);
+        return super.executeTransaction(() -> super.persist(mapToBudget)).map(persisted -> {
+            return BudgetMapper.INSTANCE.mapToBudgetDto(persisted);
+        });
     }
 
     public Optional<List<BudgetDto>> getAllAsDto() {
         return this.getAll().map(budgets -> {
-            return MAPPER.mapToDtoList(budgets);
-        }).orElse(Optional.empty());
+            return BudgetMapper.INSTANCE.mapToBudgetDtoList(budgets);
+        });
     }
 
     public Optional<BudgetDto> getBudget(YearMonth yearMonth) {
@@ -60,7 +58,7 @@ public class BudgetHandler extends BudgetDao {
             Budget budget = (Budget) query.getSingleResult();
 
             if (budget != null) {
-                return MAPPER.mapFromEntityToDto(budget);
+                return Optional.ofNullable(BudgetMapper.INSTANCE.mapToBudgetDto(budget));
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
@@ -80,7 +78,7 @@ public class BudgetHandler extends BudgetDao {
             List<Budget> budget = (List<Budget>) query.getResultList();
 
             if (budget != null) {
-                return MAPPER.mapToDtoList(budget);
+                return Optional.ofNullable(BudgetMapper.INSTANCE.mapToBudgetDtoList(budget));
             }
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
