@@ -22,6 +22,9 @@ public interface CompanyAccociationMapper {
 
     CompanyAccociationMapper INSTANCE = Mappers.getMapper(CompanyAccociationMapper.class);
 
+    @Mappings({
+        @Mapping(target = "company", ignore = true)
+    })
     CompanyAccociation mapToCompanyAccociation(CompanyAccociationDto company);
 
     @Mappings({

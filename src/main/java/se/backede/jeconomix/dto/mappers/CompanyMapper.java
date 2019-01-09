@@ -22,6 +22,9 @@ public interface CompanyMapper {
 
     CompanyMapper INSTANCE = Mappers.getMapper(CompanyMapper.class);
 
+    @Mappings({
+        @Mapping(target = "transactions", ignore = true)
+    })
     Company mapToCompany(CompanyDto company);
 
     @Mappings({

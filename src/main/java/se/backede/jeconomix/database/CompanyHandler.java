@@ -16,6 +16,7 @@ import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Company_;
 import se.backede.jeconomix.dto.CategoryDto;
+import se.backede.jeconomix.dto.mappers.CompanyMapper;
 
 /**
  *
@@ -23,8 +24,6 @@ import se.backede.jeconomix.dto.CategoryDto;
  */
 @Slf4j
 public class CompanyHandler extends CompanyDao {
-
-    private DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper(CompanyDto.class, Company.class);
 
     private static final CompanyHandler companyHandler = new CompanyHandler();
 
@@ -36,41 +35,36 @@ public class CompanyHandler extends CompanyDao {
     }
 
     public Optional<CompanyDto> createCompany(CompanyDto company) {
-        return companyMapper.mapFromDtoToEntity(company).map(companyEntity -> {
-            companyEntity.getTransactions().clear();
-            return super.executeTransaction(() -> super.persist(companyEntity)).map(persistedCompany -> {
-                return companyMapper.mapFromEntityToDto(persistedCompany).get();
-            });
-        }).orElse(Optional.empty());
+        Company mapToCompany = CompanyMapper.INSTANCE.mapToCompany(company);
+        mapToCompany.getTransactions().clear();
+        return super.executeTransaction(() -> super.persist(mapToCompany)).map(persistedCompany -> {
+            return CompanyMapper.INSTANCE.mapToCompanyDto(persistedCompany);
+        });
     }
 
     public Optional<CompanyDto> updateCompany(CompanyDto companyDto) {
-        return companyMapper.mapFromDtoToEntity(companyDto).map(companyEntity -> {
-            return super.executeTransaction(() -> super.update(companyEntity)).map(newCompany -> {
-                return companyMapper.mapFromEntityToDto(newCompany).get();
-            });
-        }).orElse(Optional.empty());
+        Company mapToCompany = CompanyMapper.INSTANCE.mapToCompany(companyDto);
+        return super.executeTransaction(() -> super.update(mapToCompany)).map(newCompany -> {
+            return CompanyMapper.INSTANCE.mapToCompanyDto(newCompany);
+        });
     }
 
     public Optional<CompanyDto> addAccociatedCompany(CompanyDto companyDto) {
-        return companyMapper.mapFromDtoToEntity(companyDto).map(company -> {
-            return super.executeTransaction(() -> super.update(company)).map(persistedCompany -> {
-                return companyMapper.mapFromEntityToDto(persistedCompany).get();
-            }).get();
+        Company mapToCompany = CompanyMapper.INSTANCE.mapToCompany(companyDto);
+        return super.executeTransaction(() -> super.update(mapToCompany)).map(persistedCompany -> {
+            return CompanyMapper.INSTANCE.mapToCompanyDto(persistedCompany);
         });
-
     }
 
     public Optional<List<CompanyDto>> getAllCompanies() {
         return super.getAll().map(companies -> {
-            return companyMapper.mapToDtoList(companies).get();
+            return CompanyMapper.INSTANCE.mapToCompanyDtoList(companies);
         });
     }
 
     public Optional<CompanyDto> getCompanyByName(String name) {
-        log.debug("Getting company by name {}", name);
         return super.getCompanyByCompanyName(name).map(company -> {
-            return companyMapper.mapFromEntityToDto(company).get();
+            return CompanyMapper.INSTANCE.mapToCompanyDto(company);
         });
     }
 
@@ -82,14 +76,14 @@ public class CompanyHandler extends CompanyDao {
         update.setObjectId(category.getId());
 
         return super.executeTransaction(() -> super.update(companyDto.getId(), update)).map(company -> {
-            return companyMapper.mapFromEntityToDto(company).get();
+            return CompanyMapper.INSTANCE.mapToCompanyDto(company);
         });
 
     }
 
     public Optional<CompanyDto> getCompanyById(String id) {
         return super.getById(id).map(company -> {
-            return companyMapper.mapFromEntityToDto(company).get();
+            return CompanyMapper.INSTANCE.mapToCompanyDto(company);
         });
     }
 

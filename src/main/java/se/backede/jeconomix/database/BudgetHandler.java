@@ -90,6 +90,7 @@ public class BudgetHandler extends BudgetDao {
 
     public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(BudgetQuarterEnum quarter, Year year) {
         return getBudgetByQuarter(quarter, year).map(budgetList -> {
+            System.out.println(budgetList.size());
             return BudgetUtils.getBudgetFilteredByMonth(budgetList).map(filteredByMonth -> {
                 return BudgetUtils.getCalculatedBudgetsByMonth(filteredByMonth);
             }).get();

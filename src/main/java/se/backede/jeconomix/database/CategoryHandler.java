@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.database;
 
-import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import se.backede.generics.persistence.update.ObjectUpdate;
 import se.backede.generics.persistence.update.UpdateType;
 import java.util.Arrays;
@@ -21,6 +20,8 @@ import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.database.dao.CategoryDao;
 import se.backede.jeconomix.database.entity.Category;
 import se.backede.jeconomix.dto.CategoryTypeDto;
+import se.backede.jeconomix.dto.mappers.CategoryCompanyMapper;
+import se.backede.jeconomix.dto.mappers.CategoryMapper;
 
 /**
  *
@@ -28,8 +29,6 @@ import se.backede.jeconomix.dto.CategoryTypeDto;
  */
 @Slf4j
 public class CategoryHandler extends CategoryDao {
-
-    DtoEntityBaseMapper<CategoryDto, Category> mapper = new DtoEntityBaseMapper<>(CategoryDto.class, Category.class);
 
     private static final CategoryHandler INSTANCE = new CategoryHandler();
 
@@ -42,25 +41,24 @@ public class CategoryHandler extends CategoryDao {
 
     public Optional<CategoryDto> getCategoryById(String id) {
         return super.executeTransaction(() -> super.getById(id)).map(category -> {
-            return mapper.mapFromEntityToDto(category).get();
+            return CategoryMapper.INSTANCE.mapToCategoryDto(category);
         });
     }
 
     public Optional<CategoryDto> createCategory(CategoryDto category) {
-        return mapper.mapFromDtoToEntity(category).map(categoryEntity -> {
-            return CategoryTypeHandler.getInstance().getById(categoryEntity.getCategoryType().getId()).map(categoryType -> {
-                categoryEntity.setCategoryType(categoryType);
-                return super.executeTransaction(() -> super.persist(categoryEntity)).map(persisted -> {
-                    return mapper.mapFromEntityToDto(persisted).get();
-                }).get();
-            });
-        }).orElse(Optional.empty());
+        Category mapToCategory = CategoryMapper.INSTANCE.mapToCategory(category);
+        return CategoryTypeHandler.getInstance().getById(mapToCategory.getCategoryType().getId()).map(categoryType -> {
+            mapToCategory.setCategoryType(categoryType);
+            return super.executeTransaction(() -> super.persist(mapToCategory)).map(persisted -> {
+                return CategoryMapper.INSTANCE.mapToCategoryDto(persisted);
+            }).get();
+        });
     }
 
     public Optional<List<CategoryDto>> getAllCategories() {
         Optional<List<Category>> all = super.getAll();
         if (all.isPresent()) {
-            return mapper.mapToDtoList(all.get());
+            return Optional.ofNullable(CategoryMapper.INSTANCE.mapToCategoryDtoList(all.get()));
         }
         return Optional.empty();
     }
@@ -73,7 +71,7 @@ public class CategoryHandler extends CategoryDao {
             query.setParameter("type", Arrays.asList(type));
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             List<Category> categories = (List<Category>) query.list();
-            return mapper.mapToDtoList(categories);
+            return Optional.ofNullable(CategoryMapper.INSTANCE.mapToCategoryDtoList(categories));
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Category");
         } finally {
@@ -89,7 +87,7 @@ public class CategoryHandler extends CategoryDao {
             query.setParameter("type", Arrays.asList(type));
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             List<Category> categories = (List<Category>) query.list();
-            return mapper.mapToDtoList(categories);
+            return Optional.ofNullable(CategoryCompanyMapper.INSTANCE.mapToCategoryDtoList(categories));
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Category");
         } finally {
@@ -110,7 +108,7 @@ public class CategoryHandler extends CategoryDao {
             super.commitTransaction();
 
             if (billCategory.isPresent()) {
-                return mapper.mapFromEntityToDto(billCategory.get());
+                return Optional.ofNullable(CategoryMapper.INSTANCE.mapToCategoryDto(billCategory.get()));
             }
 
         }

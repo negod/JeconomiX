@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.database;
 
-import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
@@ -22,9 +21,8 @@ import se.backede.jeconomix.constants.EntityQueries;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.database.dao.CompanyDao;
 import se.backede.jeconomix.database.dao.TransactionDao;
-import se.backede.jeconomix.database.entity.Company;
 import se.backede.jeconomix.database.entity.Transaction;
-import se.backede.jeconomix.dto.CompanyDto;
+import se.backede.jeconomix.dto.mappers.CompanyMapper;
 import se.backede.jeconomix.dto.mappers.TransactionMapper;
 import se.backede.jeconomix.utils.TransactionUtils;
 
@@ -36,7 +34,6 @@ import se.backede.jeconomix.utils.TransactionUtils;
 public class TransactionHandler extends TransactionDao {
 
     CompanyDao companyDao = new CompanyDao();
-    DtoEntityBaseMapper<CompanyDto, Company> companyMapper = new DtoEntityBaseMapper<>(CompanyDto.class, Company.class);
 
     private static final TransactionHandler INSTANCE = new TransactionHandler();
 
@@ -51,21 +48,22 @@ public class TransactionHandler extends TransactionDao {
 
         Supplier<Optional<Transaction>> getTransaction = () -> {
             if (transaction.getCompany() != null) {
-                return companyMapper.mapFromDtoToEntity(transaction.getCompany()).map(companyEntity -> {
+                return Optional.ofNullable(CompanyMapper.INSTANCE.mapToCompany(transaction.getCompany()))
+                        .map(companyEntity -> {
 
-                    try {
-                        Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
-                        query.setParameter("company", companyEntity);
-                        query.setParameter("date", transaction.getTransDate());
-                        query.setParameter("saldo", transaction.getSaldo());
-                        query.setParameter("sum", transaction.getSum());
-                        query.setParameter("originalValue", transaction.getOriginalValue());
-                        return (Transaction) query.getSingleResult();
-                    } catch (javax.persistence.NoResultException e) {
-                        log.error("No result when getting transaction [Transaction exists?]");
-                        return null;
-                    }
-                });
+                            try {
+                                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_EXISTS);
+                                query.setParameter("company", companyEntity);
+                                query.setParameter("date", transaction.getTransDate());
+                                query.setParameter("saldo", transaction.getSaldo());
+                                query.setParameter("sum", transaction.getSum());
+                                query.setParameter("originalValue", transaction.getOriginalValue());
+                                return (Transaction) query.getSingleResult();
+                            } catch (javax.persistence.NoResultException e) {
+                                log.error("No result when getting transaction [Transaction exists?]");
+                                return null;
+                            }
+                        });
             } else {
                 return Optional.empty();
             }

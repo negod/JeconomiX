@@ -8,8 +8,6 @@ package se.backede.jeconomix.dto.mappers;
 import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import se.backede.jeconomix.database.entity.Transaction;
 import se.backede.jeconomix.dto.TransactionDto;

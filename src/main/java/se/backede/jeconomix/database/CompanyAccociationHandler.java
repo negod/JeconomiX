@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.database.dao.AccociatedCompanyDao;
 import se.backede.jeconomix.database.entity.CompanyAccociation;
 import se.backede.jeconomix.dto.CompanyAccociationDto;
+import se.backede.jeconomix.dto.mappers.CompanyAccociationMapper;
 
 /**
  *
@@ -18,8 +19,6 @@ import se.backede.jeconomix.dto.CompanyAccociationDto;
  */
 @Slf4j
 public class CompanyAccociationHandler extends AccociatedCompanyDao {
-
-    private final DtoEntityBaseMapper<CompanyAccociationDto, CompanyAccociation> MAPPER = new DtoEntityBaseMapper<>(CompanyAccociationDto.class, CompanyAccociation.class);
 
     private static final CompanyAccociationHandler INSTANCE = new CompanyAccociationHandler();
 
@@ -32,16 +31,15 @@ public class CompanyAccociationHandler extends AccociatedCompanyDao {
 
     public Optional<CompanyAccociationDto> getAccociatedCompanyByName(String name) {
         return super.getByAccociatedCompanyByName(name).map(company -> {
-            return MAPPER.mapFromEntityToDto(company).get();
+            return CompanyAccociationMapper.INSTANCE.mapToCompanyAccociationDto(company);
         });
     }
 
     public Optional<CompanyAccociationDto> createAccociatedCompany(CompanyAccociationDto dto) {
-        return MAPPER.mapFromDtoToEntity(dto).map(entity -> {
-            return super.executeTransaction(() -> super.persist(entity)).map(persisted -> {
-                return MAPPER.mapFromEntityToDto(persisted).get();
-            });
-        }).orElse(Optional.empty());
+        CompanyAccociation mapToCompanyAccociation = CompanyAccociationMapper.INSTANCE.mapToCompanyAccociation(dto);
+        return super.executeTransaction(() -> super.persist(mapToCompanyAccociation)).map(persisted -> {
+            return CompanyAccociationMapper.INSTANCE.mapToCompanyAccociationDto(persisted);
+        });
     }
 
 }
