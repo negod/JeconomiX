@@ -5,24 +5,17 @@
  */
 package se.backede.jeconomix.utils;
 
-import static java.lang.StrictMath.log;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Month;
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.data.category.DefaultCategoryDataset;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.database.CategoryHandler;
-import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.dto.CompanyDto;
-import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 
 /**
@@ -32,13 +25,7 @@ import se.backede.jeconomix.dto.TransactionReportDto;
 @Slf4j
 public class ReportUtils {
 
-    public static List<TransactionReportDto> getCalculatedReport(CategoryTypeEnum type, Integer year) {
-        Optional<List<CategoryDto>> categories = CategoryHandler.getInstance().getFilteredCategories(year, type);
-        if (categories.isPresent()) {
-            return extractTransactionReportList(categories.get(), year);
-        }
-        return new ArrayList<>();
-    }
+    private static final BigDecimal ZERO = BigDecimal.valueOf(0.00);
 
     /**
      * Gets tha average sum for all reports. Takes in to consideration if a sum
@@ -53,8 +40,7 @@ public class ReportUtils {
 
         BigDecimal average = BigDecimal.valueOf(0.00);
         for (Month presentMonth : presentMonths) {
-            BigDecimal oldSum = average;
-            average = average.add(calculatedSums.get(presentMonth));
+            average = average.add(calculatedSums.getOrDefault(presentMonth, ZERO));
         }
 
         if (!presentMonths.isEmpty()) {
@@ -107,60 +93,13 @@ public class ReportUtils {
         return dataset;
     }
 
-    public static List<TransactionReportDto> extractTransactionReportList(List<CategoryDto> allCategories, Integer year) {
-        List<TransactionReportDto> transactionReports = new ArrayList<>();
-
-        for (CategoryDto categoryDto : allCategories) {
-            TransactionReportDto report = new TransactionReportDto();
-            Set<CompanyDto> companies = categoryDto.getCompanies();
-
-            if (companies != null) {
-
-                BigDecimal totalSum = BigDecimal.valueOf(0);
-                for (CompanyDto companyDto : companies) {
-                    for (TransactionDto transaction : companyDto.getTransactions()) {
-
-                        if (transaction.getBudgetYear().equals(year)) {
-
-                            report.getTransctions().add(transaction);
-                            Month month = transaction.getBudgetMonth();
-
-                            if (report.getMonthReport().containsKey(month)) {
-
-                                if (transaction.getSum() != null) {
-                                    BigDecimal currentSum = report.getMonthReport().get(month);
-                                    BigDecimal newSum = currentSum.add(transaction.getSum());
-                                    report.getMonthReport().put(month, newSum);
-                                }
-                            } else {
-                                report.getMonthReport().put(month, transaction.getSum());
-                            }
-
-                            BigDecimal addedSUm = totalSum.add(transaction.getSum(), MathContext.DECIMAL32);
-                            totalSum = addedSUm;
-                        }
-                    }
-
-                }
-                report.setSum(totalSum.plus());
-                report.setCategory(categoryDto.getName());
-                transactionReports.add(report);
-            }
-        }
-        return transactionReports;
-    }
-
     public static Map<Month, BigDecimal> calculateTotalSumsPerMonth(List<TransactionReportDto> reports) {
-        Map<Month, BigDecimal> sums = new HashMap<>();
+        EnumMap<Month, BigDecimal> sums = new EnumMap<>(Month.class);
 
         for (Month month : Month.values()) {
-            sums.put(month, BigDecimal.valueOf(0.00));
-        }
-
-        for (Month month : Month.values()) {
-            BigDecimal currentSum = sums.get(month);
+            BigDecimal currentSum = sums.getOrDefault(month, ZERO);
             for (TransactionReportDto report : reports) {
-                BigDecimal reportSum = report.getMonthReport().get(month);
+                BigDecimal reportSum = report.getMonthReport().getOrDefault(month, ZERO);
                 if (reportSum != null) {
                     double abs = Math.abs(reportSum.doubleValue());
                     currentSum = currentSum.add(BigDecimal.valueOf(abs));
@@ -180,18 +119,18 @@ public class ReportUtils {
             calculateSums = calculateTotalSumsPerMonth(reports);
         }
 
-        dataset.addValue(calculateSums.get(Month.JANUARY), lineTitle, "JAN");
-        dataset.addValue(calculateSums.get(Month.FEBRUARY), lineTitle, "FEB");
-        dataset.addValue(calculateSums.get(Month.MARCH), lineTitle, "MAR");
-        dataset.addValue(calculateSums.get(Month.APRIL), lineTitle, "APR");
-        dataset.addValue(calculateSums.get(Month.MAY), lineTitle, "MAY");
-        dataset.addValue(calculateSums.get(Month.JUNE), lineTitle, "JUN");
-        dataset.addValue(calculateSums.get(Month.JULY), lineTitle, "JUL");
-        dataset.addValue(calculateSums.get(Month.AUGUST), lineTitle, "AUG");
-        dataset.addValue(calculateSums.get(Month.SEPTEMBER), lineTitle, "SEP");
-        dataset.addValue(calculateSums.get(Month.OCTOBER), lineTitle, "OCT");
-        dataset.addValue(calculateSums.get(Month.NOVEMBER), lineTitle, "NOV");
-        dataset.addValue(calculateSums.get(Month.DECEMBER), lineTitle, "DEC");
+        dataset.addValue(calculateSums.getOrDefault(Month.JANUARY, ZERO), lineTitle, "JAN");
+        dataset.addValue(calculateSums.getOrDefault(Month.FEBRUARY, ZERO), lineTitle, "FEB");
+        dataset.addValue(calculateSums.getOrDefault(Month.MARCH, ZERO), lineTitle, "MAR");
+        dataset.addValue(calculateSums.getOrDefault(Month.APRIL, ZERO), lineTitle, "APR");
+        dataset.addValue(calculateSums.getOrDefault(Month.MAY, ZERO), lineTitle, "MAY");
+        dataset.addValue(calculateSums.getOrDefault(Month.JUNE, ZERO), lineTitle, "JUN");
+        dataset.addValue(calculateSums.getOrDefault(Month.JULY, ZERO), lineTitle, "JUL");
+        dataset.addValue(calculateSums.getOrDefault(Month.AUGUST, ZERO), lineTitle, "AUG");
+        dataset.addValue(calculateSums.getOrDefault(Month.SEPTEMBER, ZERO), lineTitle, "SEP");
+        dataset.addValue(calculateSums.getOrDefault(Month.OCTOBER, ZERO), lineTitle, "OCT");
+        dataset.addValue(calculateSums.getOrDefault(Month.NOVEMBER, ZERO), lineTitle, "NOV");
+        dataset.addValue(calculateSums.getOrDefault(Month.DECEMBER, ZERO), lineTitle, "DEC");
     }
 
 }

@@ -6,10 +6,11 @@
 package se.backede.jeconomix.forms.report;
 
 import java.awt.BorderLayout;
+import java.time.Year;
 import java.time.YearMonth;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,12 @@ import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.TextAnchor;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
 import se.backede.jeconomix.utils.ReportUtils;
+import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
  *
@@ -53,13 +57,20 @@ public class TransactionReport extends javax.swing.JDialog {
 
     public void initData(CategoryTypeEnum type, Boolean average) {
         yearLabel.setText(CURRENT_YEAR.toString());
-        List<TransactionReportDto> calculatedReports = ReportUtils.getCalculatedReport(type, CURRENT_YEAR);
 
-        Map<String, List<TransactionReportDto>> reports = new HashMap<>();
-        reports.put(type.name(), calculatedReports);
+        TransactionHandler.getInstance().getTransactionsByYearAndCategory(Year.of(CURRENT_YEAR), type).ifPresent(transactions -> {
 
-        setTableData(calculatedReports);
-        addLineChart(reports, average);
+            Map<String, List<TransactionDto>> filteredByCategoryName = transactions.stream()
+                    .collect(Collectors.groupingBy(transaction -> transaction.getCompany().getCategory().getName()));
+
+            List<TransactionReportDto> extractTransactionReportList = TransactionUtils.extractTransactionReportList(filteredByCategoryName);
+            setTableData(extractTransactionReportList);
+
+            Map<String, List<TransactionReportDto>> filterTransactionReportByCategory = TransactionUtils.filterTransactionReportByCategory(extractTransactionReportList);
+            addLineChart(filterTransactionReportByCategory, average);
+
+        });
+
     }
 
     public void addLineChart(Map<String, List<TransactionReportDto>> reports, Boolean average) {

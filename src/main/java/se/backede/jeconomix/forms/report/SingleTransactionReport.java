@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.codehaus.plexus.util.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -243,18 +244,12 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         });
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(sums.get(Month.JANUARY), lineTitle, "Jan");
-        dataset.addValue(sums.get(Month.FEBRUARY), lineTitle, "Feb");
-        dataset.addValue(sums.get(Month.MARCH), lineTitle, "Mar");
-        dataset.addValue(sums.get(Month.APRIL), lineTitle, "Apr");
-        dataset.addValue(sums.get(Month.MAY), lineTitle, "May");
-        dataset.addValue(sums.get(Month.JUNE), lineTitle, "Jun");
-        dataset.addValue(sums.get(Month.JULY), lineTitle, "Jul");
-        dataset.addValue(sums.get(Month.AUGUST), lineTitle, "Aug");
-        dataset.addValue(sums.get(Month.SEPTEMBER), lineTitle, "Sep");
-        dataset.addValue(sums.get(Month.OCTOBER), lineTitle, "Oct");
-        dataset.addValue(sums.get(Month.NOVEMBER), lineTitle, "Nov");
-        dataset.addValue(sums.get(Month.DECEMBER), lineTitle, "Dec");
+
+        for (Month month : Month.values()) {
+            String capitalizeFirstLetter = StringUtils.capitalizeFirstLetter(month.name().substring(0, 2));
+            dataset.addValue(sums.get(month), lineTitle, capitalizeFirstLetter);
+        }
+
         return dataset;
     }
 

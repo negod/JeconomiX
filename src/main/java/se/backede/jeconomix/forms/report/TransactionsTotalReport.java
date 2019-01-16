@@ -6,19 +6,24 @@
 package se.backede.jeconomix.forms.report;
 
 import java.awt.BorderLayout;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
+import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.utils.ReportUtils;
+import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
  *
@@ -42,20 +47,38 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
 
         yearLabel.setText(year.toString());
 
-        List<TransactionReportDto> calculatedBillReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.BILL, currentYear);
-        List<TransactionReportDto> calculatedExpenseReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.EXPENSE, currentYear);
-        List<TransactionReportDto> calculatedIncomeReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.INCOME, currentYear);
-        List<TransactionReportDto> calculatedCreditCardReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.CREDIT_CARD, currentYear);
-        List<TransactionReportDto> calculatedLoanReport = ReportUtils.getCalculatedReport(CategoryTypeEnum.LOAN, currentYear);
-
         List<TransactionReportDto> aggregatedExpenseReport = new LinkedList<>();
-        aggregatedExpenseReport.addAll(calculatedBillReport);
-        aggregatedExpenseReport.addAll(calculatedExpenseReport);
-        aggregatedExpenseReport.addAll(calculatedCreditCardReport);
-        aggregatedExpenseReport.addAll(calculatedLoanReport);
-
         Map<String, List<TransactionReportDto>> reports = new HashMap<>();
-        reports.put("Income", calculatedIncomeReport);
+
+        TransactionHandler.getInstance().getTransactionsByYear(Year.of(currentYear)).ifPresent(transactions -> {
+            TransactionUtils.filterTransactionByCategory(transactions).forEach((category, transactionList) -> {
+
+                Map<String, List<TransactionDto>> filteredByCategoryName = transactionList.stream()
+                        .collect(Collectors.groupingBy(transaction -> transaction.getCompany().getCategory().getName()));
+
+                List<TransactionReportDto> extractTransactionReportList = TransactionUtils.extractTransactionReportList(filteredByCategoryName);
+
+                switch (category) {
+                    case INCOME:
+                        reports.put("Income", extractTransactionReportList);
+                        break;
+                    case EXPENSE:
+                    case BILL:
+                    case LOAN:
+                    case SAVING:
+                    case CREDIT_CARD:
+                    case POCKET_MONEY:
+                        aggregatedExpenseReport.addAll(extractTransactionReportList);
+                        break;
+                    case TRANSFER:
+                        break;
+                    default:
+                        throw new AssertionError(category.name());
+
+                }
+            });
+        });
+
         reports.put("Expense", aggregatedExpenseReport);
 
         addLineChart(reports);

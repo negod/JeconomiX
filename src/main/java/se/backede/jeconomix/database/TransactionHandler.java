@@ -126,7 +126,6 @@ public class TransactionHandler extends TransactionDao {
     }
 
     public Optional<List<TransactionDto>> getTransactionsByQuarter(BudgetQuarterEnum quarter, Year year) {
-
         return super.executeTransactionList(() -> {
             try {
                 Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_BY_QUARTER);
@@ -142,11 +141,48 @@ public class TransactionHandler extends TransactionDao {
         });
     }
 
+    public Optional<List<TransactionDto>> getTransactionsByYear(Year year) {
+        return super.executeTransactionList(() -> {
+            try {
+                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_BY_BUDGETYEAR);
+                query.setParameter("budgetYear", year.getValue());
+                return Optional.ofNullable((List<Transaction>) query.getResultList());
+            } catch (javax.persistence.NoResultException e) {
+                log.error("No result when getting transaction [Transaction exists?]");
+                return Optional.empty();
+            }
+        }).map(list -> {
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(list);
+        });
+    }
+
+    public Optional<List<TransactionDto>> getTransactionsByYearAndCategory(Year year, CategoryTypeEnum categoryType) {
+        return super.executeTransactionList(() -> {
+            try {
+                Query query = super.getEntityManager().createNamedQuery(EntityQueries.TRANSACTION_BY_BUDGETYEAR_AND_CATEGORY);
+                query.setParameter("budgetYear", year.getValue());
+                query.setParameter("categoryType", categoryType);
+                return Optional.ofNullable((List<Transaction>) query.getResultList());
+            } catch (javax.persistence.NoResultException e) {
+                log.error("No result when getting transaction [Transaction exists?]");
+                return Optional.empty();
+            }
+        }).map(list -> {
+            return TransactionMapper.INSTANCE.mapToTransactionDtoList(list);
+        });
+    }
+
     public Optional<Map<Month, Map<CategoryTypeEnum, Integer>>> getCalculatedTransactionSumsByQuarter(BudgetQuarterEnum quarter, Year year) {
         return getTransactionsByQuarter(quarter, year).map(transactions -> {
-            return TransactionUtils.getTransactionsFilteredByMonth(transactions).map(filteredTransactions -> {
+            return TransactionUtils.filterTransactionByMonth(transactions).map(filteredTransactions -> {
                 return TransactionUtils.getCalculatedTransactionsByMonth(filteredTransactions);
             }).get();
+        }).get();
+    }
+
+    public Optional<Map<Month, List<TransactionDto>>> getCalculategetFilteredTransactionsByMonths(Year year, CategoryTypeEnum category) {
+        return getTransactionsByYearAndCategory(year, category).map(transactions -> {
+            return TransactionUtils.filterTransactionByMonth(transactions);
         }).get();
     }
 

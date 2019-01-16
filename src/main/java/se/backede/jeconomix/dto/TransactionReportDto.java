@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 @Getter
-@Setter
+@Builder
 public class TransactionReportDto {
 
     String category;

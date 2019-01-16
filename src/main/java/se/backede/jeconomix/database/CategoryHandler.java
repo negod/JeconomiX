@@ -71,7 +71,7 @@ public class CategoryHandler extends CategoryDao {
             query.setParameter("type", Arrays.asList(type));
             query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             List<Category> categories = (List<Category>) query.list();
-            return Optional.ofNullable(CategoryMapper.INSTANCE.mapToCategoryDtoList(categories));
+            return Optional.ofNullable(CategoryCompanyMapper.INSTANCE.mapToCategoryDtoList(categories));
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Category");
         } finally {

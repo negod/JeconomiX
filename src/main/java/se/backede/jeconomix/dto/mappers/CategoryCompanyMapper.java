@@ -15,7 +15,7 @@ import se.backede.jeconomix.dto.CategoryDto;
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
  */
-@Mapper(uses = {CompanyMapper.class})
+@Mapper(uses = {CompanyTransactionsMapper.class})
 public interface CategoryCompanyMapper {
 
     CategoryCompanyMapper INSTANCE = Mappers.getMapper(CategoryCompanyMapper.class);

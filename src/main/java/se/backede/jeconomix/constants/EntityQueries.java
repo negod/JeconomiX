@@ -19,6 +19,8 @@ public class EntityQueries {
     public static final String FIND_BUDGET_EXPENSE_BY_QUARTER = "Budget.findExpenseByQuarter";
     public static final String TRANSACTION_EXISTS = "Transaction.transactionExists";
     public static final String TRANSACTION_BY_BUDGETMONTH = "Transaction.byBudgetMonth";
+    public static final String TRANSACTION_BY_BUDGETYEAR_AND_CATEGORY = "Transaction.byBudgetYearAndCategory";
+    public static final String TRANSACTION_BY_BUDGETYEAR = "Transaction.byBudgetYear";
     public static final String TRANSACTION_BY_BUDGETMONTH_AND_CATEGORY = "Transaction.byBudgetMonthAndCategory";
     public static final String TRANSACTION_BY_QUARTER = "Transaction.byBudgetQuarter";
     public static final String FILTERED_CATEGORIES = "Category.byCategoryType";
