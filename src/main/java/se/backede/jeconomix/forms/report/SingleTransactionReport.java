@@ -11,11 +11,10 @@ import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
@@ -224,30 +223,11 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
 
         String lineTitle = "Kronor";
 
-        Map<Month, BigDecimal> sums = new HashMap<>();
-
-        List<Month> monthList = new LinkedList<>(Arrays.asList(Month.values()));
-
-        monthList.forEach((month) -> {
-            sums.put(month, BigDecimal.valueOf(0));
-        });
-
-        reports.getTransctions().forEach((TransactionDto transaction) -> {
-            monthList.stream().filter((month) -> (transaction.getBudgetMonth().equals(month))).forEachOrdered((month) -> {
-                BigDecimal currentSum = sums.get(month);
-                if (transaction.getSum() != null) {
-                    double abs = Math.abs(transaction.getSum().doubleValue());
-                    BigDecimal newSum = currentSum.add(BigDecimal.valueOf(abs));
-                    sums.put(month, newSum);
-                }
-            });
-        });
-
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (Month month : Month.values()) {
-            String capitalizeFirstLetter = StringUtils.capitalizeFirstLetter(month.name().substring(0, 2));
-            dataset.addValue(sums.get(month), lineTitle, capitalizeFirstLetter);
+            String capitalizeFirstLetter = StringUtils.capitalizeFirstLetter(month.name().substring(0, 3).toLowerCase());
+            dataset.addValue(reports.getMonthReport().getOrDefault(month, BigDecimal.ZERO), lineTitle, capitalizeFirstLetter);
         }
 
         return dataset;

@@ -20,7 +20,7 @@ import se.backede.jeconomix.dto.TransactionReportDto;
 
 /**
  *
- * @author Joakim Backede ( joakim.backede@outlook.com )s
+ * @author Joakim Backede ( joakim.backede@outlook.com )
  */
 public class TransactionUtils {
 
@@ -66,6 +66,18 @@ public class TransactionUtils {
         return transactions.stream()
                 .map(TransactionDto::getSum)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public static Map<Month, BigDecimal> calculateTotalSumByMonth(List<TransactionReportDto> reports) {
+        EnumMap<Month, BigDecimal> map = new EnumMap<>(Month.class);
+        for (TransactionReportDto report : reports) {
+            for (Month month : Month.values()) {
+                BigDecimal monthSum = report.getMonthReport().getOrDefault(month, BigDecimal.ZERO);
+                BigDecimal current = map.getOrDefault(month, BigDecimal.ZERO);
+                map.put(month, monthSum.add(current));
+            }
+        }
+        return map;
     }
 
     public static List<TransactionReportDto> extractTransactionReportList(Map<String, List<TransactionDto>> transactionList) {
