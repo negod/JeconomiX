@@ -6,12 +6,15 @@
 package se.backede.jeconomix.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
@@ -24,11 +27,21 @@ import se.backede.jeconomix.dto.TransactionReportDto;
  */
 public class TransactionUtils {
 
+    /**
+     *
+     * @param transactions
+     * @return All transactions filtered by the budgetmonth for the transaction
+     */
     public static Optional<Map<Month, List<TransactionDto>>> filterTransactionByMonth(List<TransactionDto> transactions) {
         return Optional.ofNullable(transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getBudgetMonth())));
     }
 
+    /**
+     *
+     * @param budgets
+     * @return
+     */
     public static Optional<Map<Month, Map<CategoryTypeEnum, Integer>>> getCalculatedTransactionsByMonth(Map<Month, List<TransactionDto>> budgets) {
         Map<Month, Map<CategoryTypeEnum, Integer>> calculated = new HashMap<>();
         budgets.forEach((month, dtoList) -> {
@@ -38,16 +51,31 @@ public class TransactionUtils {
         return Optional.ofNullable(calculated);
     }
 
+    /**
+     *
+     * @param transactions
+     * @return
+     */
     public static Map<CategoryTypeEnum, List<TransactionDto>> filterTransactionByCategory(List<TransactionDto> transactions) {
         return transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getCompany().getCategory().getCategoryType().getType()));
     }
 
+    /**
+     *
+     * @param transactions
+     * @return
+     */
     public static Map<String, List<TransactionReportDto>> filterTransactionReportByCategory(List<TransactionReportDto> transactions) {
         return transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getCategory()));
     }
 
+    /**
+     *
+     * @param transactions
+     * @return
+     */
     public static Map<CategoryTypeEnum, Integer> getSumsFromTransactions(Map<CategoryTypeEnum, List<TransactionDto>> transactions) {
         Map<CategoryTypeEnum, Integer> sums = new HashMap<>();
         transactions.forEach((category, list) -> {
@@ -56,6 +84,11 @@ public class TransactionUtils {
         return sums;
     }
 
+    /**
+     *
+     * @param budgetLines
+     * @return
+     */
     public static Integer getSumsFromTransactions(List<TransactionDto> budgetLines) {
         return budgetLines.stream()
                 .map((dto) -> dto.getSum().abs().intValue())
@@ -68,6 +101,18 @@ public class TransactionUtils {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public static BigDecimal calculateAvgSum(List<TransactionReportDto> reports) {
+        BigDecimal allSums = reports.stream()
+                .map(TransactionReportDto::getSum)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return allSums.divide(new BigDecimal(reports.size()), RoundingMode.UP);
+    }
+
+    /**
+     *
+     * @param reports
+     * @return
+     */
     public static Map<Month, BigDecimal> calculateTotalSumByMonth(List<TransactionReportDto> reports) {
         EnumMap<Month, BigDecimal> map = new EnumMap<>(Month.class);
         for (TransactionReportDto report : reports) {
@@ -80,6 +125,29 @@ public class TransactionUtils {
         return map;
     }
 
+    /**
+     *
+     * @param reports
+     * @return
+     */
+    public static EnumMap<Month, BigDecimal> calculateAverageSumForAllTransactions(List<TransactionReportDto> reports) {
+
+        BigDecimal average = reports.size() > 0 ? calculateAvgSum(reports) : BigDecimal.ZERO;
+
+        EnumMap<Month, BigDecimal> averagePerMonth = new EnumMap<>(Month.class);
+        for (Month month : Month.values()) {
+            averagePerMonth.put(month, average);
+        }
+
+        return averagePerMonth;
+
+    }
+
+    /**
+     *
+     * @param transactionList
+     * @return
+     */
     public static List<TransactionReportDto> extractTransactionReportList(Map<String, List<TransactionDto>> transactionList) {
         List<TransactionReportDto> transactionReports = new ArrayList<>();
 

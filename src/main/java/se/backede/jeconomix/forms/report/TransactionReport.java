@@ -6,7 +6,6 @@
 package se.backede.jeconomix.forms.report;
 
 import java.awt.BorderLayout;
-import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
@@ -47,6 +46,11 @@ public class TransactionReport extends javax.swing.JDialog {
 
     /**
      * Creates new form expenseReport
+     *
+     * @param parent
+     * @param modal
+     * @param type
+     * @param average
      */
     public TransactionReport(java.awt.Frame parent, boolean modal, CategoryTypeEnum type, Boolean average) {
         super(parent, modal);
@@ -56,7 +60,7 @@ public class TransactionReport extends javax.swing.JDialog {
         this.AVERAGE = average;
     }
 
-    public void initData(CategoryTypeEnum type, Boolean average) {
+    public final void initData(CategoryTypeEnum type, Boolean average) {
         yearLabel.setText(CURRENT_YEAR.toString());
 
         TransactionHandler.getInstance().getTransactionsByYearAndCategory(Year.of(CURRENT_YEAR), type).ifPresent(transactions -> {

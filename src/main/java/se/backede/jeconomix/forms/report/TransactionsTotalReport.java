@@ -18,7 +18,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;

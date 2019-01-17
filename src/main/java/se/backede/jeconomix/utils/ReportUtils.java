@@ -89,17 +89,13 @@ public class ReportUtils {
                 .collect(Collectors.toList());
 
         EnumMap<Month, BigDecimal> calculateTotalSumsPerMonth = calculateTotalSumsPerMonth(total);
-        addNewDataset(dataset, "Total", calculateTotalSumsPerMonth, Boolean.FALSE);
+        EnumMap<Month, BigDecimal> calculateAveragePerMonth = TransactionUtils.calculateAverageSumForAllTransactions(total);
 
-//        for (Map.Entry<String, List<TransactionReportDto>> entry : reports.entrySet()) {
-//            Map<Month, BigDecimal> calculateTotalSumsPerMonth = calculateTotalSumsPerMonth(total);
-//            addNewDataset(dataset, entry.getKey(), calculateTotalSumsPerMonth(total), Boolean.FALSE);
-//        }
-//        if (avg) {
-//            for (Map.Entry<String, List<TransactionReportDto>> entry : reports.entrySet()) {
-//                addNewDataset(dataset, "AVERAGE " + entry.getKey(), entry.getValue(), Boolean.TRUE);
-//            }
-//        }
+        addNewDataset(dataset, "Total", calculateTotalSumsPerMonth);
+
+        if (avg) {
+            addNewDataset(dataset, "Average", calculateAveragePerMonth);
+        }
         return dataset;
     }
 
@@ -121,9 +117,9 @@ public class ReportUtils {
 
     }
 
-    private static void addNewDataset(DefaultCategoryDataset dataset, String lineTitle, EnumMap<Month, BigDecimal> reports, Boolean average) {
+    private static void addNewDataset(DefaultCategoryDataset dataset, String lineTitle, EnumMap<Month, BigDecimal> reports) {
         for (Month month : Month.values()) {
-            dataset.addValue(reports.getOrDefault(month, ZERO),
+            dataset.addValue(reports.getOrDefault(month, ZERO).abs(),
                     lineTitle,
                     StringUtils.capitalizeFirstLetter(
                             month.name().substring(0, 3).toLowerCase()
