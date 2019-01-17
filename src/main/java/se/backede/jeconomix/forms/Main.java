@@ -45,7 +45,7 @@ public class Main {
 
         java.awt.EventQueue.invokeLater(() -> {
             MainForm frame = new MainForm();
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         });
     }

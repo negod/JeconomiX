@@ -51,6 +51,7 @@ public class MainForm extends NegodJFrame {
         super();
         initComponents();
         budgetQuarter1.setData(TimeDecider.getCurrenQuarter(), TimeDecider.getCurrentYear());
+        yearStatWidget1.init();
     }
 
     /**
@@ -63,6 +64,7 @@ public class MainForm extends NegodJFrame {
     private void initComponents() {
 
         budgetQuarter1 = new se.backede.jeconomix.forms.budget.BudgetQuarter();
+        yearStatWidget1 = new se.backede.jeconomix.forms.transaction.YearStatWidget();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -94,8 +96,16 @@ public class MainForm extends NegodJFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JeconomiX");
+        setName("JeconomiX"); // NOI18N
+        setResizable(false);
 
         budgetQuarter1.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        budgetQuarter1.setMinimumSize(new java.awt.Dimension(1353, 550));
+
+        yearStatWidget1.setBackground(new java.awt.Color(255, 255, 255));
+        yearStatWidget1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Statistics", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+
+        menuBar.setBackground(new java.awt.Color(255, 255, 255));
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -284,11 +294,18 @@ public class MainForm extends NegodJFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(budgetQuarter1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(yearStatWidget1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(budgetQuarter1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(budgetQuarter1, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(yearStatWidget1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE))
         );
 
         pack();
@@ -490,6 +507,7 @@ public class MainForm extends NegodJFrame {
     private javax.swing.JMenuItem savingsReportMenuItem;
     private javax.swing.JMenuItem totalReportMenuItem;
     private javax.swing.JMenuItem transactionExportMenuItem;
+    private se.backede.jeconomix.forms.transaction.YearStatWidget yearStatWidget1;
     // End of variables declaration//GEN-END:variables
 
 }

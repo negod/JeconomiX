@@ -31,7 +31,7 @@ import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
-import se.backede.jeconomix.utils.LineChartUtils;
+import se.backede.jeconomix.utils.charts.LineChartUtils;
 import se.backede.jeconomix.utils.ReportUtils;
 import se.backede.jeconomix.utils.TransactionUtils;
 

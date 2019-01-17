@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.utils;
+package se.backede.jeconomix.utils.charts;
 
 import java.awt.BorderLayout;
 import java.math.BigDecimal;
@@ -29,6 +29,8 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
 import se.backede.jeconomix.dto.TransactionReportDto;
+import se.backede.jeconomix.utils.ReportUtils;
+import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
  *
@@ -37,6 +39,7 @@ import se.backede.jeconomix.dto.TransactionReportDto;
 public class LineChartUtils {
 
     public static void addLineChart(List<TransactionReportDto> reports, JPanel parent) {
+
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Year total",
                 "", "",
@@ -53,7 +56,14 @@ public class LineChartUtils {
                 )
         );
 
-        CategoryAxis axis = lineChart.getCategoryPlot().getDomainAxis();
+        configureRenderer(lineChart);
+
+        parent.setLayout(new BorderLayout());
+        parent.add(chartPanel, BorderLayout.NORTH);
+    }
+
+    private static void configureRenderer(JFreeChart lineChart) {
+
         CategoryItemRenderer renderer = lineChart.getCategoryPlot().getRenderer();
 
         ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE1, TextAnchor.HALF_ASCENT_CENTER, TextAnchor.BOTTOM_CENTER, 0);
@@ -82,9 +92,6 @@ public class LineChartUtils {
             }
         });
         renderer.setBaseItemLabelsVisible(true);
-
-        parent.setLayout(new BorderLayout());
-        parent.add(chartPanel, BorderLayout.NORTH);
     }
 
     public static DefaultCategoryDataset createDataset(Map<String, List<TransactionReportDto>> reports, Boolean avg) {

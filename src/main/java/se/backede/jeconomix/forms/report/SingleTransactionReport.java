@@ -35,7 +35,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
-import se.backede.jeconomix.utils.LineChartUtils;
+import se.backede.jeconomix.utils.charts.LineChartUtils;
 import se.backede.jeconomix.utils.ReportUtils;
 
 /**
