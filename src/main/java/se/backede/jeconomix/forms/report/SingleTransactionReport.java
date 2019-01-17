@@ -35,6 +35,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
+import se.backede.jeconomix.utils.ReportUtils;
 
 /**
  *
@@ -125,7 +126,7 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Total expenses",
                 "", "",
-                createDataset(reports),
+                ReportUtils.createDataset(reports, Boolean.TRUE),
                 PlotOrientation.VERTICAL,
                 false, true, false);
 

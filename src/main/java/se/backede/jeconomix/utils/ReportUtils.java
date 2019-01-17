@@ -8,6 +8,7 @@ package se.backede.jeconomix.utils;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -74,22 +75,34 @@ public class ReportUtils {
         return presentMonths;
     }
 
+    public static DefaultCategoryDataset createDataset(TransactionReportDto reports, Boolean avg) {
+        return createDataset(Arrays.asList(reports), avg);
+    }
+
     /**
-     * Creates the dataset
      *
-     * @param reports the reports
-     * @param avg if an average calculation should be done
+     * @param reports
+     * @param avg
      * @return
      */
     public static DefaultCategoryDataset createDataset(Map<String, List<TransactionReportDto>> reports, Boolean avg) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         List<TransactionReportDto> total = reports.values().stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+        return createDataset(total, avg);
+    }
 
-        EnumMap<Month, BigDecimal> calculateTotalSumsPerMonth = calculateTotalSumsPerMonth(total);
-        EnumMap<Month, BigDecimal> calculateAveragePerMonth = TransactionUtils.calculateAverageSumForAllTransactions(total);
+    /**
+     *
+     * @param reports
+     * @param avg
+     * @return
+     */
+    public static DefaultCategoryDataset createDataset(List<TransactionReportDto> reports, Boolean avg) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        EnumMap<Month, BigDecimal> calculateTotalSumsPerMonth = calculateTotalSumsPerMonth(reports);
+        EnumMap<Month, BigDecimal> calculateAveragePerMonth = TransactionUtils.calculateAverageSumForAllTransactions(reports);
 
         addNewDataset(dataset, "Total", calculateTotalSumsPerMonth);
 

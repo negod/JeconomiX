@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
@@ -101,11 +102,18 @@ public class TransactionUtils {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public static BigDecimal calculateAvgSum(List<TransactionReportDto> reports) {
-        BigDecimal allSums = reports.stream()
-                .map(TransactionReportDto::getSum)
+    public static BigDecimal calculateAverageSum(List<TransactionDto> transactions, Integer devideBy) {
+        BigDecimal allSums = transactions.stream()
+                .map(TransactionDto::getSum)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return allSums.divide(new BigDecimal(reports.size()), RoundingMode.UP);
+        return allSums.divide(new BigDecimal(devideBy), RoundingMode.UP);
+    }
+
+    public static BigDecimal calculateAverageSumWithBigDecimals(List<BigDecimal> transactions, Integer devideBy) {
+        BigDecimal allSums = transactions
+                .stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return allSums.divide(new BigDecimal(devideBy), RoundingMode.UP);
     }
 
     /**
@@ -119,7 +127,10 @@ public class TransactionUtils {
             for (Month month : Month.values()) {
                 BigDecimal monthSum = report.getMonthReport().getOrDefault(month, BigDecimal.ZERO);
                 BigDecimal current = map.getOrDefault(month, BigDecimal.ZERO);
-                map.put(month, monthSum.add(current));
+
+                if (monthSum.abs().doubleValue() > 0) {
+                    map.put(month, monthSum.add(current));
+                }
             }
         }
         return map;
@@ -132,7 +143,17 @@ public class TransactionUtils {
      */
     public static EnumMap<Month, BigDecimal> calculateAverageSumForAllTransactions(List<TransactionReportDto> reports) {
 
-        BigDecimal average = reports.size() > 0 ? calculateAvgSum(reports) : BigDecimal.ZERO;
+        Map<Month, BigDecimal> calculateTotalSumByMonth = calculateTotalSumByMonth(reports);
+
+        List<BigDecimal> collect = calculateTotalSumByMonth
+                .values()
+                .stream()
+                .collect(Collectors.toList())
+                .stream()
+                .filter(x -> x.abs().doubleValue() > 0)
+                .collect(Collectors.toList());
+
+        BigDecimal average = collect.size() > 0 ? calculateAverageSumWithBigDecimals(collect, collect.size()) : BigDecimal.ZERO;
 
         EnumMap<Month, BigDecimal> averagePerMonth = new EnumMap<>(Month.class);
         for (Month month : Month.values()) {
