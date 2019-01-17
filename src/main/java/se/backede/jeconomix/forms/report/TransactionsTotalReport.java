@@ -21,7 +21,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
-import se.backede.jeconomix.utils.ReportUtils;
+import se.backede.jeconomix.utils.LineChartUtils;
 import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
@@ -87,7 +87,7 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Total",
                 "Month", "Kronor",
-                ReportUtils.createDataset(reports, Boolean.FALSE),
+                LineChartUtils.createDataset(reports, Boolean.FALSE),
                 PlotOrientation.VERTICAL,
                 true, true, true);
 

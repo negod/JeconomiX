@@ -31,87 +31,10 @@ public class ReportUtils {
     private static final BigDecimal ZERO = BigDecimal.valueOf(0.00);
 
     /**
-     * Gets tha average sum for all reports. Takes in to consideration if a sum
-     * is 0.00.
      *
      * @param reports
      * @return
      */
-    public static Map<Month, BigDecimal> calculateAvg(List<TransactionReportDto> reports) {
-        Map<Month, BigDecimal> calculatedSums = calculateTotalSumsPerMonth(reports);
-        Set<Month> presentMonths = getPresentMonths(reports);
-
-        BigDecimal average = BigDecimal.valueOf(0.00);
-        for (Month presentMonth : presentMonths) {
-            average = average.add(calculatedSums.getOrDefault(presentMonth, ZERO));
-        }
-
-        if (!presentMonths.isEmpty()) {
-            BigDecimal divide = average.divide(BigDecimal.valueOf(presentMonths.size()), MathContext.DECIMAL128);
-
-            for (Month month : presentMonths) {
-                calculatedSums.put(month, divide);
-            }
-        }
-
-        return calculatedSums;
-    }
-
-    /**
-     * Gets all months where the total sum for the month is above 0
-     *
-     * @param reports
-     * @return
-     */
-    private static Set<Month> getPresentMonths(List<TransactionReportDto> reports) {
-        Set<Month> presentMonths = new HashSet<>();
-        for (TransactionReportDto report : reports) {
-            for (Month month : report.getMonthReport().keySet()) {
-                if (report.getMonthReport().get(month) != BigDecimal.valueOf(0.00)) {
-                    presentMonths.add(month);
-                }
-            }
-        }
-        return presentMonths;
-    }
-
-    public static DefaultCategoryDataset createDataset(TransactionReportDto reports, Boolean avg) {
-        return createDataset(Arrays.asList(reports), avg);
-    }
-
-    /**
-     *
-     * @param reports
-     * @param avg
-     * @return
-     */
-    public static DefaultCategoryDataset createDataset(Map<String, List<TransactionReportDto>> reports, Boolean avg) {
-        List<TransactionReportDto> total = reports.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        return createDataset(total, avg);
-    }
-
-    /**
-     *
-     * @param reports
-     * @param avg
-     * @return
-     */
-    public static DefaultCategoryDataset createDataset(List<TransactionReportDto> reports, Boolean avg) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        EnumMap<Month, BigDecimal> calculateTotalSumsPerMonth = calculateTotalSumsPerMonth(reports);
-        EnumMap<Month, BigDecimal> calculateAveragePerMonth = TransactionUtils.calculateAverageSumForAllTransactions(reports);
-
-        addNewDataset(dataset, "Total", calculateTotalSumsPerMonth);
-
-        if (avg) {
-            addNewDataset(dataset, "Average", calculateAveragePerMonth);
-        }
-        return dataset;
-    }
-
     public static EnumMap<Month, BigDecimal> calculateTotalSumsPerMonth(List<TransactionReportDto> reports) {
         EnumMap<Month, BigDecimal> sums = new EnumMap<>(Month.class);
 
@@ -128,16 +51,6 @@ public class ReportUtils {
         }
         return sums;
 
-    }
-
-    private static void addNewDataset(DefaultCategoryDataset dataset, String lineTitle, EnumMap<Month, BigDecimal> reports) {
-        for (Month month : Month.values()) {
-            dataset.addValue(reports.getOrDefault(month, ZERO).abs(),
-                    lineTitle,
-                    StringUtils.capitalizeFirstLetter(
-                            month.name().substring(0, 3).toLowerCase()
-                    ));
-        }
     }
 
 }

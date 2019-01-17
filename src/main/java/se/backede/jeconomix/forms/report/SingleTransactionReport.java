@@ -35,6 +35,7 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
+import se.backede.jeconomix.utils.LineChartUtils;
 import se.backede.jeconomix.utils.ReportUtils;
 
 /**
@@ -64,7 +65,8 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         this.reports = reports;
         initComponents();
         setTableData();
-        addLineChart(reports);
+
+        LineChartUtils.addLineChart(Arrays.asList(reports), lineChartPanel);
 
         setCompanyComboBox();
         extractCompaniesFromTransactoins();
@@ -120,27 +122,6 @@ public final class SingleTransactionReport extends javax.swing.JDialog {
         CompanyDto blancCompany = new CompanyDto(ALL_COMPANIES);
         companyCB.getComboBoxModel().addElement(blancCompany);
         companyCB.setSelectedItem(blancCompany);
-    }
-
-    public void addLineChart(TransactionReportDto reports) {
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total expenses",
-                "", "",
-                ReportUtils.createDataset(reports, Boolean.TRUE),
-                PlotOrientation.VERTICAL,
-                false, true, false);
-
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
-
-        lineChart.setTitle(
-                new org.jfree.chart.title.TextTitle("Total expenses",
-                        new java.awt.Font("Courier New", java.awt.Font.PLAIN, 12)
-                )
-        );
-
-        lineChartPanel.setLayout(new BorderLayout());
-        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
 
     public void filter() {

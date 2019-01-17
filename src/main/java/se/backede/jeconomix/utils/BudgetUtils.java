@@ -23,7 +23,6 @@ import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
-import se.backede.jeconomix.event.events.dto.BudgetEventDto;
 
 /**
  *

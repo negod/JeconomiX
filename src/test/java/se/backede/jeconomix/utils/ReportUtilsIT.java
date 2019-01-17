@@ -51,35 +51,6 @@ public class ReportUtilsIT {
     public void tearDown() {
     }
 
-    /**
-     * Test of calculateAvg method, of class ReportUtils.
-     */
-    @Test
-    public void testCalculateAvg() {
-        System.out.println("calculateAvg");
-        List<TransactionReportDto> reports = null;
-        Map<Month, BigDecimal> expResult = null;
-        Map<Month, BigDecimal> result = ReportUtils.calculateAvg(reports);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of createDataset method, of class ReportUtils.
-     */
-    @Test
-    public void testCreateDataset() {
-        System.out.println("createDataset");
-        Map<String, List<TransactionReportDto>> reports = null;
-        Boolean avg = null;
-        DefaultCategoryDataset expResult = null;
-        DefaultCategoryDataset result = ReportUtils.createDataset(reports, avg);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
     public TransactionDto getTransaction(Integer year, Month month, BigDecimal sum) {
         TransactionDto dto = new TransactionDto();
         dto.setBudgetMonth(month);

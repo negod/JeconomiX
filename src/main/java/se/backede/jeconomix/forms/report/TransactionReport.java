@@ -8,6 +8,7 @@ package se.backede.jeconomix.forms.report;
 import java.awt.BorderLayout;
 import java.time.Year;
 import java.time.YearMonth;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
+import se.backede.jeconomix.utils.LineChartUtils;
 import se.backede.jeconomix.utils.ReportUtils;
 import se.backede.jeconomix.utils.TransactionUtils;
 
@@ -79,54 +81,60 @@ public class TransactionReport extends javax.swing.JDialog {
     }
 
     public void addLineChart(Map<String, List<TransactionReportDto>> reports, Boolean average) {
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "TOTAL",
-                "MONTH", "Kr",
-                ReportUtils.createDataset(reports, average),
-                PlotOrientation.VERTICAL,
-                true, true, true);
 
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
+        List<TransactionReportDto> collect = reports.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
 
-        CategoryAxis axis = lineChart.getCategoryPlot().getDomainAxis();
-        CategoryItemRenderer renderer = lineChart.getCategoryPlot().getRenderer();
+        LineChartUtils.addLineChart(collect, lineChartPanel);
 
-        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE1, TextAnchor.HALF_ASCENT_CENTER, TextAnchor.BOTTOM_CENTER, 0);
-        renderer.setBasePositiveItemLabelPosition(position);
-
-        renderer.setBaseItemLabelGenerator(new CategoryItemLabelGenerator() {
-
-            @Override
-            public String generateLabel(CategoryDataset dataset, int series, int category) {
-                if (average) {
-                    if (series == 0) {
-                        Number value = dataset.getValue(series, category);
-                        String result = value.toString(); // could apply formatting here
-                        return result;
-                    }
-                } else {
-                    Number value = dataset.getValue(series, category);
-                    String result = value.toString(); // could apply formatting here
-                    return result;
-                }
-                return null;
-            }
-
-            @Override
-            public String generateRowLabel(CategoryDataset cd, int i) {
-                return null;
-            }
-
-            @Override
-            public String generateColumnLabel(CategoryDataset cd, int i) {
-                return null;
-            }
-        });
-
-        renderer.setBaseItemLabelsVisible(true);
-        lineChartPanel.setLayout(new BorderLayout());
-        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
+//        JFreeChart lineChart = ChartFactory.createLineChart(
+//                "TOTAL",
+//                "MONTH", "Kr",
+//                ReportUtils.createDataset(reports, average),
+//                PlotOrientation.VERTICAL,
+//                true, true, true);
+//
+//        ChartPanel chartPanel = new ChartPanel(lineChart);
+//        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
+//
+//        CategoryAxis axis = lineChart.getCategoryPlot().getDomainAxis();
+//        CategoryItemRenderer renderer = lineChart.getCategoryPlot().getRenderer();
+//
+//        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE1, TextAnchor.HALF_ASCENT_CENTER, TextAnchor.BOTTOM_CENTER, 0);
+//        renderer.setBasePositiveItemLabelPosition(position);
+//
+//        renderer.setBaseItemLabelGenerator(new CategoryItemLabelGenerator() {
+//
+//            @Override
+//            public String generateLabel(CategoryDataset dataset, int series, int category) {
+//                if (average) {
+//                    if (series == 0) {
+//                        Number value = dataset.getValue(series, category);
+//                        String result = value.toString(); // could apply formatting here
+//                        return result;
+//                    }
+//                } else {
+//                    Number value = dataset.getValue(series, category);
+//                    String result = value.toString(); // could apply formatting here
+//                    return result;
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public String generateRowLabel(CategoryDataset cd, int i) {
+//                return null;
+//            }
+//
+//            @Override
+//            public String generateColumnLabel(CategoryDataset cd, int i) {
+//                return null;
+//            }
+//        });
+//        renderer.setBaseItemLabelsVisible(true);
+//        lineChartPanel.setLayout(new BorderLayout());
+//        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
 
     public void setTableData(List<TransactionReportDto> calculatedReport) {
