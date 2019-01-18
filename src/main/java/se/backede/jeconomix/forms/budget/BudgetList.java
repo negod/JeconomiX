@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.math.BigDecimal;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JPanel;
