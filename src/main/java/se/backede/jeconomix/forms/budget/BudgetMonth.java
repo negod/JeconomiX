@@ -34,6 +34,10 @@ public class BudgetMonth extends NegodPanel {
         initComponents();
     }
 
+    public void showHeader(Boolean show) {
+        headerPanel.setVisible(show);
+    }
+
     public void setMonth(BudgetCalculationDto budget) {
         this.CURRENT_YEAR_MONTH = budget.getYearMonth();
         monthLabel.setText(budget.getYearMonth().getMonth().name());
@@ -62,15 +66,15 @@ public class BudgetMonth extends NegodPanel {
     private void initComponents() {
 
         budgetList = new se.backede.jeconomix.forms.budget.BudgetList();
-        jPanel1 = new javax.swing.JPanel();
+        headerPanel = new javax.swing.JPanel();
         budgetSuggestionBtn = new javax.swing.JButton();
         monthLabel = new javax.swing.JLabel();
         outcomeButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(400, 25));
-        jPanel1.setLayout(new java.awt.GridLayout());
+        headerPanel.setPreferredSize(new java.awt.Dimension(400, 25));
+        headerPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         budgetSuggestionBtn.setBackground(new java.awt.Color(255, 255, 255));
         budgetSuggestionBtn.setText("Create budget");
@@ -79,13 +83,13 @@ public class BudgetMonth extends NegodPanel {
                 budgetSuggestionBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(budgetSuggestionBtn);
+        headerPanel.add(budgetSuggestionBtn);
 
         monthLabel.setBackground(new java.awt.Color(255, 255, 255));
         monthLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         monthLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         monthLabel.setText("JANUARY");
-        jPanel1.add(monthLabel);
+        headerPanel.add(monthLabel);
 
         outcomeButton.setText("$");
         outcomeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -93,7 +97,7 @@ public class BudgetMonth extends NegodPanel {
                 outcomeButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(outcomeButton);
+        headerPanel.add(outcomeButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -105,14 +109,14 @@ public class BudgetMonth extends NegodPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(budgetList, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -130,7 +134,7 @@ public class BudgetMonth extends NegodPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.backede.jeconomix.forms.budget.BudgetList budgetList;
     private javax.swing.JButton budgetSuggestionBtn;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel monthLabel;
     private javax.swing.JButton outcomeButton;
     // End of variables declaration//GEN-END:variables

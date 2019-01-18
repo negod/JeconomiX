@@ -68,12 +68,12 @@ public class BudgetHandler extends BudgetDao {
         return Optional.empty();
     }
 
-    public Optional<List<BudgetDto>> getBudgetByQuarter(BudgetQuarterEnum quarter, Year year) {
+    public Optional<List<BudgetDto>> getBudgetByQuarter(Month[] months, Year year) {
 
         try {
             this.startTransaction();
             Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_QARTER);
-            query.setParameter("months", Arrays.asList(quarter.months()));
+            query.setParameter("months", Arrays.asList(months));
             query.setParameter("year", year.getValue());
             List<Budget> budget = (List<Budget>) query.getResultList();
 
@@ -89,8 +89,11 @@ public class BudgetHandler extends BudgetDao {
     }
 
     public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(BudgetQuarterEnum quarter, Year year) {
-        return getBudgetByQuarter(quarter, year).map(budgetList -> {
-            System.out.println(budgetList.size());
+        return getCalculatedBudgetByQuarter(year, quarter.months());
+    }
+
+    public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(Year year, Month... months) {
+        return getBudgetByQuarter(months, year).map(budgetList -> {
             return BudgetUtils.getBudgetFilteredByMonth(budgetList).map(filteredByMonth -> {
                 return BudgetUtils.getCalculatedBudgetsByMonth(filteredByMonth);
             }).get();

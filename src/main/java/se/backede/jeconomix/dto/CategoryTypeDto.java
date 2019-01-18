@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.dto;
 
+import lombok.EqualsAndHashCode;
 import se.backede.generics.persistence.dto.GenericDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import se.backede.jeconomix.constants.CategoryTypeEnum;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class CategoryTypeDto extends GenericDto {
 
     private CategoryTypeEnum type;

@@ -5,10 +5,8 @@
  */
 package se.backede.jeconomix.dto.budget;
 
-import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;

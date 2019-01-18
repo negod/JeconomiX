@@ -5,12 +5,9 @@
  */
 package se.backede.jeconomix.forms.budget;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.UiEvent;
@@ -63,17 +60,6 @@ public class BudgetMonthWidget extends javax.swing.JPanel {
 
     }
 
-//
-//    public void removeBudgetExpense(JTable table) {
-//        BudgetModel model = (BudgetModel) table.getModel();
-//        model.removeBudgetExpenseAt(table.getSelectedRow());
-//    }
-//
-//    private void addBudgetLine(CategoryTypeEnum category) {
-//        AddBudgetLine budgetLine = new AddBudgetLine(CURRENT_YEAR_MONTH);
-//        budgetLine.startUp(category);
-//        budgetLine.setVisible(true);
-//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -5,6 +5,7 @@
  */
 package se.backede.jeconomix.forms.budget;
 
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
+import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
@@ -36,9 +39,9 @@ public class BudgetSuggestion extends NegodDialog {
 
     private final YearMonth CURRENT_BUDGET_MONTH;
 
-    private final Integer ONE_YEAR_BACK = 1;
-    private final Integer ONE_MONTH_BACK = 1;
-    private final Integer ONE_QUARTER_BACK = 3;
+    private final YearMonth ONE_YEAR_BACK;
+    private final YearMonth ONE_MONTH_BACK;
+    private final YearMonth ONE_QUARTER_BACK;
 
     /**
      * Creates new form BudgetSuggestion
@@ -49,7 +52,12 @@ public class BudgetSuggestion extends NegodDialog {
      */
     public BudgetSuggestion(java.awt.Frame parent, boolean modal, YearMonth yearMonth) {
         super(parent, modal);
+
         this.CURRENT_BUDGET_MONTH = yearMonth;
+        this.ONE_YEAR_BACK = CURRENT_BUDGET_MONTH.minusYears(1);
+        this.ONE_MONTH_BACK = CURRENT_BUDGET_MONTH.minusMonths(1);
+        this.ONE_QUARTER_BACK = CURRENT_BUDGET_MONTH.minusMonths(3);
+
         initComponents();
         yearLabel.setText(Integer.toString(yearMonth.getYear()));
         monthLabel.setText(yearMonth.getMonth().name());
@@ -57,6 +65,9 @@ public class BudgetSuggestion extends NegodDialog {
         baseBudgetOnBtnGroup.setSelected(baseOnBudgetRadioBtn.getModel(), true);
         periodSelectionBtnGroup.setSelected(preMonthRadioBtn.getModel(), true);
 
+        budgetMonth.showHeader(Boolean.FALSE);
+
+        setBudgetFromPreviousBudget(yearMonth);
     }
 
     private void setBudgetTables(Map<CategoryTypeEnum, List<BudgetExpenseDto>> map) {
@@ -101,19 +112,18 @@ public class BudgetSuggestion extends NegodDialog {
 //        billTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.BILL));
     }
 
-    private void setBudgetFromActualOutcome(YearMonth yearMonth) {
-        BudgetUtils.getInstance().createBudgetFromTransaction(yearMonth).ifPresent(map -> {
-
-            setBudgetTables(map);
-        });
+    private void setBudgetFromPreviousBudget(YearMonth yearMonth) {
+        BudgetHandler.getInstance()
+                .getCalculatedBudgetByQuarter(Year.of(yearMonth.getYear()), yearMonth.getMonth())
+                .ifPresent(budgetMap -> {
+                    budgetMonth.setMonth(budgetMap.get(yearMonth.getMonth()));
+                });
     }
 
-    private void setBudgetFromBudget(YearMonth yearMonth) {
-        BudgetHandler.getInstance().getBudget(yearMonth).ifPresent(budget -> {
-            Map<CategoryTypeEnum, List<BudgetExpenseDto>> mapBudgetExpenses = budget.getBudgetExpenseSet()
-                    .stream()
-                    .collect(Collectors.groupingBy(dto -> dto.getCategory().getCategoryType().getType()));
-            setBudgetTables(mapBudgetExpenses);
+    private void setBudgetFromActualOutcome(YearMonth yearMonth) {
+        TransactionHandler.getInstance().getTransactionsByBudgetMonth(yearMonth).ifPresent(transactions -> {
+            BudgetCalculationDto budgetCaclulation = BudgetUtils.mapToBudgetCalculationDto(transactions, yearMonth);
+            budgetMonth.setMonth(budgetCaclulation);
         });
     }
 
@@ -132,25 +142,21 @@ public class BudgetSuggestion extends NegodDialog {
         yearLabel = new javax.swing.JLabel();
         monthLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        incomeTable = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        billTable = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        expenseTable = new javax.swing.JTable();
-        addBudgetBtn = new javax.swing.JButton();
-        cancelBtn = new javax.swing.JButton();
-        budgetTotal1 = new se.backede.jeconomix.forms.budget.BudgetTotal();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         baseOnBudgetRadioBtn = new javax.swing.JRadioButton();
         baseOnOutcomeRadionBtn = new javax.swing.JRadioButton();
         jButton2 = new javax.swing.JButton();
+        suggestBudgetBtn = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         preYearRadioBtn = new javax.swing.JRadioButton();
         preMonthRadioBtn = new javax.swing.JRadioButton();
         preQuarterRadioBtn = new javax.swing.JRadioButton();
-        suggestBudgetBtn = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        cancelBtn = new javax.swing.JButton();
+        addBudgetBtn = new javax.swing.JButton();
+        budgetMonth = new se.backede.jeconomix.forms.budget.BudgetMonth();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -164,76 +170,6 @@ public class BudgetSuggestion extends NegodDialog {
 
         monthLabel.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         monthLabel.setText("Month");
-
-        incomeTable.setBackground(new java.awt.Color(255, 255, 255));
-        incomeTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Income", "Sum"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Double.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(incomeTable);
-
-        billTable.setBackground(new java.awt.Color(255, 255, 255));
-        billTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Bill", "Sum"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(billTable);
-
-        expenseTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Expense", "Sum"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane3.setViewportView(expenseTable);
-
-        addBudgetBtn.setText("Add budget");
-        addBudgetBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addBudgetBtnActionPerformed(evt);
-            }
-        });
-
-        cancelBtn.setText("Cancel");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
-            }
-        });
 
         baseBudgetOnBtnGroup.add(baseOnBudgetRadioBtn);
         baseOnBudgetRadioBtn.setText("Base on budget");
@@ -265,6 +201,48 @@ public class BudgetSuggestion extends NegodDialog {
         jButton2.setText("Analyze and suggest");
         jButton2.setEnabled(false);
 
+        suggestBudgetBtn.setText("Suggest");
+        suggestBudgetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suggestBudgetBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(suggestBudgetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(suggestBudgetBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 626, Short.MAX_VALUE)
+        );
+
         periodSelectionBtnGroup.add(preYearRadioBtn);
         preYearRadioBtn.setText("Previous year");
 
@@ -281,7 +259,7 @@ public class BudgetSuggestion extends NegodDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(preQuarterRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                    .addComponent(preQuarterRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(preMonthRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(preYearRadioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -298,37 +276,38 @@ public class BudgetSuggestion extends NegodDialog {
                 .addContainerGap())
         );
 
-        suggestBudgetBtn.setText("Suggest");
-        suggestBudgetBtn.addActionListener(new java.awt.event.ActionListener() {
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                suggestBudgetBtnActionPerformed(evt);
+                cancelBtnActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        addBudgetBtn.setText("Add budget");
+        addBudgetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBudgetBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(suggestBudgetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(addBudgetBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(suggestBudgetBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addBudgetBtn)
+                    .addComponent(cancelBtn))
                 .addContainerGap())
         );
 
@@ -337,38 +316,25 @@ public class BudgetSuggestion extends NegodDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                                .addComponent(budgetTotal1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 2, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(addBudgetBtn)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jSeparator1))))
+                        .addComponent(monthLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 498, Short.MAX_VALUE))
+                    .addComponent(jSeparator1))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(budgetMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -377,24 +343,22 @@ public class BudgetSuggestion extends NegodDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(monthLabel)
                     .addComponent(yearLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(budgetTotal1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addBudgetBtn)
-                            .addComponent(cancelBtn)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(budgetMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -406,7 +370,7 @@ public class BudgetSuggestion extends NegodDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -421,23 +385,26 @@ public class BudgetSuggestion extends NegodDialog {
 
         if (basedOnSelection.equals(baseOnOutcomeRadionBtn.getModel())) {
             if (periodSelection.equals(preYearRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusYears(ONE_YEAR_BACK));
+                setBudgetFromActualOutcome(ONE_YEAR_BACK);
             } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(ONE_MONTH_BACK));
+                setBudgetFromActualOutcome(ONE_MONTH_BACK);
             } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
-                setBudgetFromActualOutcome(CURRENT_BUDGET_MONTH.minusMonths(ONE_QUARTER_BACK));
+                setBudgetFromActualOutcome(ONE_QUARTER_BACK);
             }
         } else if (basedOnSelection.equals(baseOnBudgetRadioBtn.getModel())) {
             if (periodSelection.equals(preYearRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusYears(ONE_YEAR_BACK));
+                setBudgetFromPreviousBudget(ONE_YEAR_BACK);
             } else if (periodSelection.equals(preMonthRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(ONE_MONTH_BACK));
+                setBudgetFromPreviousBudget(ONE_MONTH_BACK);
             } else if (periodSelection.equals(preQuarterRadioBtn.getModel())) {
-                setBudgetFromBudget(CURRENT_BUDGET_MONTH.minusMonths(ONE_QUARTER_BACK));
+                setBudgetFromPreviousBudget(ONE_QUARTER_BACK);
             }
         }
-
     }//GEN-LAST:event_suggestBudgetBtnActionPerformed
+
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void addBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBudgetBtnActionPerformed
 
@@ -445,42 +412,37 @@ public class BudgetSuggestion extends NegodDialog {
 
             EventController.getInstance().notifyObservers(BudgetEvent.CLEAR_BUDGET_LISTS, () -> budget);
 
-            BudgetModel incomes = (BudgetModel) incomeTable.getModel();
-            BudgetModel expenses = (BudgetModel) expenseTable.getModel();
-            BudgetModel bills = (BudgetModel) billTable.getModel();
-
-            List<BudgetExpenseDto> allBudgetExpenses = new ArrayList<>();
-            allBudgetExpenses.addAll(incomes.getAll());
-            allBudgetExpenses.addAll(expenses.getAll());
-            allBudgetExpenses.addAll(bills.getAll());
-
-            allBudgetExpenses.stream().map((budgetDto) -> {
-                budgetDto.setBudget(budget);
-                budgetDto.setId(null);
-                return budgetDto;
-            }).forEachOrdered((budgetDto) -> {
-                BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetDto).ifPresent(budgetExpense -> {
-                    BudgetExpenseEventDto build = BudgetExpenseEventDto.builder()
-                            .budgetExpense(budgetExpense)
-                            .budgetEvent(
-                                    BudgetEventDto.builder()
-                                            .category(budgetExpense.getCategory().getCategoryType().getType())
-                                            .yearMonth(YearMonth.of(budgetDto.getBudget().getYear(), budgetDto.getBudget().getMonth()))
-                                            .build()
-                            )
-                            .build();
-                    EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> build);
-                });
-            });
-
+//            BudgetModel incomes = (BudgetModel) incomeTable.getModel();
+//            BudgetModel expenses = (BudgetModel) expenseTable.getModel();
+//            BudgetModel bills = (BudgetModel) billTable.getModel();
+//
+//            List<BudgetExpenseDto> allBudgetExpenses = new ArrayList<>();
+//            allBudgetExpenses.addAll(incomes.getAll());
+//            allBudgetExpenses.addAll(expenses.getAll());
+//            allBudgetExpenses.addAll(bills.getAll());
+//
+//            allBudgetExpenses.stream().map((budgetDto) -> {
+//                budgetDto.setBudget(budget);
+//                budgetDto.setId(null);
+//                return budgetDto;
+//            }).forEachOrdered((budgetDto) -> {
+//                BudgetExpenseHandler.getInstance().upsertBudgetExpense(budgetDto).ifPresent(budgetExpense -> {
+//                    BudgetExpenseEventDto build = BudgetExpenseEventDto.builder()
+//                            .budgetExpense(budgetExpense)
+//                            .budgetEvent(
+//                                    BudgetEventDto.builder()
+//                                            .category(budgetExpense.getCategory().getCategoryType().getType())
+//                                            .yearMonth(YearMonth.of(budgetDto.getBudget().getYear(), budgetDto.getBudget().getMonth()))
+//                                            .build()
+//                            )
+//                            .build();
+//                    EventController.getInstance().notifyObservers(BudgetEvent.ADD_BUDGET_ROW, () -> build);
+//                });
+//            });
         });
 
         this.dispose();
     }//GEN-LAST:event_addBudgetBtnActionPerformed
-
-    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_cancelBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -490,19 +452,15 @@ public class BudgetSuggestion extends NegodDialog {
     private javax.swing.ButtonGroup baseBudgetOnBtnGroup;
     private javax.swing.JRadioButton baseOnBudgetRadioBtn;
     private javax.swing.JRadioButton baseOnOutcomeRadionBtn;
-    private javax.swing.JTable billTable;
-    private se.backede.jeconomix.forms.budget.BudgetTotal budgetTotal1;
+    private se.backede.jeconomix.forms.budget.BudgetMonth budgetMonth;
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JTable expenseTable;
-    private javax.swing.JTable incomeTable;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel monthLabel;
     private javax.swing.ButtonGroup periodSelectionBtnGroup;

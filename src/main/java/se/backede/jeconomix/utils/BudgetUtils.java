@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetHandler;
-import se.backede.jeconomix.database.TransactionHandler;
+import se.backede.jeconomix.dto.CategoryDto;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetDto;
@@ -45,23 +46,51 @@ public class BudgetUtils {
         });
     }
 
-    public Optional<Map<CategoryTypeEnum, List<BudgetExpenseDto>>> createBudgetFromTransaction(YearMonth budgetMonth) {
-        return TransactionHandler.getInstance().getTransactionsByBudgetMonth(budgetMonth).map(transactionList -> {
+    public static Optional<Map<CategoryTypeEnum, List<BudgetExpenseDto>>> createBudgetFromTransaction(List<TransactionDto> transactions) {
+        Map<CategoryTypeEnum, List<BudgetExpenseDto>> categorizedTransactions = new HashMap<>();
 
-            Map<CategoryTypeEnum, List<BudgetExpenseDto>> categorizedTransactions = new HashMap<>();
-
-            for (TransactionDto transactionDto : transactionList) {
-                if (categorizedTransactions.containsKey(transactionDto.getCompany().getCategory().getCategoryType().getType())) {
-                    categorizedTransactions.get(transactionDto.getCompany().getCategory().getCategoryType().getType()).add(mapToBudgetExpenseDto(transactionDto));
-                } else {
-                    categorizedTransactions.put(transactionDto.getCompany().getCategory().getCategoryType().getType(), Stream.of(mapToBudgetExpenseDto(transactionDto)).collect(Collectors.toList()));
-                }
+        for (TransactionDto transactionDto : transactions) {
+            if (categorizedTransactions.containsKey(transactionDto.getCompany().getCategory().getCategoryType().getType())) {
+                categorizedTransactions.get(transactionDto.getCompany().getCategory().getCategoryType().getType()).add(mapToBudgetExpenseDto(transactionDto));
+            } else {
+                categorizedTransactions.put(transactionDto.getCompany().getCategory().getCategoryType().getType(), Stream.of(mapToBudgetExpenseDto(transactionDto)).collect(Collectors.toList()));
             }
-            return categorizedTransactions;
-        });
+        }
+        return Optional.of(categorizedTransactions);
     }
 
-    private BudgetExpenseDto mapToBudgetExpenseDto(TransactionDto transaction) {
+    public static BudgetCalculationDto mapToBudgetCalculationDto(List<TransactionDto> transactions, YearMonth yearMonth) {
+
+        Map<CategoryDto, List<BudgetExpenseDto>> OrderedByCategory = transactions.stream()
+                .map(transaction -> mapToBudgetExpenseDto(transaction))
+                .collect(Collectors.groupingBy(expense -> expense.getCategory()));
+
+        List<BudgetExpenseDto> orderedBudgetExpenses = groupByBudgetExpenses(OrderedByCategory);
+
+        Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetExpense = orderedBudgetExpenses.stream()
+                .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryType().getType()));
+
+        Map<CategoryTypeEnum, Integer> sumsFromBudgetExpense = BudgetUtils.getSumsFromBudgetExpense(budgetExpense);
+
+        return BudgetCalculationDto.builder()
+                .budgetExpense(budgetExpense)
+                .yearMonth(yearMonth)
+                .budgetSums(sumsFromBudgetExpense)
+                .build();
+    }
+
+    private static List<BudgetExpenseDto> groupByBudgetExpenses(Map<CategoryDto, List<BudgetExpenseDto>> orderedByCategory) {
+        List<BudgetExpenseDto> budgets = new ArrayList<>();
+        orderedByCategory.forEach((category, expenseList) -> {
+            BudgetExpenseDto dto = new BudgetExpenseDto();
+            dto.setEstimatedsum(getSumsFromBudgetExpense(expenseList, category));
+            dto.setCategory(category);
+            budgets.add(dto);
+        });
+        return budgets;
+    }
+
+    private static BudgetExpenseDto mapToBudgetExpenseDto(TransactionDto transaction) {
         BudgetExpenseDto dto = new BudgetExpenseDto();
         dto.setCategory(transaction.getCompany().getCategory());
 
@@ -88,6 +117,13 @@ public class BudgetUtils {
     public static BigDecimal getSumsFromBudgetExpense(List<BudgetExpenseDto> budgetLines, CategoryTypeEnum category) {
         return budgetLines.stream()
                 .filter(dto -> dto.getCategory().getCategoryType().getType().equals(category))
+                .map((dto) -> dto.getEstimatedsum())
+                .reduce((dto, y) -> dto.add(y)).get();
+    }
+
+    public static BigDecimal getSumsFromBudgetExpense(List<BudgetExpenseDto> budgetLines, CategoryDto category) {
+        return budgetLines.stream()
+                .filter(dto -> dto.getCategory().equals(category))
                 .map((dto) -> dto.getEstimatedsum())
                 .reduce((dto, y) -> dto.add(y)).get();
     }
