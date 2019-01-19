@@ -65,7 +65,7 @@ public class BudgetUtils {
                 .map(transaction -> mapToBudgetExpenseDto(transaction))
                 .collect(Collectors.groupingBy(expense -> expense.getCategory()));
 
-        List<BudgetExpenseDto> orderedBudgetExpenses = groupByBudgetExpenses(OrderedByCategory);
+        List<BudgetExpenseDto> orderedBudgetExpenses = groupBudgetExpenseByCategory(OrderedByCategory);
 
         Map<CategoryTypeEnum, List<BudgetExpenseDto>> budgetExpense = orderedBudgetExpenses.stream()
                 .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryType().getType()));
@@ -79,11 +79,11 @@ public class BudgetUtils {
                 .build();
     }
 
-    private static List<BudgetExpenseDto> groupByBudgetExpenses(Map<CategoryDto, List<BudgetExpenseDto>> orderedByCategory) {
+    private static List<BudgetExpenseDto> groupBudgetExpenseByCategory(Map<CategoryDto, List<BudgetExpenseDto>> orderedByCategory) {
         List<BudgetExpenseDto> budgets = new ArrayList<>();
         orderedByCategory.forEach((category, expenseList) -> {
             BudgetExpenseDto dto = new BudgetExpenseDto();
-            dto.setEstimatedsum(getSumsFromBudgetExpense(expenseList, category));
+            dto.setEstimatedsum(getSumsFromBudgetExpense(expenseList, category).abs());
             dto.setCategory(category);
             budgets.add(dto);
         });

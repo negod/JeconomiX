@@ -8,7 +8,18 @@ package se.backede.jeconomix.constants;
 /**
  *
  * @author Joakim Backede ( joakim.backede@outlook.com )
+ *
+ * The order of the items in this enum reflects the order ofthe categories in
+ * list etc..
+ *
  */
 public enum CategoryTypeEnum {
-    INCOME, EXPENSE, BILL, TRANSFER, LOAN, SAVING, CREDIT_CARD, POCKET_MONEY;
+    INCOME,
+    SAVING,
+    EXPENSE,
+    BILL,
+    TRANSFER,
+    LOAN,
+    CREDIT_CARD,
+    POCKET_MONEY;
 }

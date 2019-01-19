@@ -39,15 +39,31 @@ public class BudgetList extends javax.swing.JPanel {
 
         for (CategoryTypeEnum value : CategoryTypeEnum.values()) {
 
-            List<BudgetExpenseDto> expenseList = budget.getBudgetExpense().get(value);
-            Integer totalSumUsed = budget.getBudgetSums().get(value);
+            switch (value) {
+                case INCOME:
+                case EXPENSE:
+                case BILL:
+                case LOAN:
+                case SAVING:
+                case CREDIT_CARD:
+                case POCKET_MONEY:
 
-            BudgetEventDto dto = BudgetEventDto.builder()
-                    .yearMonth(budget.getYearMonth())
-                    .category(value)
-                    .build();
+                    List<BudgetExpenseDto> expenseList = budget.getBudgetExpense().get(value);
+                    Integer totalSumUsed = budget.getBudgetSums().get(value);
 
-            verticalBox1.add(new BudgetMonthWidget(dto, expenseList, totalSumUsed));
+                    BudgetEventDto dto = BudgetEventDto.builder()
+                            .yearMonth(budget.getYearMonth())
+                            .category(value)
+                            .build();
+
+                    verticalBox1.add(new BudgetMonthWidget(dto, expenseList, totalSumUsed));
+
+                    break;
+                case TRANSFER:
+                    break;
+                default:
+                    throw new AssertionError();
+            }
 
         }
 
