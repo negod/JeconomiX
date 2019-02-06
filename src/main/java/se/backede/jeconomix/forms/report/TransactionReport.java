@@ -5,34 +5,22 @@
  */
 package se.backede.jeconomix.forms.report;
 
-import java.awt.BorderLayout;
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableCellRenderer;
 import lombok.extern.slf4j.Slf4j;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.labels.CategoryItemLabelGenerator;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.ui.TextAnchor;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.TransactionDto;
 import se.backede.jeconomix.dto.TransactionReportDto;
 import se.backede.jeconomix.models.table.TransactionReportModel;
 import se.backede.jeconomix.utils.charts.LineChartUtils;
-import se.backede.jeconomix.utils.ReportUtils;
 import se.backede.jeconomix.utils.TransactionUtils;
 
 /**
@@ -43,6 +31,9 @@ import se.backede.jeconomix.utils.TransactionUtils;
 public class TransactionReport extends javax.swing.JDialog {
 
     Integer CURRENT_YEAR = YearMonth.now().getYear();
+
+    Set<String> currentCategories;
+
     private final CategoryTypeEnum CATEGORY;
     private final Boolean AVERAGE;
 
@@ -58,6 +49,7 @@ public class TransactionReport extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initData(type, average);
+        addPopUpMenu(currentCategories);
         this.CATEGORY = type;
         this.AVERAGE = average;
     }
@@ -70,71 +62,34 @@ public class TransactionReport extends javax.swing.JDialog {
             Map<String, List<TransactionDto>> filteredByCategoryName = transactions.stream()
                     .collect(Collectors.groupingBy(transaction -> transaction.getCompany().getCategory().getName()));
 
-            List<TransactionReportDto> extractTransactionReportList = TransactionUtils.extractTransactionReportList(filteredByCategoryName);
-            setTableData(extractTransactionReportList);
+            currentCategories = filteredByCategoryName.keySet();
 
-            Map<String, List<TransactionReportDto>> filterTransactionReportByCategory = TransactionUtils.filterTransactionReportByCategory(extractTransactionReportList);
+            List<TransactionReportDto> reports = TransactionUtils.extractTransactionReportList(filteredByCategoryName);
+            setTableData(reports);
+
+            Map<String, List<TransactionReportDto>> filterTransactionReportByCategory = TransactionUtils.filterTransactionReportByCategory(reports);
             addLineChart(filterTransactionReportByCategory, average);
 
         });
 
     }
 
+    public void addPopUpMenu(Set<String> categories) {
+
+        popUpMenu.add(new JMenuItem("Average"));
+        popUpMenu.add(new JMenuItem("All total"));
+
+        categories.forEach(category -> {
+            popUpMenu.add(new JMenuItem(category));
+        });
+
+    }
+
     public void addLineChart(Map<String, List<TransactionReportDto>> reports, Boolean average) {
 
-        List<TransactionReportDto> collect = reports.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        List<TransactionReportDto> extractedList = TransactionUtils.extractTransactionReportDtos(reports);
+        LineChartUtils.addLineChart(extractedList, lineChartPanel);
 
-        LineChartUtils.addLineChart(collect, lineChartPanel);
-
-//        JFreeChart lineChart = ChartFactory.createLineChart(
-//                "TOTAL",
-//                "MONTH", "Kr",
-//                ReportUtils.createDataset(reports, average),
-//                PlotOrientation.VERTICAL,
-//                true, true, true);
-//
-//        ChartPanel chartPanel = new ChartPanel(lineChart);
-//        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
-//
-//        CategoryAxis axis = lineChart.getCategoryPlot().getDomainAxis();
-//        CategoryItemRenderer renderer = lineChart.getCategoryPlot().getRenderer();
-//
-//        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE1, TextAnchor.HALF_ASCENT_CENTER, TextAnchor.BOTTOM_CENTER, 0);
-//        renderer.setBasePositiveItemLabelPosition(position);
-//
-//        renderer.setBaseItemLabelGenerator(new CategoryItemLabelGenerator() {
-//
-//            @Override
-//            public String generateLabel(CategoryDataset dataset, int series, int category) {
-//                if (average) {
-//                    if (series == 0) {
-//                        Number value = dataset.getValue(series, category);
-//                        String result = value.toString(); // could apply formatting here
-//                        return result;
-//                    }
-//                } else {
-//                    Number value = dataset.getValue(series, category);
-//                    String result = value.toString(); // could apply formatting here
-//                    return result;
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public String generateRowLabel(CategoryDataset cd, int i) {
-//                return null;
-//            }
-//
-//            @Override
-//            public String generateColumnLabel(CategoryDataset cd, int i) {
-//                return null;
-//            }
-//        });
-//        renderer.setBaseItemLabelsVisible(true);
-//        lineChartPanel.setLayout(new BorderLayout());
-//        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
 
     public void setTableData(List<TransactionReportDto> calculatedReport) {
@@ -159,6 +114,10 @@ public class TransactionReport extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        popUpMenu = new javax.swing.JPopupMenu();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        reportTable = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         reportTable = new javax.swing.JTable();
         lineChartPanel = new javax.swing.JPanel();
@@ -166,6 +125,12 @@ public class TransactionReport extends javax.swing.JDialog {
         prevYearBtn = new javax.swing.JButton();
         nextYearBtn = new javax.swing.JButton();
         yearLabel = new javax.swing.JLabel();
+
+        popUpMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                popUpMenuMouseClicked(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -194,6 +159,70 @@ public class TransactionReport extends javax.swing.JDialog {
             }
         });
         jScrollPane1.setViewportView(reportTable);
+        if (reportTable.getColumnModel().getColumnCount() > 0) {
+            reportTable.getColumnModel().getColumn(0).setResizable(false);
+            reportTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+            reportTable.getColumnModel().getColumn(1).setResizable(false);
+            reportTable.getColumnModel().getColumn(1).setPreferredWidth(70);
+            reportTable.getColumnModel().getColumn(2).setResizable(false);
+            reportTable.getColumnModel().getColumn(3).setResizable(false);
+            reportTable.getColumnModel().getColumn(4).setResizable(false);
+            reportTable.getColumnModel().getColumn(5).setResizable(false);
+            reportTable.getColumnModel().getColumn(6).setResizable(false);
+            reportTable.getColumnModel().getColumn(7).setResizable(false);
+            reportTable.getColumnModel().getColumn(8).setResizable(false);
+            reportTable.getColumnModel().getColumn(9).setResizable(false);
+            reportTable.getColumnModel().getColumn(10).setResizable(false);
+            reportTable.getColumnModel().getColumn(11).setResizable(false);
+            reportTable.getColumnModel().getColumn(12).setResizable(false);
+            reportTable.getColumnModel().getColumn(13).setResizable(false);
+            reportTable.getColumnModel().getColumn(13).setPreferredWidth(90);
+        }
+
+        reportTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Category", "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        reportTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reportTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(reportTable);
+        if (reportTable.getColumnModel().getColumnCount() > 0) {
+            reportTable.getColumnModel().getColumn(0).setResizable(false);
+            reportTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+            reportTable.getColumnModel().getColumn(1).setResizable(false);
+            reportTable.getColumnModel().getColumn(1).setPreferredWidth(70);
+            reportTable.getColumnModel().getColumn(2).setResizable(false);
+            reportTable.getColumnModel().getColumn(3).setResizable(false);
+            reportTable.getColumnModel().getColumn(4).setResizable(false);
+            reportTable.getColumnModel().getColumn(5).setResizable(false);
+            reportTable.getColumnModel().getColumn(6).setResizable(false);
+            reportTable.getColumnModel().getColumn(7).setResizable(false);
+            reportTable.getColumnModel().getColumn(8).setResizable(false);
+            reportTable.getColumnModel().getColumn(9).setResizable(false);
+            reportTable.getColumnModel().getColumn(10).setResizable(false);
+            reportTable.getColumnModel().getColumn(11).setResizable(false);
+            reportTable.getColumnModel().getColumn(12).setResizable(false);
+            reportTable.getColumnModel().getColumn(13).setResizable(false);
+            reportTable.getColumnModel().getColumn(13).setPreferredWidth(90);
+        }
         if (reportTable.getColumnModel().getColumnCount() > 0) {
             reportTable.getColumnModel().getColumn(0).setResizable(false);
             reportTable.getColumnModel().getColumn(0).setPreferredWidth(300);
@@ -270,28 +299,42 @@ public class TransactionReport extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1201, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1211, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -314,11 +357,17 @@ public class TransactionReport extends javax.swing.JDialog {
         initData(CATEGORY, AVERAGE);
     }//GEN-LAST:event_nextYearBtnActionPerformed
 
+    private void popUpMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_popUpMenuMouseClicked
+        System.out.println(evt.getSource());
+    }//GEN-LAST:event_popUpMenuMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel lineChartPanel;
     private javax.swing.JButton nextYearBtn;
+    private javax.swing.JPopupMenu popUpMenu;
     private javax.swing.JButton prevYearBtn;
     private javax.swing.JTable reportTable;
     private javax.swing.JLabel yearLabel;

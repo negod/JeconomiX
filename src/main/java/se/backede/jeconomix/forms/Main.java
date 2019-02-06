@@ -6,7 +6,8 @@
 package se.backede.jeconomix.forms;
 
 import java.awt.Font;
-import javax.swing.JFrame;
+import java.io.File;
+import java.util.function.Consumer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,12 @@ public class Main {
 
     public static void main(String[] args) {
 
+        final Consumer<File> CONSUMER = file -> {
+            System.out.println("Got a file!");
+        };
+
+        FolderListener listener = new FolderListener();
+
         LiquibaseHandler.getInstance().updateDatabase("db/JeconomiX");
         CacheInitializer cache = new CacheInitializer();
 
@@ -41,13 +48,16 @@ public class Main {
         Font font = UIManager.getFont("TableHeader.font");
         font = font.deriveFont(11f);
 
-        UIManager.put("TableHeader.font", font);
+        UIManager.put(
+                "TableHeader.font", font);
 
-        java.awt.EventQueue.invokeLater(() -> {
-            MainForm frame = new MainForm();
-            //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            frame.setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(
+                () -> {
+                    MainForm frame = new MainForm();
+                    //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    frame.setVisible(true);
+                }
+        );
     }
 
 }

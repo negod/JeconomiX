@@ -5,16 +5,13 @@
  */
 package se.backede.jeconomix.forms.report;
 
-import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
@@ -23,10 +20,6 @@ import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.codehaus.plexus.util.StringUtils;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import se.backede.jeconomix.constants.ComboBoxOptions;
 import se.backede.jeconomix.dto.CompanyDto;
@@ -36,7 +29,6 @@ import se.backede.jeconomix.forms.basic.component.ComboBoxWrapper;
 import se.backede.jeconomix.models.combobox.CompanyComboBoxModel;
 import se.backede.jeconomix.models.table.TransactionCompanyModel;
 import se.backede.jeconomix.utils.charts.LineChartUtils;
-import se.backede.jeconomix.utils.ReportUtils;
 
 /**
  *

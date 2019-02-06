@@ -84,17 +84,20 @@ public class TransactionsTotalReport extends javax.swing.JDialog {
     }
 
     public void addLineChart(Map<String, List<TransactionReportDto>> reports) {
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "Total",
-                "Month", "Kronor",
-                LineChartUtils.createDataset(reports, Boolean.FALSE),
-                PlotOrientation.VERTICAL,
-                true, true, true);
+        List<TransactionReportDto> extractedList = TransactionUtils.extractTransactionReportDtos(reports);
+        LineChartUtils.addLineChart(extractedList, lineChartPanel);
 
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
-        lineChartPanel.setLayout(new BorderLayout());
-        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
+//        JFreeChart lineChart = ChartFactory.createLineChart(
+//                "Total",
+//                "Month", "Kronor",
+//                LineChartUtils.createDataset(reports, Boolean.FALSE),
+//                PlotOrientation.VERTICAL,
+//                true, true, true);
+//
+//        ChartPanel chartPanel = new ChartPanel(lineChart);
+//        chartPanel.setPreferredSize(new java.awt.Dimension(lineChartPanel.getWidth(), lineChartPanel.getHeight()));
+//        lineChartPanel.setLayout(new BorderLayout());
+//        lineChartPanel.add(chartPanel, BorderLayout.NORTH);
     }
 
     /**

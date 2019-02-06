@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +68,12 @@ public class TransactionUtils {
     public static Map<String, List<TransactionReportDto>> filterTransactionReportByCategory(List<TransactionReportDto> transactions) {
         return transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getCategory()));
+    }
+
+    public static List<TransactionReportDto> extractTransactionReportDtos(Map<String, List<TransactionReportDto>> dtoList) {
+        return dtoList.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -7,7 +7,6 @@ package se.backede.jeconomix.forms.budget;
 
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -15,17 +14,13 @@ import java.util.stream.Collectors;
 import javax.swing.ButtonModel;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
-import se.backede.jeconomix.database.BudgetExpenseHandler;
 import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.budget.BudgetCalculationDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.BudgetEvent;
-import se.backede.jeconomix.event.events.dto.BudgetEventDto;
-import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
 import se.backede.jeconomix.forms.basic.NegodDialog;
-import se.backede.jeconomix.models.table.BudgetModel;
 import se.backede.jeconomix.utils.BudgetUtils;
 
 /**
@@ -53,12 +48,13 @@ public class BudgetSuggestion extends NegodDialog {
     public BudgetSuggestion(java.awt.Frame parent, boolean modal, YearMonth yearMonth) {
         super(parent, modal);
 
+        initComponents();
+
         this.CURRENT_BUDGET_MONTH = yearMonth;
         this.ONE_YEAR_BACK = CURRENT_BUDGET_MONTH.minusYears(1);
         this.ONE_MONTH_BACK = CURRENT_BUDGET_MONTH.minusMonths(1);
         this.ONE_QUARTER_BACK = CURRENT_BUDGET_MONTH.minusMonths(3);
 
-        initComponents();
         yearLabel.setText(Integer.toString(yearMonth.getYear()));
         monthLabel.setText(yearMonth.getMonth().name());
 
@@ -68,48 +64,6 @@ public class BudgetSuggestion extends NegodDialog {
         budgetMonth.showHeader(Boolean.FALSE);
 
         setBudgetFromPreviousBudget(yearMonth);
-    }
-
-    private void setBudgetTables(Map<CategoryTypeEnum, List<BudgetExpenseDto>> map) {
-        map.forEach((key, dtoList) -> {
-//            switch (key) {
-//                case INCOME:
-//                    incomeTable.setModel(new BudgetModel(dtoList));
-//                    break;
-//                case EXPENSE:
-//                    expenseTable.setModel(new BudgetModel(dtoList));
-//                    break;
-//                case BILL:
-//                    billTable.setModel(new BudgetModel(dtoList));
-//                    break;
-//                case TRANSFER:
-//                    break;
-//                case LOAN:
-//                    break;
-//                case SAVING:
-//                    break;
-//                case CREDIT_CARD:
-//                    break;
-//                case POCKET_MONEY:
-//                    break;
-//                default:
-//                    log.info("Key {} not handeled", key.name());
-//            }
-        });
-
-        Supplier<List<BudgetExpenseDto>> addedBudgets = () -> {
-            return map.values().stream()
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-        };
-
-        EventController.getInstance().notifyObservers(BudgetEvent.SET_BUDGET_TOTAL, addedBudgets);
-    }
-
-    private void clearTables() {
-//        incomeTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.INCOME));
-//        expenseTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.EXPENSE));
-//        billTable.setModel(new BudgetModel(new ArrayList<>(), true, CategoryTypeEnum.BILL));
     }
 
     private void setBudgetFromPreviousBudget(YearMonth yearMonth) {
@@ -377,8 +331,6 @@ public class BudgetSuggestion extends NegodDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void suggestBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestBudgetBtnActionPerformed
-
-        clearTables();
 
         ButtonModel periodSelection = periodSelectionBtnGroup.getSelection();
         ButtonModel basedOnSelection = baseBudgetOnBtnGroup.getSelection();

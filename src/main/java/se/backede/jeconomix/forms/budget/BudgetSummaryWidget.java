@@ -29,7 +29,7 @@ import se.backede.jeconomix.event.events.dto.BudgetExpenseEventDto;
  */
 public class BudgetSummaryWidget extends javax.swing.JPanel {
 
-    boolean hidden = true;
+    boolean tableHidden = true;
     BudgetEventDto CURRENT_BUDGET;
 
     /**
@@ -108,8 +108,8 @@ public class BudgetSummaryWidget extends javax.swing.JPanel {
     }
 
     public void showOrHide() {
-        EventController.getInstance().notifyObservers(hidden ? UiEvent.SHOW : UiEvent.HIDE, () -> CURRENT_BUDGET);
-        hidden = !hidden;
+        EventController.getInstance().notifyObservers(tableHidden ? UiEvent.SHOW : UiEvent.HIDE, () -> CURRENT_BUDGET);
+        tableHidden = !tableHidden;
     }
 
     /**

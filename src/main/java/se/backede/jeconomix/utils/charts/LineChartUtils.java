@@ -43,12 +43,12 @@ public class LineChartUtils {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "Year total",
                 "", "",
-                createDataset(reports, Boolean.TRUE),
+                createDataset(reports, Boolean.FALSE),
                 PlotOrientation.VERTICAL,
                 false, true, false);
 
         ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(parent.getPreferredSize());
+        chartPanel.setPreferredSize(new java.awt.Dimension(parent.getWidth(), parent.getHeight()));
 
         lineChart.setTitle(
                 new org.jfree.chart.title.TextTitle("Year total",
