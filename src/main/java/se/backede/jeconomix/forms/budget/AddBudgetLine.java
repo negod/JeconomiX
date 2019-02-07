@@ -218,7 +218,7 @@ public class AddBudgetLine extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
-        BudgetHandler.getInstance().getBudget(BUDGET_MONTH).ifPresent(budget -> {
+        BudgetHandler.getInstance().getBudgetByYear(BUDGET_MONTH).ifPresent(budget -> {
             BudgetExpenseDto dto = new BudgetExpenseDto();
             dto.setBudget(budget);
             dto.setCategory(categoryComboBox.getItemAt(categoryComboBox.getSelectedIndex()));

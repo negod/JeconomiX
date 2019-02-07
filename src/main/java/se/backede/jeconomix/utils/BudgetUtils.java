@@ -41,7 +41,7 @@ public class BudgetUtils {
     }
 
     public Optional<Set<BudgetExpenseDto>> createBudgetFromBudget(YearMonth budgetMonth) {
-        return BudgetHandler.getInstance().getBudget(budgetMonth).map(budget -> {
+        return BudgetHandler.getInstance().getBudgetByYear(budgetMonth).map(budget -> {
             return budget.getBudgetExpenseSet();
         });
     }

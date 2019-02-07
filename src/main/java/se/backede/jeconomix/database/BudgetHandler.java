@@ -2,8 +2,8 @@ package se.backede.jeconomix.database;
 
 import java.time.Month;
 import java.time.Year;
-import se.backede.generics.persistence.mapper.DtoEntityBaseMapper;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,24 @@ public class BudgetHandler extends BudgetDao {
         return INSTANCE;
     }
 
+    public Optional<Map<Month, BudgetCalculationDto>> createBudgetQuarter(BudgetQuarterEnum quarter, Year year) {
+
+        List<BudgetDto> budgetList = new ArrayList<>();
+
+        for (Month month : quarter.months()) {
+            BudgetDto budget = new BudgetDto();
+            budget.setMonth(month);
+            budget.setYear(year.getValue());
+
+            createBudget(budget).ifPresent(budgetDto -> {
+                budgetList.add(budgetDto);
+            });
+        }
+
+        return getCalculatedBudgetByQuarter(quarter, year);
+
+    }
+
     public Optional<BudgetDto> createBudget(BudgetDto budget) {
         Budget mapToBudget = BudgetMapper.INSTANCE.mapToBudget(budget);
         return super.executeTransaction(() -> super.persist(mapToBudget)).map(persisted -> {
@@ -49,7 +67,8 @@ public class BudgetHandler extends BudgetDao {
         });
     }
 
-    public Optional<BudgetDto> getBudget(YearMonth yearMonth) {
+    public Optional<BudgetDto> getBudgetByYear(YearMonth yearMonth) {
+
         try {
             this.startTransaction();
             Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_YEAR_AND_MONTH);
@@ -66,20 +85,23 @@ public class BudgetHandler extends BudgetDao {
             this.commitTransaction();
         }
         return Optional.empty();
+
     }
 
     public Optional<List<BudgetDto>> getBudgetByQuarter(Month[] months, Year year) {
 
         try {
+
             this.startTransaction();
             Query query = this.getEntityManager().createNamedQuery(EntityQueries.FIND_BUDGET_BY_QARTER);
             query.setParameter("months", Arrays.asList(months));
             query.setParameter("year", year.getValue());
             List<Budget> budget = (List<Budget>) query.getResultList();
 
-            if (budget != null) {
+            if (budget != null && !budget.isEmpty()) {
                 return Optional.ofNullable(BudgetMapper.INSTANCE.mapToBudgetDtoList(budget));
             }
+
         } catch (NoResultException ex) {
             log.debug("No result for query when getting Budget", ex);
         } finally {
@@ -89,15 +111,15 @@ public class BudgetHandler extends BudgetDao {
     }
 
     public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(BudgetQuarterEnum quarter, Year year) {
-        return getCalculatedBudgetByQuarter(year, quarter.months());
+        return getCalculatedBudgetByMonths(year, quarter.months());
     }
 
-    public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByQuarter(Year year, Month... months) {
+    public Optional<Map<Month, BudgetCalculationDto>> getCalculatedBudgetByMonths(Year year, Month... months) {
         return getBudgetByQuarter(months, year).map(budgetList -> {
             return BudgetUtils.getBudgetFilteredByMonth(budgetList).map(filteredByMonth -> {
                 return BudgetUtils.getCalculatedBudgetsByMonth(filteredByMonth);
             }).get();
-        }).get();
+        }).orElse(Optional.empty());
     }
 
 }

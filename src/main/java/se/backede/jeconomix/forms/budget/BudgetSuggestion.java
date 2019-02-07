@@ -68,7 +68,7 @@ public class BudgetSuggestion extends NegodDialog {
 
     private void setBudgetFromPreviousBudget(YearMonth yearMonth) {
         BudgetHandler.getInstance()
-                .getCalculatedBudgetByQuarter(Year.of(yearMonth.getYear()), yearMonth.getMonth())
+                .getCalculatedBudgetByMonths(Year.of(yearMonth.getYear()), yearMonth.getMonth())
                 .ifPresent(budgetMap -> {
                     budgetMonth.setMonth(budgetMap.get(yearMonth.getMonth()));
                 });
@@ -360,7 +360,7 @@ public class BudgetSuggestion extends NegodDialog {
 
     private void addBudgetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBudgetBtnActionPerformed
 
-        BudgetHandler.getInstance().getBudget(CURRENT_BUDGET_MONTH).ifPresent(budget -> {
+        BudgetHandler.getInstance().getBudgetByYear(CURRENT_BUDGET_MONTH).ifPresent(budget -> {
 
             EventController.getInstance().notifyObservers(BudgetEvent.CLEAR_BUDGET_LISTS, () -> budget);
 

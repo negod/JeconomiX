@@ -17,6 +17,6 @@
     <include file="tables/budget/budget.xml" relativeToChangelogFile="true"/>
     <include file="tables/budget/budget_expense.xml" relativeToChangelogFile="true"/>
 
-    <include file="script/script_init.xml" relativeToChangelogFile="true"/>
+    <!--include file="script/script_init.xml" relativeToChangelogFile="true"/-->
 
 </databaseChangeLog>

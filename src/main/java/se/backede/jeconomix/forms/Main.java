@@ -5,9 +5,15 @@
  */
 package se.backede.jeconomix.forms;
 
+import com.backede.fileutils.exception.BeckedeFileException;
+import com.backede.fileutils.listener.FolderListener;
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +40,11 @@ public class Main {
             System.out.println("Got a file!");
         };
 
-        FolderListener listener = new FolderListener();
+        try {
+            FolderListener listener = new FolderListener(Paths.get("imports"), Integer.MIN_VALUE, CONSUMER, true);
+        } catch (BeckedeFileException | IOException ex) {
+            log.error("Error in startup when starting folder listener", ex);
+        }
 
         LiquibaseHandler.getInstance().updateDatabase("db/JeconomiX");
         CacheInitializer cache = new CacheInitializer();

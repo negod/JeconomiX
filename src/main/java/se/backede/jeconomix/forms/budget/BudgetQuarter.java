@@ -5,7 +5,10 @@
  */
 package se.backede.jeconomix.forms.budget;
 
+import java.time.Month;
 import java.time.Year;
+import java.util.Map;
+import java.util.Optional;
 import se.backede.jeconomix.constants.BudgetQuarterEnum;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.database.BudgetHandler;
@@ -38,32 +41,45 @@ public class BudgetQuarter extends NegodPanel {
         CURRENT_QUARTER = quarter;
         CURRENT_YEAR = year;
 
-        BudgetHandler.getInstance().getCalculatedBudgetByQuarter(quarter, year).ifPresent(map -> {
-            TransactionHandler.getInstance().getCalculatedTransactionSumsByQuarter(quarter, year).ifPresent(transactions -> {
+        BudgetHandler.getInstance().getCalculatedBudgetByQuarter(quarter, year).ifPresentOrElse(map -> {
 
-                BudgetCalculationDto month1 = map.get(quarter.firstMonth());
-                if (transactions.get(quarter.firstMonth()) != null) {
-                    month1.getBudgetSums().putAll(transactions.get(quarter.firstMonth()));
-                }
-                budgetMonth1.setMonth(month1);
+            createBudgets(map, quarter, year);
 
-                BudgetCalculationDto month2 = map.get(quarter.secondMonth());
-                if (transactions.get(quarter.secondMonth()) != null) {
-                    month2.getBudgetSums().putAll(transactions.get(quarter.secondMonth()));
-                }
-                budgetMonth2.setMonth(month2);
+        }, () -> {
 
-                BudgetCalculationDto month3 = map.get(quarter.thirdMonth());
-                if (transactions.get(quarter.thirdMonth()) != null) {
-                    month3.getBudgetSums().putAll(transactions.get(quarter.thirdMonth()));
-                }
-                budgetMonth3.setMonth(month3);
-
+            BudgetHandler.getInstance().createBudgetQuarter(quarter, year).ifPresent(map -> {
+                createBudgets(map, quarter, year);
             });
+
         });
 
         yearLabel.setText(year.toString());
         quarterLabel.setText(quarter.name());
+
+    }
+
+    private void createBudgets(Map<Month, BudgetCalculationDto> budgetMap, BudgetQuarterEnum quarter, Year year) {
+        TransactionHandler.getInstance().getCalculatedTransactionSumsByQuarter(quarter, year).ifPresent(transactions -> {
+
+            BudgetCalculationDto month1 = budgetMap.get(quarter.firstMonth());
+            if (transactions.get(quarter.firstMonth()) != null) {
+                month1.getBudgetSums().putAll(transactions.get(quarter.firstMonth()));
+            }
+            budgetMonth1.setMonth(month1);
+
+            BudgetCalculationDto month2 = budgetMap.get(quarter.secondMonth());
+            if (transactions.get(quarter.secondMonth()) != null) {
+                month2.getBudgetSums().putAll(transactions.get(quarter.secondMonth()));
+            }
+            budgetMonth2.setMonth(month2);
+
+            BudgetCalculationDto month3 = budgetMap.get(quarter.thirdMonth());
+            if (transactions.get(quarter.thirdMonth()) != null) {
+                month3.getBudgetSums().putAll(transactions.get(quarter.thirdMonth()));
+            }
+            budgetMonth3.setMonth(month3);
+
+        });
     }
 
     /**
