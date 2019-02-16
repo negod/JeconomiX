@@ -50,7 +50,9 @@ public class BudgetHandler extends BudgetDao {
             });
         }
 
-        return getCalculatedBudgetByQuarter(quarter, year);
+        return BudgetUtils.getBudgetFilteredByMonth(budgetList).map(filteredByMonth -> {
+            return BudgetUtils.getCalculatedBudgetsByMonth(filteredByMonth);
+        }).get();
 
     }
 

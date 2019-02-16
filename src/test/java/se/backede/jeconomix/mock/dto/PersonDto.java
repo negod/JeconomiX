@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto.export;
+package se.backede.jeconomix.mock.dto;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +16,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@XmlRootElement(name = "budgets")
-public class Budgets {
+@Builder
+@XmlRootElement
+public class PersonDto {
 
-    List<BudgetExportDto> budget;
-
+    String name;
+    CompanyDto company;
 }

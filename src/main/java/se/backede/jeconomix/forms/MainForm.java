@@ -8,6 +8,7 @@ package se.backede.jeconomix.forms;
 import se.backede.jeconomix.forms.transaction.Importer;
 import com.backede.fileutils.csv.parser.CsvExtractor;
 import java.io.File;
+import java.util.List;
 import se.backede.jeconomix.forms.report.TransactionReport;
 import se.backede.jeconomix.forms.importexport.FileChooser;
 import se.backede.jeconomix.forms.company.CompanyEditor;
@@ -18,14 +19,18 @@ import javax.swing.JFileChooser;
 import lombok.extern.slf4j.Slf4j;
 import se.backede.jeconomix.constants.CategoryTypeEnum;
 import se.backede.jeconomix.constants.NordeaCsvFields;
+import se.backede.jeconomix.database.BudgetHandler;
 import se.backede.jeconomix.database.CompanyHandler;
 import se.backede.jeconomix.database.TransactionHandler;
 import se.backede.jeconomix.dto.ProgressDto;
+import se.backede.jeconomix.dto.export.BudgetExportDto;
+import se.backede.jeconomix.dto.export.mapper.BudgetExportMapper;
 import se.backede.jeconomix.event.EventController;
 import se.backede.jeconomix.event.events.ProgressEvent;
-import se.backede.jeconomix.exporter.BudgetExporter;
 import se.backede.jeconomix.exporter.CategoryExporter;
 import se.backede.jeconomix.exporter.CompanyExporter;
+import se.backede.jeconomix.exporter.ExportListData;
+import se.backede.jeconomix.exporter.Exporter;
 import se.backede.jeconomix.forms.basic.NegodJFrame;
 import se.backede.jeconomix.forms.report.TransactionsTotalReport;
 import se.backede.jeconomix.importer.CategoryImporter;
@@ -52,6 +57,7 @@ public class MainForm extends NegodJFrame {
         initComponents();
         budgetQuarter1.setData(TimeDecider.getCurrenQuarter(), TimeDecider.getCurrentYear());
         yearStatWidget1.init();
+
     }
 
     /**
@@ -457,11 +463,15 @@ public class MainForm extends NegodJFrame {
     private void budgetExportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_budgetExportMenuItemActionPerformed
         Optional<String> filePath = FileChooser.getInstance().getXmlFilePath(JFileChooser.DIRECTORIES_ONLY);
         if (filePath.isPresent()) {
+            
             ProgressDialog progressBar = new ProgressDialog(this, false, ProgressDialog.EXPORT);
             progressBar.setLocationRelativeTo(this);
             progressBar.setVisible(true);
 
-            BudgetExporter.getInstance().exportBudgets(filePath.get() + "//budgets.xml");
+            BudgetHandler.getInstance().getAllAsDto().ifPresent(budgetDtoList -> {
+                List<BudgetExportDto> mapToExportDto = BudgetExportMapper.mapToExportDto(budgetDtoList);
+                new Exporter(filePath.get() + "//budgets.xml", mapToExportDto).export();
+            });
         }
     }//GEN-LAST:event_budgetExportMenuItemActionPerformed
 

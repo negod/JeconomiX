@@ -57,7 +57,7 @@ public class CategoryExporter {
             List<CategoryExportDto> mapToExportDto = CategoryExportMapper.mapToExportDto(allcategories);
             expenseCategories.setCategory(mapToExportDto);
 //            Events.getInstance().fireProgressIncreaseValueEvent(2, "Exporting file");
-            XmlWriter.writeXml(fileName, Categories.class, expenseCategories);
+            XmlWriter.writeXml(fileName, expenseCategories, Categories.class);
 
         }).start();
     }

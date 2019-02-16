@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.backede.jeconomix.dto.export;
+package se.backede.jeconomix.mock.dto;
 
-import java.util.Date;
-import java.time.Month;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
@@ -19,15 +16,11 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString
+@Builder
 @XmlRootElement
-public class BudgetExportDto {
+public class CompanyDto {
 
-    private String id;
-    private Date updatedDate;
-    private int year;
-    private Month month;
-
-    private Set<BudgetExpenseExportDto> budgetExpenseSet;
+    String name;
+    AddresDto address;
 
 }

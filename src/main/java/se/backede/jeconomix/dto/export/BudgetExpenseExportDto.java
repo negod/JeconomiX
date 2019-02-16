@@ -18,8 +18,8 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@XmlRootElement
 @ToString
+@XmlRootElement(name = "BudgetExpense")
 public class BudgetExpenseExportDto {
 
     private static final long serialVersionUID = 1L;

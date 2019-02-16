@@ -6,19 +6,7 @@
 package se.backede.jeconomix.importer;
 
 import com.backede.fileutils.xml.reader.XmlReader;
-import java.util.Optional;
-import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
-import se.backede.jeconomix.database.CompanyHandler;
-import se.backede.jeconomix.database.CategoryHandler;
-import se.backede.jeconomix.dto.CategoryDto;
-import se.backede.jeconomix.dto.ProgressDto;
-import se.backede.jeconomix.dto.budget.BudgetDto;
-import se.backede.jeconomix.dto.export.BudgetExportDto;
-import se.backede.jeconomix.dto.export.Budgets;
-import se.backede.jeconomix.dto.export.mapper.BudgetExportMapper;
-import se.backede.jeconomix.event.EventController;
-import se.backede.jeconomix.event.events.ProgressEvent;
 
 /**
  *
@@ -28,7 +16,7 @@ import se.backede.jeconomix.event.events.ProgressEvent;
 public class BudgetImporter {
 
     private static BudgetImporter INSTANCE = new BudgetImporter();
-    private final XmlReader<Budgets> READER = new XmlReader<>();
+//    private final XmlReader<Budgets> READER = new XmlReader<>();
 
     protected BudgetImporter() {
     }

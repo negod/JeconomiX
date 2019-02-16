@@ -5,7 +5,6 @@
  */
 package se.backede.jeconomix.dto.export.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import se.backede.jeconomix.dto.budget.BudgetDto;
 import se.backede.jeconomix.dto.budget.BudgetExpenseDto;
 import se.backede.jeconomix.dto.export.BudgetExpenseExportDto;
 import se.backede.jeconomix.dto.export.BudgetExportDto;
-import se.backede.jeconomix.exception.MappingException;
 
 /**
  *

@@ -48,7 +48,7 @@ public class CompanyExporter {
                     EventController.getInstance().notifyObservers(ProgressEvent.INCREASE, () -> new ProgressDto(1, "Exporting company: ".concat(exportDto.getName())));
                 }
                 companies.setCompany(exportList);
-                XmlWriter.writeXml(filename, Companies.class, companies);
+                XmlWriter.writeXml(filename, companies, Companies.class);
                 EventController.getInstance().notifyObservers(ProgressEvent.DONE, () -> new ProgressDto(exportList.size(), String.valueOf(exportList.size()).concat(" companies successfully exported!")));
             } else {
                 EventController.getInstance().notifyObservers(ProgressEvent.DONE, () -> new ProgressDto(0, "No companies exported"));
